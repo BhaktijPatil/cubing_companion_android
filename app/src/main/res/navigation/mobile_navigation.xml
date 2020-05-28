@@ -9,35 +9,17 @@
         android:id="@+id/nav_home"
         android:name="com.cubenama.cubingcompanion.dashboardui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
-
-        <action
-            android:id="@+id/action_HomeFragment_to_HomeSecondFragment"
-            app:destination="@id/nav_home_second" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_home_second"
-        android:name="com.cubenama.cubingcompanion.dashboardui.home.HomeSecondFragment"
-        android:label="@string/home_second"
-        tools:layout="@layout/fragment_home_second">
-        <action
-            android:id="@+id/action_HomeSecondFragment_to_HomeFragment"
-            app:destination="@id/nav_home" />
-
-        <argument
-            android:name="myArg"
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_home"/>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.cubenama.cubingcompanion.dashboardui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_profile"
+        android:name="com.cubenama.cubingcompanion.dashboardui.profile.ProfileFragment"
+        android:label="@string/menu_profile"
+        tools:layout="@layout/fragment_profile" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.cubenama.cubingcompanion.dashboardui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_faq"
+        android:name="com.cubenama.cubingcompanion.dashboardui.faq.FaqFragment"
+        android:label="@string/menu_faq"
+        tools:layout="@layout/fragment_faq" />
 </navigation>

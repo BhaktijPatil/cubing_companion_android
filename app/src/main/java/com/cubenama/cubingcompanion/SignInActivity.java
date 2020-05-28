@@ -32,7 +32,7 @@ import java.util.Map;
 public class SignInActivity extends AppCompatActivity {
 
     // Time for which splash screen should be shown
-    private int splashScreenTime = 2500;
+    private static final int splashScreenTime = 2500;
 
     private static final int RC_SIGN_IN = 69;
 
@@ -71,15 +71,16 @@ public class SignInActivity extends AppCompatActivity {
     // Function to authenticate cuber using Google sign-in
     private void authenticateUser()
     {
-        // Check if user is already signed in
-        // Authentication setup
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
         // User is already signed in
-        if(account != null)
+        if(mAuth.getCurrentUser() != null)
         {
-            // Exchange google sign in token for firebase auth token
-            firebaseAuthWithGoogle(account.getIdToken());
+            // Add account UID to shared preferences
+            userDetailsSharedPreferences.edit().putString("uid", mAuth.getCurrentUser().getUid()).apply();
+            // Initiate user dashboard
+            startActivity(new Intent(SignInActivity.this, MainActivity.class));
+            // Finish sign-in activity
+            finish();
+
         }
         // User hasn't already signed in
         else
@@ -120,9 +121,6 @@ public class SignInActivity extends AppCompatActivity {
                 // User clicks outside the Sign In popup
                 if(e.getStatusCode() == 12501)
                     Toast.makeText(SignInActivity.this, "Please sign-in to continue", Toast.LENGTH_SHORT).show();
-                // Google Sign In failed for other reasons
-                else
-                    Toast.makeText(this, "Google Sign In failed. Please try again", Toast.LENGTH_SHORT).show();
                 // Restart authentication in case of failure
                 authenticateUser();
             }
