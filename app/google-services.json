@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "798947430875",
+    "firebase_url": "https://cubenama-companion.firebaseio.com",
+    "project_id": "cubenama-companion",
+    "storage_bucket": "cubenama-companion.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798947430875:android:4303fe2bcbffea63a3d7fe",
+        "android_client_info": {
+          "package_name": "com.cubenama.cubingcompanion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798947430875-lcbltr0ldqfqbpt26sdmo8rcfj11abrq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.cubenama.cubingcompanion",
+            "certificate_hash": "4b8d629200393a6bb260d2809f46590180606862"
+          }
+        },
+        {
+          "client_id": "798947430875-5pufefplqaavqaujkhut1safke2gvs3n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi5t5cfeHdZtg7VTrxBMiHmfrRYuP0qHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798947430875-5pufefplqaavqaujkhut1safke2gvs3n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
