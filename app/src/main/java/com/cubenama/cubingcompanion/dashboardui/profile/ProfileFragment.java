@@ -39,14 +39,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import id.zelory.compressor.Compressor;
 
 public class ProfileFragment extends Fragment {
 
@@ -59,7 +56,7 @@ public class ProfileFragment extends Fragment {
     // Firebase Storage reference
     private StorageReference profilePictureRef;
 
-    ImageView backgroundGifView;
+    private ImageView backgroundGifView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -111,7 +108,8 @@ public class ProfileFragment extends Fragment {
             // All fields are valid.
             else {
                 Map<String, Object> accountDetails = new HashMap<>();
-                accountDetails.put("main_event", mainEvent);
+                if(!mainEvent.equals(""))
+                    accountDetails.put("main_event", mainEvent);
                 accountDetails.put("name", name);
                 accountDetails.put("mobile", mobile);
                 accountDetails.put("dob", dob);
@@ -227,6 +225,7 @@ public class ProfileFragment extends Fragment {
                         .addOnProgressListener(taskSnapshot -> {
                             // change background GIF
                             Glide.with(requireActivity()).asGif().load(R.drawable.cube_loading_2).into(backgroundGifView);
+                            Toast.makeText(requireActivity(), "Uploading picture to Database.", Toast.LENGTH_SHORT).show();
                             Log.d("CC_PROFILE", "Profile picture uploading");
                         });
             }
