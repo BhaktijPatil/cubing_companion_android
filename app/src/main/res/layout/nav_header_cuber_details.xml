@@ -19,7 +19,7 @@
         app:cardElevation="0dp">
 
         <ImageView
-            android:id="@+id/profilePictureImageView"
+            android:id="@+id/miniProfilePictureImageView"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:contentDescription="@string/nav_header_desc"

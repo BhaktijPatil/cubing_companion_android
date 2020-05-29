@@ -18,17 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -154,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
                                             db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid","")).update(accountDetails);
                                             Toast.makeText(this, "Account linked successfully.", Toast.LENGTH_SHORT).show();
                                             popupWindow.dismiss();
-                                            updateUserDetailsUI(name, wcaId, String.valueOf(cuberDocumentSnapshot.get("photo_url")));
                                         }
                                         // WCA ID duplicate
                                         else
@@ -170,9 +163,22 @@ public class MainActivity extends AppCompatActivity {
 
                 });
             }
-            // WCA ID is already linked
+
+        });
+
+        // Add listener to update UI when data changes
+        cuber.addSnapshotListener((snapshot, e) -> {
+            // Check for exception
+            if (e != null) {
+                Log.w("CC_PROFILE_READ", "Unable to listen for data.", e);
+                return;
+            }
+            if (snapshot != null && snapshot.exists()) {
+                Log.d("CC_PROFILE_READ",  "Data : " + snapshot.getData());
+                updateUserDetailsUI(String.valueOf(snapshot.get("name")), String.valueOf(snapshot.get("wca_id")), String.valueOf(snapshot.get("photo_url")));
+                }
             else
-                updateUserDetailsUI(String.valueOf(cuberDocumentSnapshot.get("name")), String.valueOf(cuberDocumentSnapshot.get("wca_id")), String.valueOf(cuberDocumentSnapshot.get("photo_url")));
+                Log.d("CC_PROFILE_READ",  "Data : null");
         });
 
         // Inflate the navigation drawer
@@ -200,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         wcaIdTextViewAlt.setText(wcaId);
 
         // Update profile picture
-        ImageView profilePictureImageView = findViewById(R.id.profilePictureImageView);
+        ImageView profilePictureImageView = findViewById(R.id.miniProfilePictureImageView);
         Glide.with(this).load(Uri.parse(photoURL)).into(profilePictureImageView);
 
         Log.d("CC_UPDATE_UI", "Name : " + name + " WCA ID : " + wcaId);
@@ -241,10 +247,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             if (!name.matches("^[A-Z]*$"))
                 return false;
-            if (!id.matches("^[0-9]*$"))
-                return false;
+            return id.matches("^[0-9]*$");
         }
-        return true;
     }
 
 
@@ -256,9 +260,7 @@ public class MainActivity extends AppCompatActivity {
         if (!mobile.matches("^[-0-9+]*$"))
             return false;
         // ID has to be 10 characters long
-        if(mobile.length()<10)
-            return false;
-        return true;
+        return mobile.length() >= 10;
     }
 
 
@@ -267,9 +269,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isNameValid(String name)
     {
         // mobile number can only plus,dash and numbers
-        if (!name.matches("^[A-Z a-z]*$"))
-            return false;
-        return true;
+        return name.matches("^[A-Z a-z]*$");
     }
 
 
