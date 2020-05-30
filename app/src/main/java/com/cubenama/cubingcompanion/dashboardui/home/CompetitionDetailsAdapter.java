@@ -2,19 +2,17 @@ package com.cubenama.cubingcompanion.dashboardui.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cubenama.cubingcompanion.CompetitionDetailActivity;
+import com.cubenama.cubingcompanion.DateTimeFormat;
 import com.cubenama.cubingcompanion.R;
 
 import java.lang.ref.WeakReference;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -42,16 +40,9 @@ public class CompetitionDetailsAdapter extends RecyclerView.Adapter<CompetitionD
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         CompetitionDetails competitionDetail = competitionDetailsList.get(position);
 
-        // Format start and end timestamps
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(competitionDetail.startTime.getSeconds()*1000);
-        String startTimeFormatted = DateFormat.format("dd-MMM-yyyy hh:mm", cal).toString();
-        cal.setTimeInMillis(competitionDetail.endTime.getSeconds()*1000);
-        String endTimeFormatted = DateFormat.format("dd-MMM-yyyy hh:mm", cal).toString();
-
         // Assign values to list row
         holder.competitionNameTextView.setText(competitionDetail.name);
-        holder.competitionDurationTextView.setText(startTimeFormatted + "  to  " + endTimeFormatted);
+        holder.competitionDurationTextView.setText(DateTimeFormat.firebaseTimestampToDate("dd-MMM-yyyy hh:mm", competitionDetail.startTime) + "  to  " + DateTimeFormat.firebaseTimestampToDate("dd-MMM-yyyy hh:mm", competitionDetail.endTime));
         holder.competitionHolderLayout.setOnClickListener(v->{
             // Start competition detail activity
             Intent competitionDetailActivityIntent = new Intent(mContext, CompetitionDetailActivity.class);

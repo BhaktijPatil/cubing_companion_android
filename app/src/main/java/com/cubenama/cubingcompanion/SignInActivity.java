@@ -32,7 +32,7 @@ import java.util.Map;
 public class SignInActivity extends AppCompatActivity {
 
     // Time for which splash screen should be shown
-    private static final int splashScreenTime = 2500;
+    private static final int splashScreenTime = 3000;
 
     private static final int RC_SIGN_IN = 69;
 

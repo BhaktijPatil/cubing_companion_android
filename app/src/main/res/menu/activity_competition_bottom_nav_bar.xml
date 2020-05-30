@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_information"
+        android:icon="@drawable/info_icon"
+        android:title="information" />
+
+    <item
+        android:id="@+id/nav_schedule"
+        android:icon="@drawable/schedule_icon"
+        android:title="schedule" />
+
+    <item
+        android:id="@+id/nav_competitors"
+        android:icon="@drawable/competitors_icon"
+        android:title="competitors" />
+
+    <item
+        android:id="@+id/nav_results"
+        android:icon="@drawable/results_icon"
+        android:title="results" />
+</menu>

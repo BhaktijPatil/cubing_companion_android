@@ -62,7 +62,7 @@ public class CompetitionsFragment  extends Fragment {
         pastCompetitionsRecyclerView.setLayoutManager(pastCompetitionsLayoutManager);
         pastCompetitionsRecyclerView.setAdapter(competitionDetailsAdapter2);
 
-        // Add listener to update UI when data changes
+        // Load data from firebase into UI
         CollectionReference competition_details = db.collection("competition_details");
         competition_details.get().addOnCompleteListener(task -> {
             upcomingCompetitionDetailsList.clear();

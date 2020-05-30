@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private SharedPreferences userDetailsSharedPreferences;
 
-    NavigationView navigationView;
+    private NavigationView navigationView;
+    private PopupWindow popupWindow;
 
     // Database reference
     private FirebaseFirestore db;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 // Inflate the popup window layout (link WCA ID to account)
                 View popupLinkAccountView = inflater.inflate(R.layout.popup_profile, null);
                 // Setup popup window
-                PopupWindow popupWindow = new PopupWindow(popupLinkAccountView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
+                popupWindow = new PopupWindow(popupLinkAccountView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, false);
                 // Show popup view at the center
                 popupWindow.showAtLocation(popupLinkAccountView, Gravity.CENTER, 0,0);
 
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the navigation drawer
         expandMenuButton.setOnClickListener(v-> mAppBarConfiguration.getDrawerLayout().openDrawer(Gravity.LEFT));
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavController navController = Navigation.findNavController(this, R.id.dashboard_nav_host_fragment);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
@@ -276,7 +277,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavController navController = Navigation.findNavController(this, R.id.dashboard_nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
+    }
+
+
+
+    // Function to handle back button presses
+    @Override
+    public void onBackPressed() {
+        // Disable back button if popup window is showing
+        if (popupWindow != null && popupWindow.isShowing())
+            Toast.makeText(this, "Link Account with WCA ID to continue.", Toast.LENGTH_LONG).show();
+        else
+            super.onBackPressed();
     }
 }
