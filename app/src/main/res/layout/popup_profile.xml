@@ -215,7 +215,7 @@
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/dobEditText"
-                            app:srcCompat="@drawable/baby_logo" />
+                            app:srcCompat="@drawable/baby_logo_2" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout

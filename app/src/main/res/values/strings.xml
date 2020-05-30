@@ -12,5 +12,24 @@
     <string name="menu_profile">"Profile""</string>
     <string name="menu_faq">"FAQ"</string>
 
+    <string name="competition_instructions_how_to_compete_header">"How do I compete :"</string>
+    <string name="competition_instructions_podium_details_header">"Podium details :"</string>
+
+    <string-array name="competition_instructions_how_to_compete_details">
+        <item>"When a competition begins, the 'PARTICIPATE' button will go live. Click here to begin."</item>
+        <item>"Details of the current event will be shown on a new page. Participants eligible for the event can initiate by clicking the 'START' button."</item>
+        <item>"You are now competing. A scramble will be presented to you, upon execution of which you can begin inspection followed by the solve itself."</item>
+        <item>"Repeat this process for all the solves in a round. Your results will automatically be submitted.</item>
+        <item>"After each solve, you will get an option to add '+2's or 'DNF' the solve. You must complete all solves before the round ends, else all your solves will be disqualified."</item>
+        <item>"If you expect to podium in any event, make sure you record your solves. You can then submit them for verification."</item>
+    </string-array>
+    
+    <string-array name="competition_instructions_podium_details">
+        <item>"Any competitor expecting a podium must record his solves in the final round for that event."</item>
+        <item>"Videos concerned must contain an original uncut footage that starts when the user clicks on 'START'."</item>
+        <item>"The organizers may directly contact a competitor for verification purposes."</item>
+        <item>"Videos concerned can be uploaded on YouTube/Drive/Link provided by the organizer."</item>
+    </string-array>
+
     <string name="home_second">Home Second</string>
 </resources>

@@ -42,6 +42,7 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
 
         // Assign values to list row
         holder.eventNameTextView.setText(competitionEvent.eventId);
+        holder.roundCountTextView.setText(competitionEvent.eventRounds.size() + " Rounds");
 
         // Setup inner recycler view
         EventRoundAdapter eventRoundAdapter = new EventRoundAdapter(competitionEvent.eventRounds, innerPosition -> Toast.makeText(mContext, Integer.toString(innerPosition + 1), Toast.LENGTH_SHORT).show());
@@ -50,7 +51,6 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
         holder.competitionEventRecyclerView.setLayoutManager(eventRoundLayoutManager);
         holder.competitionEventRecyclerView.setAdapter(eventRoundAdapter);
 
-        Log.d("CC_A", String.valueOf(competitionEvent.eventRounds.size()));
         eventRoundAdapter.notifyDataSetChanged();
 
     }
@@ -67,10 +67,9 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
     static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView eventNameTextView;
+        TextView roundCountTextView;
 
         RecyclerView competitionEventRecyclerView = itemView.findViewById(R.id.eventRoundRecyclerView);
-
-
 
         private WeakReference<CompetitionScheduleFragment.ClickListener> listenerRef;
 
@@ -78,6 +77,7 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
             super(itemView);
             listenerRef = new WeakReference<>(listener);
             eventNameTextView = itemView.findViewById(R.id.eventNameTextView);
+            roundCountTextView = itemView.findViewById(R.id.roundCountTextView);
         }
         @Override
         public void onClick(View view) {

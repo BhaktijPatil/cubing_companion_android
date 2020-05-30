@@ -9,7 +9,7 @@ import java.util.Calendar;
 public class DateTimeFormat {
 
     // Function to convert firebase timestamp to any Date format
-    public static String firebaseTimestampToDate(String format, Timestamp timestamp)
+    public String firebaseTimestampToDate(String format, Timestamp timestamp)
     {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp.getSeconds()*1000);

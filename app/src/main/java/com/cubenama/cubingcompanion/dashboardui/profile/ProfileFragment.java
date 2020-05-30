@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,10 +28,15 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.cubenama.cubingcompanion.R;
+import com.cubenama.cubingcompanion.SignInActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -89,7 +95,20 @@ public class ProfileFragment extends Fragment {
 
         // Create listener for DOB
         ImageButton dobButton = root.findViewById(R.id.selectDateButton);
-        dobButton.setOnClickListener(v->getDate(root.findViewById(R.id.dobEditText)));
+        dobButton.setOnClickListener(v -> getDate(root.findViewById(R.id.dobEditText)));
+
+        // Create listener for sign out
+        CardView signOutButton = root.findViewById(R.id.signOutCardView);
+        signOutButton.setOnClickListener(v->{
+            // Signout the current user
+            FirebaseAuth.getInstance().signOut();
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+            mGoogleSignInClient.signOut().addOnCompleteListener(requireActivity(), task1 -> {
+                // Start login activity
+               startActivity(new Intent(requireContext(), SignInActivity.class));
+            });
+        });
 
         // Create listener for update profile button
         CardView updateProfileButton = root.findViewById(R.id.updateProfileCardView);

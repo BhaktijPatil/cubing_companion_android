@@ -7,5 +7,6 @@
     <color name="colorTextSecondary">#D9555555</color>
     <color name="colorTextPrimaryLight">#F2FFFFFF</color>
     <color name="colorTextSecondaryLight">#D9EAEAEA</color>
+    <color name="transparent">#00F44336</color>
 
 </resources>

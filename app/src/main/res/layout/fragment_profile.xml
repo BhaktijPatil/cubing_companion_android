@@ -112,6 +112,7 @@
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:scaleType="fitCenter"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/nameEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +125,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="32dp"
+                            android:layout_marginEnd="24dp"
                             android:layout_marginBottom="8dp"
                             android:backgroundTint="@color/colorPrimary"
                             android:ems="10"
@@ -151,7 +152,7 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="32dp"
+                            android:layout_marginEnd="24dp"
                             android:layout_marginBottom="8dp"
                             android:background="#00FFFFFF"
                             android:scaleType="fitCenter"
@@ -194,14 +195,14 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
-                            android:backgroundTint="#FFAB00"
                             android:backgroundTintMode="add"
                             android:scaleType="fitCenter"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/dobEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/dobEditText"
-                            app:srcCompat="@drawable/baby_logo" />
+                            app:srcCompat="@drawable/baby_logo_2" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -217,6 +218,7 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/mainEventEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
@@ -229,7 +231,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="32dp"
+                            android:layout_marginEnd="24dp"
                             android:layout_marginBottom="8dp"
                             android:backgroundTint="@color/colorPrimary"
                             android:ems="10"
@@ -258,6 +260,7 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/phoneEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
@@ -270,7 +273,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="32dp"
+                            android:layout_marginEnd="24dp"
                             android:layout_marginBottom="8dp"
                             android:backgroundTint="@color/colorPrimary"
                             android:ems="10"
@@ -292,15 +295,13 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/updateProfileCardView"
-                android:layout_width="wrap_content"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginBottom="50dp"
                 app:cardBackgroundColor="@color/colorTextSecondary"
                 app:cardCornerRadius="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -311,31 +312,81 @@
                         android:id="@+id/updateProfileImageView"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginStart="24dp"
+                        android:layout_marginStart="8dp"
                         android:scaleType="fitCenter"
+                        android:tint="@color/colorTextPrimaryLight"
                         app:layout_constraintBottom_toBottomOf="@id/updateProfileTextView"
                         app:layout_constraintDimensionRatio="1"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@id/updateProfileTextView"
-                        app:srcCompat="@drawable/done_icon" />
+                        app:srcCompat="@drawable/upload_icon" />
 
                     <TextView
                         android:id="@+id/updateProfileTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="8dp"
                         android:layout_marginTop="10dp"
-                        android:layout_marginEnd="32dp"
+                        android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
-                        android:fontFamily="@font/abel"
-                        android:text="Update Profile"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:text="Update"
                         android:textAllCaps="true"
                         android:textColor="@color/colorTextPrimaryLight"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
+                        android:textSize="18sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@id/updateProfileImageView"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/signOutCardView"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="50dp"
+                app:cardBackgroundColor="@color/colorTextSecondary"
+                app:cardCornerRadius="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/signOutImageView"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/colorTextPrimaryLight"
+                        app:layout_constraintBottom_toBottomOf="@id/signOutTextView"
+                        app:layout_constraintDimensionRatio="1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/signOutTextView"
+                        app:srcCompat="@drawable/sign_out_icon" />
+
+                    <TextView
+                        android:id="@+id/signOutTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:text="Sign Out"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorTextPrimaryLight"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/signOutImageView"
                         app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

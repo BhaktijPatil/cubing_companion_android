@@ -12,7 +12,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         android:alpha="1"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,6 +30,7 @@
                 android:layout_height="0dp"
                 android:alpha="0.8"
                 android:scaleType="centerCrop"
+                android:tint="#4D000000"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -37,20 +38,30 @@
                 app:srcCompat="@drawable/background_6" />
 
             <TextView
+                android:id="@+id/roundCountTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/abel"
+                android:text="Round Count"
+                android:textColor="@color/colorTextSecondaryLight"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/eventNameTextView"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
                 android:id="@+id/eventNameTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
                 android:fontFamily="@font/abel"
                 android:text="Event Name"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textAllCaps="true"
                 android:textColor="@color/colorTextPrimaryLight"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

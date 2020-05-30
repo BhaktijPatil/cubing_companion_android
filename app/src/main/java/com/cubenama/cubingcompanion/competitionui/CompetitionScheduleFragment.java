@@ -21,6 +21,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class CompetitionScheduleFragment extends Fragment {
 
@@ -48,7 +49,7 @@ public class CompetitionScheduleFragment extends Fragment {
 
 
         // Get competition ID
-        Intent intent = getActivity().getIntent();
+        Intent intent = requireActivity().getIntent();
         String comp_id = intent.getStringExtra("comp_id");
 
         TextView eventCountTextView = root.findViewById(R.id.eventCountTextView);

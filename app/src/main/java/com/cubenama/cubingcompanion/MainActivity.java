@@ -2,11 +2,14 @@ package com.cubenama.cubingcompanion;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -18,11 +21,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -66,21 +77,39 @@ public class MainActivity extends AppCompatActivity {
                 .setDrawerLayout(drawer)
                 .build();
 
-        DocumentReference cuber = db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid",""));
+        DocumentReference cuber = db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", ""));
         cuber.get().addOnCompleteListener(cuberTask -> {
             DocumentSnapshot cuberDocumentSnapshot = cuberTask.getResult();
 
             // Check if user's WCA ID is linked to the account
-            if(!cuberDocumentSnapshot.contains("wca_id")) {
+            if (!cuberDocumentSnapshot.contains("wca_id")) {
                 Log.d("CC_ACCOUNT", "Linking account with WCA ID");
                 // Get inflater for the current activity
                 LayoutInflater inflater = getLayoutInflater();
                 // Inflate the popup window layout (link WCA ID to account)
                 View popupLinkAccountView = inflater.inflate(R.layout.popup_profile, null);
                 // Setup popup window
-                popupWindow = new PopupWindow(popupLinkAccountView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, false);
+                popupWindow = new PopupWindow(popupLinkAccountView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
                 // Show popup view at the center
-                popupWindow.showAtLocation(popupLinkAccountView, Gravity.CENTER, 0,0);
+                popupWindow.showAtLocation(popupLinkAccountView, Gravity.CENTER, 0, 0);
+                // Deny access if account is not linked
+                popupWindow.setOnDismissListener(() -> {
+                            // Ensure WCA ID is unique
+                            db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task -> {
+                                if(task.getResult().getString("wca_id") == null)
+                                {
+                                    Toast.makeText(this, "Please link account with WCA ID to continue",Toast.LENGTH_LONG).show();
+                                    // Signout the current user
+                                    FirebaseAuth.getInstance().signOut();
+                                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+                                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                                    mGoogleSignInClient.signOut().addOnCompleteListener(this, task1 -> {
+                                        // Start login activity
+                                        new Handler().postDelayed(()->startActivity(new Intent(this, SignInActivity.class)),2000);
+                                    });
+                                }
+                            });
+                });
 
                 EditText wcaIdEditText = popupLinkAccountView.findViewById(R.id.wcaIdEditText);
                 EditText nameEditText = popupLinkAccountView.findViewById(R.id.nameEditText);
@@ -88,12 +117,10 @@ public class MainActivity extends AppCompatActivity {
                 EditText phoneEditText = popupLinkAccountView.findViewById(R.id.phoneEditText);
 
                 // Fill out information obtained via Google Sign In
-                if(cuberDocumentSnapshot.get("mobile") != null)
-                {
+                if (cuberDocumentSnapshot.get("mobile") != null) {
                     phoneEditText.setText(cuberDocumentSnapshot.get("mobile").toString());
                 }
-                if(cuberDocumentSnapshot.get("name") != null)
-                {
+                if (cuberDocumentSnapshot.get("name") != null) {
                     nameEditText.setText(cuberDocumentSnapshot.get("name").toString());
                 }
 
@@ -103,60 +130,49 @@ public class MainActivity extends AppCompatActivity {
 
                 // Create Listener for DOB
                 ImageButton dobButton = popupLinkAccountView.findViewById(R.id.selectDateButton);
-                dobButton.setOnClickListener(v->getDate(popupLinkAccountView.findViewById(R.id.dobEditText)));
+                dobButton.setOnClickListener(v -> getDate(popupLinkAccountView.findViewById(R.id.dobEditText)));
 
                 // Create listener for link account button
                 CardView linkAccountButton = popupLinkAccountView.findViewById(R.id.linkAccountCardView);
-                linkAccountButton.setOnClickListener(v->{
+                linkAccountButton.setOnClickListener(v -> {
                     String wcaId = String.valueOf(wcaIdEditText.getText());
                     String name = String.valueOf(nameEditText.getText());
                     String mobile = String.valueOf(phoneEditText.getText());
                     String dob = String.valueOf(dobEditText.getText());
 
                     // Some fields are invalid.
-                    if(wcaId.equals("") || !isWcaIdValid(wcaId))
-                    {
+                    if (wcaId.equals("") || !isWcaIdValid(wcaId)) {
                         Toast.makeText(this, "Invalid WCA ID.", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(name.equals("") || !isNameValid(name))
-                    {
+                    } else if (name.equals("") || !isNameValid(name)) {
                         Toast.makeText(this, "Name can only contain letters.", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(dob.equals(""))
-                    {
+                    } else if (dob.equals("")) {
                         Toast.makeText(this, "Select Date of Birth.", Toast.LENGTH_SHORT).show();
-                    }
-                    else if(mobile.equals("") || !isMobileValid(mobile))
-                    {
+                    } else if (mobile.equals("") || !isMobileValid(mobile)) {
                         Toast.makeText(this, "Invalid mobile number.", Toast.LENGTH_SHORT).show();
                     }
                     // All fields are valid.
-                    else
-                    {
+                    else {
                         // Ensure WCA ID is unique
                         db.collection("cuber_details").whereEqualTo("wca_id", wcaId).get()
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         // WCA ID unique
-                                        if(task.getResult().size() == 0)
-                                        {
+                                        if (task.getResult().size() == 0) {
                                             Map<String, Object> accountDetails = new HashMap<>();
                                             accountDetails.put("wca_id", wcaId);
                                             accountDetails.put("name", name);
                                             accountDetails.put("mobile", mobile);
                                             accountDetails.put("dob", dob);
 
-                                            db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid","")).update(accountDetails);
+                                            db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).update(accountDetails);
                                             Toast.makeText(this, "Account linked successfully.", Toast.LENGTH_SHORT).show();
                                             popupWindow.dismiss();
                                         }
                                         // WCA ID duplicate
-                                        else
-                                        {
+                                        else {
                                             Toast.makeText(this, "WCA ID already registered.", Toast.LENGTH_SHORT).show();
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         Log.d("CC_WCA_ID", "Error getting documents ", task.getException());
                                     }
                                 });
@@ -175,25 +191,22 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             if (snapshot != null && snapshot.exists()) {
-                Log.d("CC_PROFILE_READ",  "Data : " + snapshot.getData());
+                Log.d("CC_PROFILE_READ", "Data : " + snapshot.getData());
                 updateUserDetailsUI(String.valueOf(snapshot.get("name")), String.valueOf(snapshot.get("wca_id")), String.valueOf(snapshot.get("photo_url")));
-                }
-            else
-                Log.d("CC_PROFILE_READ",  "Data : null");
+            } else
+                Log.d("CC_PROFILE_READ", "Data : null");
         });
 
         // Inflate the navigation drawer
-        expandMenuButton.setOnClickListener(v-> mAppBarConfiguration.getDrawerLayout().openDrawer(Gravity.LEFT));
+        expandMenuButton.setOnClickListener(v -> mAppBarConfiguration.getDrawerLayout().openDrawer(Gravity.LEFT));
 
         NavController navController = Navigation.findNavController(this, R.id.dashboard_nav_host_fragment);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
 
-
     // Function to load user details into UI
-    private void updateUserDetailsUI(String name, String wcaId, String photoURL)
-    {
+    private void updateUserDetailsUI(String name, String wcaId, String photoURL) {
         // Update cuber name
         TextView userNameTextView = findViewById(R.id.cuberNameTextView);
         TextView userNameTextViewAlt = findViewById(R.id.cuberNameTextViewAlt);
@@ -214,10 +227,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     // Function to get date from DatePicker
-    private void getDate(EditText dateEditText)
-    {
+    private void getDate(EditText dateEditText) {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
         int currYear = c.get(Calendar.YEAR);
@@ -231,17 +242,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Function to check validity of WCA ID
-    private boolean isWcaIdValid(String wcaId)
-    {
+    private boolean isWcaIdValid(String wcaId) {
         // ID has to be 10 characters long
-        if(wcaId.length() != 10)
+        if (wcaId.length() != 10)
             return false;
-        else
-        {
+        else {
             // Divide WCA ID into sub components
-            String year = wcaId.substring(0,4);
-            String name = wcaId.substring(4,8);
-            String id = wcaId.substring(8,10);
+            String year = wcaId.substring(0, 4);
+            String name = wcaId.substring(4, 8);
+            String id = wcaId.substring(8, 10);
 
             // WCA ID FORMAT YYYY-ABCD-ID
             if (!year.matches("^[0-9]*$"))
@@ -253,10 +262,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     // Function to check validity of mobile number
-    private boolean isMobileValid(String mobile)
-    {
+    private boolean isMobileValid(String mobile) {
         // mobile number can only plus,dash and numbers
         if (!mobile.matches("^[-0-9+]*$"))
             return false;
@@ -265,14 +272,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     // Function to check validity of name
-    private boolean isNameValid(String name)
-    {
+    private boolean isNameValid(String name) {
         // mobile number can only plus,dash and numbers
         return name.matches("^[A-Z a-z]*$");
     }
-
 
 
     @Override
@@ -280,7 +284,6 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.dashboard_nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
-
 
 
     // Function to handle back button presses
