@@ -80,7 +80,8 @@ public class CompetitionInformationFragment extends Fragment {
         DocumentReference competition_info = db.collection("competition_details").document(comp_id);
         competition_info.get().addOnCompleteListener(task -> {
 
-            Timestamp registrationStartTime = task.getResult().getTimestamp("registration_start");
+            Timestamp registrationStartTime = task.getResult().getTimestamp("registration_start_time");
+            Timestamp registrationEndTime = task.getResult().getTimestamp("registration_end_time");
             Timestamp compStartTime = task.getResult().getTimestamp("start_time");
             Timestamp compEndTime = task.getResult().getTimestamp("end_time");
 
@@ -95,34 +96,33 @@ public class CompetitionInformationFragment extends Fragment {
             long currTime = calendar.getTimeInMillis()/1000;
 
             // Registration is open
-            if(currTime > registrationStartTime.getSeconds() && currTime < compStartTime.getSeconds())
+            if(currTime > registrationStartTime.getSeconds() && currTime < registrationEndTime.getSeconds())
             {
                 db.collection("competition_details").document(comp_id).collection("competitors").addSnapshotListener((snapshot, e) -> {
                     // Check for exception
                     if (e != null) {
-                        Log.w("CC_PROFILE_READ", "Unable to listen for data.", e);
+                        Log.w("CC_COMP_READ", "Unable to listen for data.", e);
                         return;
                     }
                     // Within competitor limit
                     if(snapshot.size() < competitor_limit)
                     {
-                        registerButton.setOnClickListener(v->
+                        boolean isRegistered = false;
+                        for (QueryDocumentSnapshot competitor : snapshot)
                         {
-                            boolean isRegistered = false;
-                            for (QueryDocumentSnapshot competitor : snapshot)
+                            // Check if user has already registered
+                            if(competitor.getId().equals(userDetailsSharedPreferences.getString("uid", "")))
                             {
-                                // Check if user has already registered
-                                if(competitor.getId().equals(userDetailsSharedPreferences.getString("uid", "")))
-                                {
-                                    Toast.makeText(requireContext(), "You have already registered.", Toast.LENGTH_SHORT).show();
-                                    isRegistered = true;
-                                    break;
-                                }
+                                isRegistered = true;
+                                break;
                             }
-                            // Register user for the event if he is eligible
-                            if (!isRegistered)
+                        }
+                        // Register user for the event if he is eligible
+                        if (!isRegistered)
+                        {
+                            registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorPrimary, null));
+                            registerButton.setOnClickListener(v->
                             {
-                                registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorPrimary, null));
                                 db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(userDetailsTask->
                                 {
                                     Map<String, Object> userDetails = new HashMap<>();
@@ -134,9 +134,11 @@ public class CompetitionInformationFragment extends Fragment {
                                         registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorTextSecondary, null));
                                     });
                                 });
-                            }
-                        });
-
+                            });
+                        }
+                        // Already registered
+                        else
+                            registerButton.setOnClickListener(v-> Toast.makeText(requireContext(), "You have already registered.", Toast.LENGTH_SHORT).show());
                     }
                     // Competitor limit exceeded
                     else
@@ -151,15 +153,14 @@ public class CompetitionInformationFragment extends Fragment {
 
         });
 
-        // Get event list
+        // Get event list (ordered by name)
         CollectionReference events_info = db.collection("competition_details").document(comp_id).collection("schedule");
-        events_info.get().addOnCompleteListener( task ->
+        events_info.orderBy("name").get().addOnCompleteListener( task ->
         {
             String events = "";
-            Log.d("CC_", String.valueOf(task.getResult().size()));
             for(QueryDocumentSnapshot event : task.getResult())
             {
-                events += event.getId() + "\n";
+                events += event.getString("name") + "\n";
             }
             competitionEventsTextView.setText(events.substring(0,events.length()-1));
         });

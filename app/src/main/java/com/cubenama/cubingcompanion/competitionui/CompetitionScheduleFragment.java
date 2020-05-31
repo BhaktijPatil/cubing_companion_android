@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.cubenama.cubingcompanion.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class CompetitionScheduleFragment extends Fragment {
         TextView eventCountTextView = root.findViewById(R.id.eventCountTextView);
 
         CollectionReference competition_schedule = db.collection("competition_details").document(comp_id).collection("schedule");
-        competition_schedule.get().addOnCompleteListener(task -> {
+        competition_schedule.orderBy("name", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
 
             // Set number of events
             Log.d("CC_COMP_SCHEDULE", "Number of events : " + task.getResult().size());
@@ -67,10 +68,10 @@ public class CompetitionScheduleFragment extends Fragment {
             for(QueryDocumentSnapshot event : task.getResult())
             {
                 CollectionReference event_rounds = db.collection("competition_details").document(comp_id).collection("schedule").document(event.getId()).collection("rounds");
-                event_rounds.get().addOnCompleteListener(innerTask -> {
+                event_rounds.orderBy("round_id").get().addOnCompleteListener(innerTask -> {
 
                     // Create a new event instance
-                    CompetitionEvent compEvent = new CompetitionEvent(event.getId());
+                    CompetitionEvent compEvent = new CompetitionEvent(event.getId(), event.getString("name"), event.getLong("solve_count"));
                     Log.d("CC_COMP_SCHEDULE", "Event ID : " + compEvent.eventId + " Round Count : " + innerTask.getResult().size());
 
                     // Individual rounds for each event are obtained here

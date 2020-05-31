@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.cubenama.cubingcompanion.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class CompetitionCompetitorsFragment extends Fragment {
         TextView competitorCountTextView = root.findViewById(R.id.competitorCountTextView);
 
         CollectionReference competition_competitors = db.collection("competition_details").document(comp_id).collection("competitors");
-        competition_competitors.get().addOnCompleteListener(task -> {
+        competition_competitors.orderBy("name", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
             competitionCompetitorsList.clear();
 
             // Set number of competitors

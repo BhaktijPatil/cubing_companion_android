@@ -1,16 +1,10 @@
 package com.cubenama.cubingcompanion.dashboardui.home;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,13 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cubenama.cubingcompanion.R;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
-
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,7 +55,7 @@ public class CompetitionsFragment  extends Fragment {
 
         // Load data from firebase into UI
         CollectionReference competition_details = db.collection("competition_details");
-        competition_details.get().addOnCompleteListener(task -> {
+        competition_details.orderBy("start_time", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
             upcomingCompetitionDetailsList.clear();
             pastCompetitionDetailsList.clear();
             for(QueryDocumentSnapshot competition : task.getResult())

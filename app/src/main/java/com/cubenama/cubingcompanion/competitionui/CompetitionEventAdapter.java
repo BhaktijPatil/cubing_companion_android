@@ -1,7 +1,6 @@
 package com.cubenama.cubingcompanion.competitionui;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +40,8 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
         CompetitionEvent competitionEvent = competitionEventsList.get(position);
 
         // Assign values to list row
-        holder.eventNameTextView.setText(competitionEvent.eventId);
-        holder.roundCountTextView.setText(competitionEvent.eventRounds.size() + " Rounds");
+        holder.eventNameTextView.setText(competitionEvent.eventName);
+        holder.formatTextView.setText("Best of " + competitionEvent.solveCount);
 
         // Setup inner recycler view
         EventRoundAdapter eventRoundAdapter = new EventRoundAdapter(competitionEvent.eventRounds, innerPosition -> Toast.makeText(mContext, Integer.toString(innerPosition + 1), Toast.LENGTH_SHORT).show());
@@ -67,7 +66,7 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
     static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView eventNameTextView;
-        TextView roundCountTextView;
+        TextView formatTextView;
 
         RecyclerView competitionEventRecyclerView = itemView.findViewById(R.id.eventRoundRecyclerView);
 
@@ -77,7 +76,7 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
             super(itemView);
             listenerRef = new WeakReference<>(listener);
             eventNameTextView = itemView.findViewById(R.id.eventNameTextView);
-            roundCountTextView = itemView.findViewById(R.id.roundCountTextView);
+            formatTextView = itemView.findViewById(R.id.eventFormatTextView);
         }
         @Override
         public void onClick(View view) {
