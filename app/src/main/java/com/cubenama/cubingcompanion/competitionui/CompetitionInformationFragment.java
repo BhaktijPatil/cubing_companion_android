@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -123,6 +125,13 @@ public class CompetitionInformationFragment extends Fragment {
                             registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorPrimary, null));
                             registerButton.setOnClickListener(v->
                             {
+                                // Check is automatic date & time zone are enabled
+                                if(Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME, 0) != 1 || Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME_ZONE, 0) != 1)
+                                {
+                                    Toast.makeText(requireContext(), "Enable automatic date and time-zone from settings to continue", Toast.LENGTH_LONG).show();
+                                    return;
+                                }
+
                                 db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(userDetailsTask->
                                 {
                                     Map<String, Object> userDetails = new HashMap<>();

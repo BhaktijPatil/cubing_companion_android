@@ -55,16 +55,16 @@ public class CompetitionCompetitorsFragment extends Fragment {
         TextView competitorCountTextView = root.findViewById(R.id.competitorCountTextView);
 
         CollectionReference competition_competitors = db.collection("competition_details").document(comp_id).collection("competitors");
-        competition_competitors.orderBy("name", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
+        competition_competitors.orderBy("name", Query.Direction.ASCENDING).addSnapshotListener( (queryDocumentSnapshots, e) ->{
             competitionCompetitorsList.clear();
 
             // Set number of competitors
             db.collection("competition_details").document(comp_id).get().addOnCompleteListener(innerTask->{
                 Log.d("CC_COMP_COMPETITORS", "Number of competitors : " + innerTask.getResult().getLong("competitor_limit"));
-                competitorCountTextView.setText(task.getResult().size() + "/" +innerTask.getResult().getLong("competitor_limit"));
+                competitorCountTextView.setText(queryDocumentSnapshots.size() + "/" +innerTask.getResult().getLong("competitor_limit"));
             });
 
-            for (QueryDocumentSnapshot competitor : task.getResult())
+            for (QueryDocumentSnapshot competitor : queryDocumentSnapshots)
             {
                 competitionCompetitorsList.add(new CompetitionCompetitor(competitor.getString("wca_id"), competitor.getString("name")));
             }

@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.widget.Toast;
 
 import com.cubenama.cubingcompanion.competitionui.CompetitionCompetitorsFragment;
 import com.cubenama.cubingcompanion.competitionui.CompetitionInformationFragment;
@@ -23,7 +25,6 @@ public class CompetitionDetailActivity extends AppCompatActivity {
 
         // loading the default fragment
         loadFragment(new CompetitionInformationFragment());
-
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
         bottomNavigationView.getMenu().getItem(0).setCheckable(false);
