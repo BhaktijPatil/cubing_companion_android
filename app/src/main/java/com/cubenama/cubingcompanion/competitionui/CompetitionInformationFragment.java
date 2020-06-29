@@ -7,36 +7,28 @@ import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Handler;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cubenama.cubingcompanion.BetterListAdapter;
+import com.cubenama.cubingcompanion.CompetitionDetailActivity;
 import com.cubenama.cubingcompanion.DateTimeFormat;
+import com.cubenama.cubingcompanion.LiveRoundsActivity;
 import com.cubenama.cubingcompanion.R;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.ServerTimestamp;
 
-import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class CompetitionInformationFragment extends Fragment {
@@ -51,6 +43,9 @@ public class CompetitionInformationFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_competition_information, container, false);
+
+        // Show loading screen
+        ((CompetitionDetailActivity)getActivity()).showLoadingScreen("Almost there ...");
 
         // Create database instance
         db = FirebaseFirestore.getInstance();
@@ -79,8 +74,8 @@ public class CompetitionInformationFragment extends Fragment {
         CardView participateButton = root.findViewById(R.id.participateCardView);
 
         // Get competition details
-        DocumentReference competition_info = db.collection("competition_details").document(comp_id);
-        competition_info.get().addOnCompleteListener(task -> {
+        DocumentReference competitionInfo = db.collection("competition_details").document(comp_id);
+        competitionInfo.get().addOnCompleteListener(task -> {
 
             Timestamp registrationStartTime = task.getResult().getTimestamp("registration_start_time");
             Timestamp registrationEndTime = task.getResult().getTimestamp("registration_end_time");
@@ -97,69 +92,87 @@ public class CompetitionInformationFragment extends Fragment {
             Calendar calendar = Calendar.getInstance();
             long currTime = calendar.getTimeInMillis()/1000;
 
-            // Registration is open
+            // Participate Button logic
+            // Competition is live
+            if(currTime > compStartTime.getSeconds() && currTime < compEndTime.getSeconds())
+            {
+                competitionInfo.collection("competitors").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(checkCompetitorTask ->{
+
+                    // Dismiss loading screen
+                    ((CompetitionDetailActivity)getActivity()).dismissLoadingScreen();
+
+                    // user has registered
+                    if(checkCompetitorTask.getResult().exists())
+                    {
+                        participateButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorPrimary, null));
+                        participateButton.setOnClickListener(v-> {
+                            // Check is automatic date & time zone are enabled
+                            if (Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME, 0) != 1 || Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME_ZONE, 0) != 1)
+                                Toast.makeText(requireContext(), "Enable automatic date and time-zone from settings to continue", Toast.LENGTH_LONG).show();
+                            // Show user the rounds that are live
+                            else
+                            {
+                                Intent liveRoundsIntent = new Intent(requireActivity(), LiveRoundsActivity.class);
+                                liveRoundsIntent.putExtra("comp_id", comp_id);
+                                startActivity(liveRoundsIntent);
+                            }
+                        });
+                    }
+                    // user hasn't registered
+                    else
+                        participateButton.setOnClickListener(v-> Toast.makeText(requireContext(), "You have not registered for the competition.", Toast.LENGTH_LONG).show());
+                });
+            }
+            // Competition is not live
+            else
+                participateButton.setOnClickListener(v-> Toast.makeText(requireContext(), "Competition is not yet live.", Toast.LENGTH_LONG).show());
+
+            // Registration button logic
+            // Registration is live
             if(currTime > registrationStartTime.getSeconds() && currTime < registrationEndTime.getSeconds())
             {
-                db.collection("competition_details").document(comp_id).collection("competitors").addSnapshotListener((snapshot, e) -> {
-                    // Check for exception
-                    if (e != null) {
-                        Log.w("CC_COMP_READ", "Unable to listen for data.", e);
-                        return;
-                    }
+                CollectionReference competitorInfo = competitionInfo.collection("competitors");
+                competitorInfo.addSnapshotListener((snapshot, e) -> {
                     // Within competitor limit
-                    if(snapshot.size() < competitor_limit)
-                    {
-                        boolean isRegistered = false;
-                        for (QueryDocumentSnapshot competitor : snapshot)
-                        {
-                            // Check if user has already registered
-                            if(competitor.getId().equals(userDetailsSharedPreferences.getString("uid", "")))
-                            {
-                                isRegistered = true;
-                                break;
-                            }
-                        }
-                        // Register user for the event if he is eligible
-                        if (!isRegistered)
-                        {
-                            registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorPrimary, null));
-                            registerButton.setOnClickListener(v->
-                            {
-                                // Check is automatic date & time zone are enabled
-                                if(Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME, 0) != 1 || Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME_ZONE, 0) != 1)
+                    if(snapshot.size() < competitor_limit) {
+                        competitorInfo.document(userDetailsSharedPreferences.getString("uid", "")).addSnapshotListener((documentSnapshot, e1) -> {
+                            // User has registered
+                            if (documentSnapshot.exists())
+                                registerButton.setOnClickListener(v -> Toast.makeText(requireContext(), "You have already registered.", Toast.LENGTH_SHORT).show());
+                                // User hasn't registered
+                            else {
+                                registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorPrimary, null));
+                                registerButton.setOnClickListener(v ->
                                 {
-                                    Toast.makeText(requireContext(), "Enable automatic date and time-zone from settings to continue", Toast.LENGTH_LONG).show();
-                                    return;
-                                }
+                                    // Check is automatic date & time zone are enabled
+                                    if (Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME, 0) != 1 || Settings.Global.getInt(requireActivity().getContentResolver(), Settings.Global.AUTO_TIME_ZONE, 0) != 1) {
+                                        Toast.makeText(requireContext(), "Enable automatic date and time-zone from settings to continue", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
 
-                                db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(userDetailsTask->
-                                {
-                                    Map<String, Object> userDetails = new HashMap<>();
-                                    userDetails.put("wca_id", userDetailsTask.getResult().getString("wca_id"));
-                                    userDetails.put("name", userDetailsTask.getResult().getString("name"));
-                                    db.collection("competition_details").document(comp_id).collection("competitors").document(userDetailsSharedPreferences.getString("uid", "")).set(userDetails).addOnCompleteListener(uploadTask->
+                                    db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(userDetailsTask ->
                                     {
-                                        Toast.makeText(requireContext(), "Registration successful.", Toast.LENGTH_SHORT).show();
-                                        registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorTextSecondary, null));
+                                        Map<String, Object> userDetails = new HashMap<>();
+                                        userDetails.put("wca_id", userDetailsTask.getResult().getString("wca_id"));
+                                        userDetails.put("name", userDetailsTask.getResult().getString("name"));
+                                        db.collection("competition_details").document(comp_id).collection("competitors").document(userDetailsSharedPreferences.getString("uid", "")).set(userDetails).addOnCompleteListener(uploadTask ->
+                                        {
+                                            Toast.makeText(requireContext(), "Registration successful.", Toast.LENGTH_SHORT).show();
+                                            registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorTextSecondary, null));
+                                        });
                                     });
                                 });
-                            });
-                        }
-                        // Already registered
-                        else
-                            registerButton.setOnClickListener(v-> Toast.makeText(requireContext(), "You have already registered.", Toast.LENGTH_SHORT).show());
+                            }
+                        });
                     }
                     // Competitor limit exceeded
                     else
                         registerButton.setOnClickListener(v-> Toast.makeText(requireContext(), "Competitor limit exceeded.", Toast.LENGTH_SHORT).show());
                 });
             }
-            // Registration time has expired
+            // Registration is not live
             else
-                registerButton.setOnClickListener(v-> Toast.makeText(requireContext(), "Registration window has expired", Toast.LENGTH_SHORT).show());
-
-
-
+                registerButton.setOnClickListener(v-> Toast.makeText(requireContext(), "Registration is not live at the moment.", Toast.LENGTH_SHORT).show());
         });
 
         // Get event list (ordered by name)

@@ -21,6 +21,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,12 +58,10 @@ public class CompetitionScheduleFragment extends Fragment {
         TextView eventCountTextView = root.findViewById(R.id.eventCountTextView);
 
         CollectionReference competition_schedule = db.collection("competition_details").document(comp_id).collection("schedule");
-        competition_schedule.orderBy("name", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
-
+        competition_schedule.get().addOnCompleteListener(task -> {
             // Set number of events
             Log.d("CC_COMP_SCHEDULE", "Number of events : " + task.getResult().size());
             eventCountTextView.setText(task.getResult().size() + " Events");
-
             competitionEventList.clear();
 
             // Individual events are obtained here
@@ -81,6 +81,8 @@ public class CompetitionScheduleFragment extends Fragment {
                         compEvent.eventRounds.add(eventRound);
                     }
                     competitionEventList.add(compEvent);
+                    // Sort Events by name
+                    Collections.sort(competitionEventList, (event1, event2) -> event1.eventName.compareTo(event2.eventName));
                     competitionEventAdapter.notifyDataSetChanged();
                 });
             }

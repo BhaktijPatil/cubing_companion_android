@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -22,18 +21,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -129,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(this).asGif().load(R.drawable.cube_loading_5).into(loadingGifView);
 
                 // Create Listener for DOB
-                ImageButton dobButton = popupLinkAccountView.findViewById(R.id.selectDateButton);
+                ImageView dobButton = popupLinkAccountView.findViewById(R.id.selectDateButton);
                 dobButton.setOnClickListener(v -> getDate(popupLinkAccountView.findViewById(R.id.dobEditText)));
 
                 // Create listener for link account button

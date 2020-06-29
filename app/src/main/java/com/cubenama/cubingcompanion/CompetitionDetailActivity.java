@@ -2,12 +2,15 @@ package com.cubenama.cubingcompanion;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.cubenama.cubingcompanion.competitionui.CompetitionCompetitorsFragment;
 import com.cubenama.cubingcompanion.competitionui.CompetitionInformationFragment;
 import com.cubenama.cubingcompanion.competitionui.CompetitionResultsFragment;
@@ -16,12 +19,16 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class CompetitionDetailActivity extends AppCompatActivity {
 
+    private ConstraintLayout loaderLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_competition_detail);
 
         Intent intent = getIntent();
+
+        loaderLayout = findViewById(R.id.loaderLayout);
 
         // loading the default fragment
         loadFragment(new CompetitionInformationFragment());
@@ -64,4 +71,25 @@ public class CompetitionDetailActivity extends AppCompatActivity {
         return false;
     }
 
+
+
+    // Function to show loader
+    public void showLoadingScreen(String loadingMessage)
+    {
+        loaderLayout.setVisibility(View.VISIBLE);
+        // Load spinning cube GIF
+        ImageView loadingGifView = findViewById(R.id.loadingGif);
+        Glide.with(this).asGif().load(R.drawable.cube_loading_3).into(loadingGifView);
+        // Set loader message
+        TextView loadingMessageTextView = findViewById(R.id.loadingMessageTextView);
+        loadingMessageTextView.setText(loadingMessage);
+    }
+
+
+
+    // Function to dismiss loader
+    public void dismissLoadingScreen()
+    {
+        loaderLayout.setVisibility(View.GONE);
+    }
 }

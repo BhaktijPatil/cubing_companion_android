@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#80000000">
+    android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
@@ -25,6 +24,18 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:id="@+id/profileBackgroundImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:tint="#B3000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/background_29" />
+
+            <ImageView
                 android:id="@+id/loadingGifView"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
@@ -43,7 +54,7 @@
                 android:fontFamily="@font/abel"
                 android:text="Almost Done..."
                 android:textAllCaps="true"
-                android:textColor="@color/colorTextPrimaryLight"
+                android:textColor="@color/colorAccent"
                 android:textSize="30sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/loadingGifView"
@@ -82,12 +93,14 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
+                            android:alpha="0.9"
                             android:scaleType="fitCenter"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/wcaIdEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/wcaIdEditText"
-                            app:srcCompat="@drawable/wca_id_logo" />
+                            app:srcCompat="@drawable/id_icon_1" />
 
                         <EditText
                             android:id="@+id/wcaIdEditText"
@@ -97,7 +110,7 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="32dp"
                             android:layout_marginBottom="8dp"
-                            android:backgroundTint="@color/colorPrimary"
+                            android:backgroundTint="@color/colorTextPrimaryLight"
                             android:ems="10"
                             android:fontFamily="sans-serif-condensed-light"
                             android:hint="WCA ID (cannot be changed)"
@@ -125,7 +138,9 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
+                            android:alpha="0.9"
                             android:scaleType="fitCenter"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/nameEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +155,7 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="32dp"
                             android:layout_marginBottom="8dp"
-                            android:backgroundTint="@color/colorPrimary"
+                            android:backgroundTint="@color/colorTextPrimaryLight"
                             android:ems="10"
                             android:fontFamily="sans-serif-condensed-light"
                             android:hint="NAME"
@@ -164,16 +179,15 @@
                             android:id="@+id/selectDateButton"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            android:layout_marginTop="8dp"
                             android:layout_marginEnd="32dp"
-                            android:layout_marginBottom="8dp"
+                            android:alpha="0.85"
                             android:background="#00FFFFFF"
                             android:scaleType="fitCenter"
                             app:layout_constraintBottom_toBottomOf="@+id/dobEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/dobEditText"
-                            app:srcCompat="@drawable/calendar_logo" />
+                            app:srcCompat="@drawable/calender_icon_color" />
 
                         <EditText
                             android:id="@+id/dobEditText"
@@ -181,9 +195,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginEnd="8dp"
                             android:layout_marginBottom="8dp"
-                            android:backgroundTint="@color/colorPrimary"
+                            android:backgroundTint="@color/colorTextPrimaryLight"
                             android:clickable="false"
                             android:cursorVisible="false"
                             android:editable="false"
@@ -211,11 +225,13 @@
                             android:backgroundTint="#FFAB00"
                             android:backgroundTintMode="add"
                             android:scaleType="fitCenter"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/dobEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/dobEditText"
-                            app:srcCompat="@drawable/baby_logo_2" />
+                            app:srcCompat="@drawable/dob_icon_2"
+                            android:alpha="0.9" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -231,11 +247,13 @@
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
+                            android:alpha="0.9"
+                            android:tint="@color/colorTextPrimaryLight"
                             app:layout_constraintBottom_toBottomOf="@+id/phoneEditText"
                             app:layout_constraintDimensionRatio="1"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="@+id/phoneEditText"
-                            app:srcCompat="@drawable/mobile_icon" />
+                            app:srcCompat="@drawable/phone_icon_1" />
 
                         <EditText
                             android:id="@+id/phoneEditText"
@@ -245,7 +263,7 @@
                             android:layout_marginTop="8dp"
                             android:layout_marginEnd="32dp"
                             android:layout_marginBottom="8dp"
-                            android:backgroundTint="@color/colorPrimary"
+                            android:backgroundTint="@color/colorTextPrimaryLight"
                             android:ems="10"
                             android:fontFamily="sans-serif-condensed-light"
                             android:hint="MOBILE NO."
@@ -270,6 +288,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="50dp"
+                android:alpha="0.9"
                 app:cardBackgroundColor="@color/colorTextSecondary"
                 app:cardCornerRadius="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
