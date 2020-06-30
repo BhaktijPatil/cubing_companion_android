@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import static java.util.Collections.max;
+import static java.util.Collections.min;
+
 public class TimerActivity extends AppCompatActivity {
 
     // Database reference
@@ -44,6 +47,7 @@ public class TimerActivity extends AppCompatActivity {
 
     private TextView timerTextView;
     private TextView solveIdTextView;
+    private TextView infoTextView;
     private ConstraintLayout loaderLayout;
     private CardView timerTouchArea;
     private ImageView infoButton;
@@ -60,6 +64,10 @@ public class TimerActivity extends AppCompatActivity {
 
     private LoadingScreenController loadingScreenController;
 
+    private DateFormat dateFormat;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +78,10 @@ public class TimerActivity extends AppCompatActivity {
         loadingScreenController = new LoadingScreenController(this);
         // Show loading screen for
         loadingScreenController.showLoadingScreen("Decoding scrambles ...");
-//        showLoadingScreen("Decoding scrambles ...");
+
+        dateFormat = new SimpleDateFormat("mm:ss.SS");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
 
         // Create database instance
         db = FirebaseFirestore.getInstance();
@@ -80,6 +91,7 @@ public class TimerActivity extends AppCompatActivity {
 
         timerTextView = findViewById(R.id.timeTextView);
         solveIdTextView = findViewById(R.id.solveIdTextView);
+        infoTextView = findViewById(R.id.infoTextView);
 
         showScrambleButton = findViewById(R.id.showScrambleButton);
         plusTwoButton  = findViewById(R.id.plusTwoButton);
@@ -117,23 +129,21 @@ public class TimerActivity extends AppCompatActivity {
     // Function to regulate process for one solve
     private void processSolve()
     {
-        // DNF the current solve
-        event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task -> {
-            ArrayList<Long> timeList = (ArrayList<Long>) task.getResult().get("time_list");
-            timeList.set(solveId, ResultCodes.DNF_CODE);
-            event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("time_list", timeList).addOnCompleteListener(task1 -> {
-                // Dimiss loading screen
-                loadingScreenController.dismissLoadingScreen();
-//                dismissLoadingScreen();
-                // Reset timer
-                timerTextView.setText(R.string.default_time);
-                // Make upload button invisible
-                uploadSolveButton.setVisibility(View.GONE);
-                // Set solve ID
-                solveIdTextView.setText("Solve " + (solveId + 1));
-
-                if(solveId < scrambles.size())
-                {
+        if(solveId < scrambles.size()) {
+            // DNF the current solve
+            event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task -> {
+                ArrayList<Long> timeList = (ArrayList<Long>) task.getResult().get("time_list");
+                timeList.set(solveId, ResultCodes.DNF_CODE);
+                event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("time_list", timeList).addOnCompleteListener(task1 -> {
+                    // Dimiss loading screen
+                    loadingScreenController.dismissLoadingScreen();
+                    // Reset timer
+                    timerTextView.setText(R.string.default_time);
+                    timerTextView.setTextColor(getColor(R.color.colorAccent));
+                    // Make upload button invisible
+                    uploadSolveButton.setVisibility(View.GONE);
+                    // Set solve ID
+                    solveIdTextView.setText("Solve " + (solveId + 1));
                     // Listener for +2
                     plusTwoButton.setOnClickListener(v3 -> Toast.makeText(this, "Finish the solve to add a penalty.", Toast.LENGTH_SHORT).show());
                     // Listener for DNF
@@ -151,7 +161,7 @@ public class TimerActivity extends AppCompatActivity {
                             long startTime = System.nanoTime();
                             Runnable updateTimerThread = new Runnable() {
                                 public void run() {
-                                    long elapsedMilliseconds = (System.nanoTime() - startTime)/1000000;
+                                    long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;
                                     updateTime(elapsedMilliseconds, timerTextView);
                                     timerHandler.postDelayed(this, 10);
                                 }
@@ -175,16 +185,25 @@ public class TimerActivity extends AppCompatActivity {
                     });
 
                     // Listener for show scramble button
-                    showScrambleButton.setOnClickListener(v-> createScramblePopup(scrambles.get(solveId), solveId));
-                }
-                // All solves are done
-                else
-                {
-                    Toast.makeText(this, "Results have been uploaded.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
+                    showScrambleButton.setOnClickListener(v -> createScramblePopup(scrambles.get(solveId), solveId));
+                });
             });
-        });
+        }
+    }
+
+
+
+    // Function to show final result
+    private void showResult(long result)
+    {
+        // Set result into text view
+        timerTextView.setText(dateFormat.format(result));
+        infoTextView.setVisibility(View.VISIBLE);
+        infoTextView.setText("Congratulations ! You have finished your solves with a " + getIntent().getStringExtra("result_calc_method") + " of");
+
+        // Convert upload button to back button
+        uploadSolveButton.setText("Finish");
+        uploadSolveButton.setOnClickListener(v->finish());
     }
 
 
@@ -217,8 +236,6 @@ public class TimerActivity extends AppCompatActivity {
     private void plusTwoSolve()
     {
         solveTime = timerTextView.getText().toString();
-        DateFormat dateFormat = new SimpleDateFormat("mm:ss.SS");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
         timerTextView.setText(dateFormat.format(convertTime(solveTime) + 2000));
         Toast.makeText(this, "Added +2 Penalty.", Toast.LENGTH_SHORT).show();
         // Undo plus two
@@ -254,9 +271,7 @@ public class TimerActivity extends AppCompatActivity {
     private void uploadResult(long roundEndTime)
     {
         // show loading screen
-//        showLoadingScreen("Uploading result ...");
         loadingScreenController.showLoadingScreen("Uploading result ...");
-
 
         // Round has ended
         if(Calendar.getInstance().getTimeInMillis() > roundEndTime)
@@ -277,42 +292,73 @@ public class TimerActivity extends AppCompatActivity {
                 event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("time_list", timeList).addOnCompleteListener(task1 -> {
                     // Load next scramble
                     solveId += 1;
-                    processSolve();
+                    // Last solve
+                    if(solveId == scrambles.size())
+                    {
+                        long result = calculateResult(timeList);
+                        event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("result", result).addOnCompleteListener(task2 -> {
+                            showResult(result);
+                            loadingScreenController.dismissLoadingScreen();
+                        });
+                    }
+                    else
+                        processSolve();
                 });
             });
         }
     }
 
 
-    // Function to update time to text view
-    private void updateTime(long updatedTime, TextView textView) {
 
-        DateFormat dateFormat = new SimpleDateFormat("mm:ss.SS");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-        textView.setText(dateFormat.format(updatedTime));
+    // Function to calculate final result
+    private long calculateResult(ArrayList<Long> timeList) {
+        switch (getIntent().getStringExtra("result_calc_method"))
+        {
+            // Calculate average of solves
+            case "Average" :
+                ArrayList<Long> tempList = timeList;
+                // Remove max and min times
+                tempList.remove(max(tempList));
+                tempList.remove(min(tempList));
+                if(tempList.contains(ResultCodes.DNF_CODE))
+                    return ResultCodes.DNF_CODE;
+                else
+                    // Find mean of remaining solves
+                    return mean(tempList);
+            // Calculate mean of solves
+            case "Mean" :
+                if(timeList.contains(ResultCodes.DNF_CODE))
+                    return ResultCodes.DNF_CODE;
+                else
+                    return mean(timeList);
+            // Find best solve
+            case "Single" :
+                return min(timeList);
+        }
+        return ResultCodes.DNF_CODE;
     }
 
 
 
-//    // Function to show loader
-//    private void showLoadingScreen(String loadingMessage)
-//    {
-//        loaderLayout.setVisibility(View.VISIBLE);
-//        // Load spinning cube GIF
-//        ImageView loadingGifView = findViewById(R.id.loadingGif);
-//        Glide.with(this).asGif().load(R.drawable.cube_loading_3).into(loadingGifView);
-//        // Set loader message
-//        TextView loadingMessageTextView = findViewById(R.id.loadingMessageTextView);
-//        loadingMessageTextView.setText(loadingMessage);
-//    }
+    // Function to find average of solves
+    private long mean(ArrayList<Long> timeList)
+    {
+        long count = 0;
+        long total = 0;
+        for(long time : timeList)
+        {
+            total += time;
+            count ++;
+        }
+        return total/count;
+    }
 
 
 
-//    // Function to dismiss loader
-//    private void dismissLoadingScreen()
-//    {
-//        loaderLayout.setVisibility(View.GONE);
-//    }
+    // Function to update time to text view
+    private void updateTime(long updatedTime, TextView textView) {
+        textView.setText(dateFormat.format(updatedTime));
+    }
 
 
 

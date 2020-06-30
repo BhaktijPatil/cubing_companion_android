@@ -262,8 +262,8 @@ public class MainActivity extends AppCompatActivity {
         // mobile number can only plus,dash and numbers
         if (!mobile.matches("^[-0-9+]*$"))
             return false;
-        // ID has to be 10 characters long
-        return mobile.length() >= 10;
+        // ID has to be atleast 8 characters long
+        return mobile.length() >= 8;
     }
 
 

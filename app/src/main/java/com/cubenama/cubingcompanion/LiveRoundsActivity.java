@@ -114,7 +114,7 @@ public class LiveRoundsActivity extends AppCompatActivity {
                             eventNameTextView.setText(event.getString("name"));
                             roundNameTextView.setText("Round : " + round.getLong("round_id"));
                             roundFormatTextView.setText("Best of " + event.getLong("solve_count"));
-                            roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  HH:mm", round.getTimestamp("start_time")) + " - " + new DateTimeFormat().firebaseTimestampToDate("HH:mm", round.getTimestamp("end_time")));
+                            roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", round.getTimestamp("start_time")) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", round.getTimestamp("end_time")));
                             qualificationCriteriaTextView.setText("Qualification criteria : Top " + round.getLong("participant_count"));
 
 
@@ -153,6 +153,8 @@ public class LiveRoundsActivity extends AppCompatActivity {
                                                         timerIntent.putExtra("event_id", event.getId());
                                                         timerIntent.putExtra("round_id", round.getId());
                                                         timerIntent.putExtra("solve_id", i);
+                                                        timerIntent.putExtra("result_calc_method", event.getString("result_calc_method"));
+
                                                         confirmationDialog.dismiss();
                                                         startActivity(timerIntent);
                                                         break;
@@ -176,6 +178,7 @@ public class LiveRoundsActivity extends AppCompatActivity {
                                                     resultDetails.put("wca_id", task2.getResult().getString("wca_id"));
                                                     resultDetails.put("name", task2.getResult().getString("name"));
                                                     resultDetails.put("time_list", timeList);
+                                                    resultDetails.put("result", ResultCodes.DNS_CODE);
 
                                                     schedule.document(event.getId()).collection("rounds").document(round.getId()).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).set(resultDetails).addOnCompleteListener(task3 -> {
                                                         Intent timerIntent = new Intent(this, TimerActivity.class);
@@ -183,6 +186,8 @@ public class LiveRoundsActivity extends AppCompatActivity {
                                                         timerIntent.putExtra("event_id", event.getId());
                                                         timerIntent.putExtra("round_id", round.getId());
                                                         timerIntent.putExtra("solve_id", 0);
+                                                        timerIntent.putExtra("result_calc_method", event.getString("result_calc_method"));
+
                                                         confirmationDialog.dismiss();
                                                         startActivity(timerIntent);
                                                     });
@@ -208,7 +213,6 @@ public class LiveRoundsActivity extends AppCompatActivity {
                         // Add upcoming rounds
                         else if(currTime >= eventRound.startTimestamp.getSeconds() - UPCOMING_ROUND_OFFSET && currTime < eventRound.endTimestamp.getSeconds())
                             upcomingRoundList.add(eventRound);
-                        Log.d("CC_DA", String.valueOf(upcomingRoundList.size()));
                         // Sort Rounds by start time
                         Collections.sort(upcomingRoundList, (round1, round2) -> Long.compare(round1.startTimestamp.getSeconds(), round2.startTimestamp.getSeconds()));
                         upcomingRoundAdapter.notifyDataSetChanged();

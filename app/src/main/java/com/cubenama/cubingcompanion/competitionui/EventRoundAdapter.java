@@ -42,7 +42,7 @@ public class EventRoundAdapter extends RecyclerView.Adapter<EventRoundAdapter.My
             holder.participantCountTextView.setText("Criteria : NA");
         else
             holder.participantCountTextView.setText("Criteria : Top " + eventRound.participantCount);
-        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  HH:mm", eventRound.startTimestamp) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("HH:mm", eventRound.endTimestamp));
+        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", eventRound.startTimestamp) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", eventRound.endTimestamp));
     }
 
 

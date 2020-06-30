@@ -43,7 +43,7 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
         else
             holder.participantCountTextView.setText("Top " + eventRound.participantCount);
         holder.eventNameTextView.setText(eventRound.eventName);
-        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  HH:mm", eventRound.startTimestamp) + " - " + new DateTimeFormat().firebaseTimestampToDate("HH:mm", eventRound.endTimestamp));
+        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", eventRound.startTimestamp) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", eventRound.endTimestamp));
     }
 
 
