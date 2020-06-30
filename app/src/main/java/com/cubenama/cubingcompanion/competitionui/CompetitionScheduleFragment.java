@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cubenama.cubingcompanion.CompetitionDetailActivity;
 import com.cubenama.cubingcompanion.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +40,9 @@ public class CompetitionScheduleFragment extends Fragment {
 
         // Create database instance
         db = FirebaseFirestore.getInstance();
+
+        // Show loading screen
+        ((CompetitionDetailActivity)getActivity()).loadingScreenController.showLoadingScreen("Almost there ...");
 
         // Setup recycler views and adapters
         List<CompetitionEvent> competitionEventList = new ArrayList<>();
@@ -81,9 +85,13 @@ public class CompetitionScheduleFragment extends Fragment {
                         compEvent.eventRounds.add(eventRound);
                     }
                     competitionEventList.add(compEvent);
+
                     // Sort Events by name
                     Collections.sort(competitionEventList, (event1, event2) -> event1.eventName.compareTo(event2.eventName));
                     competitionEventAdapter.notifyDataSetChanged();
+
+                    // Dismiss loading screen
+                    ((CompetitionDetailActivity)getActivity()).loadingScreenController.dismissLoadingScreen();
                 });
             }
         });

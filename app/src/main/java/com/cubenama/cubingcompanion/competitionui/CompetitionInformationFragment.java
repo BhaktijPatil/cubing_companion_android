@@ -45,7 +45,7 @@ public class CompetitionInformationFragment extends Fragment {
         View root =  inflater.inflate(R.layout.fragment_competition_information, container, false);
 
         // Show loading screen
-        ((CompetitionDetailActivity)getActivity()).showLoadingScreen("Almost there ...");
+        ((CompetitionDetailActivity)getActivity()).loadingScreenController.showLoadingScreen("Almost there ...");
 
         // Create database instance
         db = FirebaseFirestore.getInstance();
@@ -99,7 +99,7 @@ public class CompetitionInformationFragment extends Fragment {
                 competitionInfo.collection("competitors").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(checkCompetitorTask ->{
 
                     // Dismiss loading screen
-                    ((CompetitionDetailActivity)getActivity()).dismissLoadingScreen();
+                    ((CompetitionDetailActivity)getActivity()).loadingScreenController.dismissLoadingScreen();
 
                     // user has registered
                     if(checkCompetitorTask.getResult().exists())
@@ -124,9 +124,11 @@ public class CompetitionInformationFragment extends Fragment {
                 });
             }
             // Competition is not live
-            else
-                participateButton.setOnClickListener(v-> Toast.makeText(requireContext(), "Competition is not yet live.", Toast.LENGTH_LONG).show());
-
+            else {
+                // Dismiss loading screen
+                ((CompetitionDetailActivity)getActivity()).loadingScreenController.dismissLoadingScreen();
+                participateButton.setOnClickListener(v -> Toast.makeText(requireContext(), "Competition is not yet live.", Toast.LENGTH_LONG).show());
+            }
             // Registration button logic
             // Registration is live
             if(currTime > registrationStartTime.getSeconds() && currTime < registrationEndTime.getSeconds())

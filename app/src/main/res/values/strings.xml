@@ -15,6 +15,8 @@
     <string name="competition_instructions_how_to_compete_header">"How do I compete :"</string>
     <string name="competition_instructions_podium_details_header">"Podium details :"</string>
     <string name="confirmation_description">Participant must finish all solves before round ends. Participants expecting a podium must record beginning from this screen. On confirmation, the participant will be taken to their first scramble, and can begin their solves once ready. Ensure network connectivity to avoid your results from being DNF\'d. Once a parcipant is shown a scramble, he must finish the solve without closing the application, else that solve will be DNF\'d."</string>
+    <string name="default_time">00:00.00</string>
+    <string name="internet_warning">Ensure good network connectivity in case the loading screen persists for a long time.</string>
 
     <string-array name="competition_instructions_how_to_compete_details">
         <item>"When a competition begins, the 'PARTICIPATE' button will go live. Click here to begin."</item>
@@ -31,7 +33,4 @@
         <item>"The organizers may directly contact a competitor for verification purposes."</item>
         <item>"Videos concerned can be uploaded on YouTube/Drive/Link provided by the organizer."</item>
     </string-array>
-
-    <string name="home_second">Home Second</string>
-    <string name="default_time">00:00.00</string>
 </resources>

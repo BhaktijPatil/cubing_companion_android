@@ -58,6 +58,8 @@ public class TimerActivity extends AppCompatActivity {
     private int solveId;
     private long roundEndTime;
 
+    private LoadingScreenController loadingScreenController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +67,10 @@ public class TimerActivity extends AppCompatActivity {
 
         loaderLayout = findViewById(R.id.loaderLayout);
 
+        loadingScreenController = new LoadingScreenController(this);
         // Show loading screen for
-        showLoadingScreen("Decoding scrambles ...");
+        loadingScreenController.showLoadingScreen("Decoding scrambles ...");
+//        showLoadingScreen("Decoding scrambles ...");
 
         // Create database instance
         db = FirebaseFirestore.getInstance();
@@ -119,7 +123,8 @@ public class TimerActivity extends AppCompatActivity {
             timeList.set(solveId, ResultCodes.DNF_CODE);
             event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("time_list", timeList).addOnCompleteListener(task1 -> {
                 // Dimiss loading screen
-                dismissLoadingScreen();
+                loadingScreenController.dismissLoadingScreen();
+//                dismissLoadingScreen();
                 // Reset timer
                 timerTextView.setText(R.string.default_time);
                 // Make upload button invisible
@@ -171,6 +176,12 @@ public class TimerActivity extends AppCompatActivity {
 
                     // Listener for show scramble button
                     showScrambleButton.setOnClickListener(v-> createScramblePopup(scrambles.get(solveId), solveId));
+                }
+                // All solves are done
+                else
+                {
+                    Toast.makeText(this, "Results have been uploaded.", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             });
         });
@@ -243,7 +254,9 @@ public class TimerActivity extends AppCompatActivity {
     private void uploadResult(long roundEndTime)
     {
         // show loading screen
-        showLoadingScreen("Uploading result ...");
+//        showLoadingScreen("Uploading result ...");
+        loadingScreenController.showLoadingScreen("Uploading result ...");
+
 
         // Round has ended
         if(Calendar.getInstance().getTimeInMillis() > roundEndTime)
@@ -281,25 +294,25 @@ public class TimerActivity extends AppCompatActivity {
 
 
 
-    // Function to show loader
-    private void showLoadingScreen(String loadingMessage)
-    {
-        loaderLayout.setVisibility(View.VISIBLE);
-        // Load spinning cube GIF
-        ImageView loadingGifView = findViewById(R.id.loadingGif);
-        Glide.with(this).asGif().load(R.drawable.cube_loading_3).into(loadingGifView);
-        // Set loader message
-        TextView loadingMessageTextView = findViewById(R.id.loadingMessageTextView);
-        loadingMessageTextView.setText(loadingMessage);
-    }
+//    // Function to show loader
+//    private void showLoadingScreen(String loadingMessage)
+//    {
+//        loaderLayout.setVisibility(View.VISIBLE);
+//        // Load spinning cube GIF
+//        ImageView loadingGifView = findViewById(R.id.loadingGif);
+//        Glide.with(this).asGif().load(R.drawable.cube_loading_3).into(loadingGifView);
+//        // Set loader message
+//        TextView loadingMessageTextView = findViewById(R.id.loadingMessageTextView);
+//        loadingMessageTextView.setText(loadingMessage);
+//    }
 
 
 
-    // Function to dismiss loader
-    private void dismissLoadingScreen()
-    {
-        loaderLayout.setVisibility(View.GONE);
-    }
+//    // Function to dismiss loader
+//    private void dismissLoadingScreen()
+//    {
+//        loaderLayout.setVisibility(View.GONE);
+//    }
 
 
 

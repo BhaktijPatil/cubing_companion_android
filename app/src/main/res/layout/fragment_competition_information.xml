@@ -53,14 +53,14 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="110dp"
+        android:layout_marginBottom="24dp"
         android:alpha="0.8"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/competitionNameTextView" >
+        app:layout_constraintTop_toBottomOf="@+id/competitionNameTextView">
 
         <ImageView
             android:id="@+id/competitionBackgroundView"

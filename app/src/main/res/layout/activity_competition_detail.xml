@@ -35,40 +35,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/activity_competition_bottom_nav_bar" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/loaderLayout"
+    <FrameLayout
+        android:id="@+id/fragmentContainerLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorTextSecondary"
-        android:elevation="20dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/loadingGif"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/loadingMessageTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/cube_loading_3" />
-
-        <TextView
-            android:id="@+id/loadingMessageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="75dp"
-            android:fontFamily="@font/abel"
-            android:text="Loading ..."
-            android:textAllCaps="true"
-            android:textColor="@color/colorTextPrimaryLight"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

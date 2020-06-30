@@ -51,6 +51,10 @@ public class LiveRoundsActivity extends AppCompatActivity {
 
         final long UPCOMING_ROUND_OFFSET = 18000;
 
+        // Initialize loading screen
+        LoadingScreenController loadingScreenController = new LoadingScreenController(this);
+        loadingScreenController.showLoadingScreen("Digging up information ...");
+
         // Get competition ID
         Intent intent = getIntent();
         String comp_id = intent.getStringExtra("comp_id");
@@ -160,6 +164,8 @@ public class LiveRoundsActivity extends AppCompatActivity {
                                             }
                                             // Participants first solve
                                             else {
+                                                // Warning for time
+                                                Toast.makeText(this, "You'll be redirected shortly. Oh, and good luck.", Toast.LENGTH_SHORT).show();
                                                 // Make solves DNS
                                                 ArrayList<Long> timeList = new ArrayList<>();
                                                 for (int i = 0; i < event.getLong("solve_count"); i++)
@@ -206,6 +212,8 @@ public class LiveRoundsActivity extends AppCompatActivity {
                         // Sort Rounds by start time
                         Collections.sort(upcomingRoundList, (round1, round2) -> Long.compare(round1.startTimestamp.getSeconds(), round2.startTimestamp.getSeconds()));
                         upcomingRoundAdapter.notifyDataSetChanged();
+
+                        loadingScreenController.dismissLoadingScreen();
                     }
                 });
             }
