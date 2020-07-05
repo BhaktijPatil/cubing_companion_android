@@ -41,7 +41,16 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
 
         // Assign values to list row
         holder.eventNameTextView.setText(competitionEvent.eventName);
-        holder.formatTextView.setText("Best of " + competitionEvent.solveCount);
+
+        switch (competitionEvent.resultCalcMethod)
+        {
+            case "Average" : holder.formatTextView.setText("Average of " + competitionEvent.solveCount);
+            break;
+            case "Mean" : holder.formatTextView.setText("Mean of " + competitionEvent.solveCount);
+            break;
+            case "Single" : holder.formatTextView.setText("Single from " + competitionEvent.solveCount);
+            break;
+        }
 
         // Setup inner recycler view
         EventRoundAdapter eventRoundAdapter = new EventRoundAdapter(competitionEvent.eventRounds, innerPosition -> Toast.makeText(mContext, Integer.toString(innerPosition + 1), Toast.LENGTH_SHORT).show());

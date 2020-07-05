@@ -2,18 +2,15 @@ package com.cubenama.cubingcompanion;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,16 +18,15 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import static java.util.Collections.max;
@@ -48,7 +44,6 @@ public class TimerActivity extends AppCompatActivity {
     private TextView timerTextView;
     private TextView solveIdTextView;
     private TextView infoTextView;
-    private ConstraintLayout loaderLayout;
     private CardView timerTouchArea;
     private ImageView infoButton;
 
@@ -72,8 +67,6 @@ public class TimerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timer);
-
-        loaderLayout = findViewById(R.id.loaderLayout);
 
         loadingScreenController = new LoadingScreenController(this);
         // Show loading screen for
@@ -156,7 +149,6 @@ public class TimerActivity extends AppCompatActivity {
                     Handler timerHandler = new Handler();
 
                     timerTouchArea.setOnLongClickListener(v -> {
-                        timerTextView.setTextColor(getResources().getColor(R.color.colorTextPrimaryLight, null));
                         timerTouchArea.setOnClickListener(v1 -> {
                             long startTime = System.nanoTime();
                             Runnable updateTimerThread = new Runnable() {
@@ -166,11 +158,10 @@ public class TimerActivity extends AppCompatActivity {
                                     timerHandler.postDelayed(this, 10);
                                 }
                             };
+
                             timerTouchArea.setOnClickListener(v2 -> {
                                 // Stop timer
                                 timerHandler.removeCallbacks(updateTimerThread);
-                                // Make the timer unclickable
-                                timerTouchArea.setLongClickable(false);
                                 // Listener for +2
                                 plusTwoButton.setOnClickListener(v3 -> plusTwoSolve());
                                 // Listener for DNF
@@ -181,6 +172,11 @@ public class TimerActivity extends AppCompatActivity {
                             });
                             timerHandler.postDelayed(updateTimerThread, 0);
                         });
+
+                        timerTextView.setTextColor(getResources().getColor(R.color.colorTextPrimaryLight, null));
+                        // Make the timer unclickable
+                        timerTouchArea.setLongClickable(false);
+
                         return false;
                     });
 
@@ -197,9 +193,16 @@ public class TimerActivity extends AppCompatActivity {
     private void showResult(long result)
     {
         // Set result into text view
-        timerTextView.setText(dateFormat.format(result));
+        if(result != ResultCodes.DNF_CODE) {
+            infoTextView.setText("Congratulations ! You have finished your solves with a " + getIntent().getStringExtra("result_calc_method") + " of");
+            timerTextView.setText(dateFormat.format(result));
+        }
+        else {
+            infoTextView.setText("Hard luck ! You have finished your solves with a " + getIntent().getStringExtra("result_calc_method") + " of");
+            timerTextView.setText("DNF");
+        }
+
         infoTextView.setVisibility(View.VISIBLE);
-        infoTextView.setText("Congratulations ! You have finished your solves with a " + getIntent().getStringExtra("result_calc_method") + " of");
 
         // Convert upload button to back button
         uploadSolveButton.setText("Finish");
@@ -296,7 +299,10 @@ public class TimerActivity extends AppCompatActivity {
                     if(solveId == scrambles.size())
                     {
                         long result = calculateResult(timeList);
-                        event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("result", result).addOnCompleteListener(task2 -> {
+                        Map<String, Object> resultDetails = new HashMap<>();
+                        resultDetails.put("result", result);
+                        resultDetails.put("single", min(timeList));
+                        event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update(resultDetails).addOnCompleteListener(task2 -> {
                             showResult(result);
                             loadingScreenController.dismissLoadingScreen();
                         });
@@ -316,7 +322,7 @@ public class TimerActivity extends AppCompatActivity {
         {
             // Calculate average of solves
             case "Average" :
-                ArrayList<Long> tempList = timeList;
+                ArrayList<Long> tempList = new ArrayList<>(timeList);
                 // Remove max and min times
                 tempList.remove(max(tempList));
                 tempList.remove(min(tempList));

@@ -1,6 +1,8 @@
 package com.cubenama.cubingcompanion.competitionui;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +19,14 @@ import java.util.List;
 public class CompetitionCompetitorAdapter extends RecyclerView.Adapter<CompetitionCompetitorAdapter.MyViewHolder>{
     private List<CompetitionCompetitor> competitionCompetitorsList;
     private CompetitionCompetitorsFragment.ClickListener clickListener;
-    private Context mContext;
+    private Context context;
 
     @NonNull
     @Override
     public CompetitionCompetitorAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row_competitor, parent, false);
 
-        mContext = parent.getContext();
+        context = parent.getContext();
         return new CompetitionCompetitorAdapter.MyViewHolder(itemView, clickListener);
     }
 
@@ -37,6 +39,11 @@ public class CompetitionCompetitorAdapter extends RecyclerView.Adapter<Competiti
         // Assign values to list row
         holder.competitorNameTextView.setText(competitionCompetitor.name);
         holder.competitorWcaIdTextView.setText(competitionCompetitor.wcaId);
+        holder.competitorWcaIdTextView.setOnClickListener(v-> {
+            Uri uri = Uri.parse("https://www.worldcubeassociation.org/persons/" + competitionCompetitor.wcaId);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            context.startActivity(intent);
+        });
     }
 
 

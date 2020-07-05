@@ -1,5 +1,6 @@
 package com.cubenama.cubingcompanion;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,15 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
 
     private List<EventRound> eventRoundsList;
     private CompetitionScheduleFragment.ClickListener clickListener;
-
+    private Context context;
 
 
     @NonNull
     @Override
     public UpcomingRoundAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row_upcoming_round, parent, false);
+
+        context = parent.getContext();
 
         return new UpcomingRoundAdapter.MyViewHolder(itemView, clickListener);
     }
@@ -36,12 +39,12 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
         EventRound eventRound = eventRoundsList.get(position);
 
         // Assign values to list row
-        holder.roundIdTextView.setText("Round : " + (position + 1));
+        holder.roundIdTextView.setText("Round " + (position + 1));
         // Qualifying criteria for rounds
         if(position == 0)
-            holder.participantCountTextView.setText("NA");
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : NA");
         else
-            holder.participantCountTextView.setText("Top " + eventRound.participantCount);
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : Top " + eventRound.qualificationCriteria);
         holder.eventNameTextView.setText(eventRound.eventName);
         holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", eventRound.startTimestamp) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", eventRound.endTimestamp));
     }
@@ -57,7 +60,7 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
 
     static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView roundIdTextView;
-        TextView participantCountTextView;
+        TextView qualificationCriteriaTextView;
         TextView roundTimeTextView;
         TextView eventNameTextView;
 
@@ -68,7 +71,7 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
             listenerRef = new WeakReference<>(listener);
             roundIdTextView = itemView.findViewById(R.id.roundNameTextView);
 
-            participantCountTextView = itemView.findViewById(R.id.participantCountTextView);
+            qualificationCriteriaTextView = itemView.findViewById(R.id.qualificationCriteriaTextView);
             roundTimeTextView = itemView.findViewById(R.id.roundTimeTextView);
             eventNameTextView = itemView.findViewById(R.id.eventNameTextView);
         }

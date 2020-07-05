@@ -1,5 +1,6 @@
 package com.cubenama.cubingcompanion.competitionui;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,14 @@ public class EventRoundAdapter extends RecyclerView.Adapter<EventRoundAdapter.My
 
     private List<EventRound> eventRoundsList;
     private CompetitionScheduleFragment.ClickListener clickListener;
-
-
+    private Context context;
 
     @NonNull
     @Override
     public EventRoundAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row_schedule_round, parent, false);
+
+        context = parent.getContext();
 
         return new EventRoundAdapter.MyViewHolder(itemView, clickListener);
     }
@@ -39,9 +41,9 @@ public class EventRoundAdapter extends RecyclerView.Adapter<EventRoundAdapter.My
         holder.roundIdTextView.setText("Round : " + (position + 1));
         // Qualifying criteria for rounds
         if(position == 0)
-            holder.participantCountTextView.setText("Criteria : NA");
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : NA");
         else
-            holder.participantCountTextView.setText("Criteria : Top " + eventRound.participantCount);
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : Top " + eventRound.qualificationCriteria);
         holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", eventRound.startTimestamp) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", eventRound.endTimestamp));
     }
 
@@ -57,7 +59,7 @@ public class EventRoundAdapter extends RecyclerView.Adapter<EventRoundAdapter.My
     static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView roundIdTextView;
-        TextView participantCountTextView;
+        TextView qualificationCriteriaTextView;
         TextView roundTimeTextView;
 
 
@@ -67,7 +69,7 @@ public class EventRoundAdapter extends RecyclerView.Adapter<EventRoundAdapter.My
             super(itemView);
             listenerRef = new WeakReference<>(listener);
             roundIdTextView = itemView.findViewById(R.id.roundIdTextView);
-            participantCountTextView = itemView.findViewById(R.id.participantCountTextView);
+            qualificationCriteriaTextView = itemView.findViewById(R.id.qualificationCriteriaTextView);
             roundTimeTextView = itemView.findViewById(R.id.roundTimeTextView);
         }
         @Override

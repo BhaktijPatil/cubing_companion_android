@@ -17,6 +17,8 @@
     <string name="confirmation_description">Participant must finish all solves before round ends. Participants expecting a podium must record beginning from this screen. On confirmation, the participant will be taken to their first scramble, and can begin their solves once ready. Ensure network connectivity to avoid your results from being DNF\'d. Once a parcipant is shown a scramble, he must finish the solve without closing the application, else that solve will be DNF\'d."</string>
     <string name="default_time">00:00.00</string>
     <string name="internet_warning">Ensure good network connectivity in case the loading screen persists for a long time.</string>
+    <string name="qualificaiton_criteria">QC</string>
+
 
     <string-array name="competition_instructions_how_to_compete_details">
         <item>"When a competition begins, the 'PARTICIPATE' button will go live. Click here to begin."</item>

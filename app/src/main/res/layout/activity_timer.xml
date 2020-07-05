@@ -110,6 +110,8 @@
                 android:id="@+id/uploadSolveButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginEnd="50dp"
                 android:backgroundTint="#CCFF9800"
                 android:fontFamily="@font/abel"
                 android:text="Upload"
@@ -117,8 +119,8 @@
                 android:textSize="18sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/timeTextView"
-                app:layout_constraintStart_toStartOf="@+id/timeTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/timeTextView"
                 app:layout_constraintVertical_bias="0.19999999" />
 

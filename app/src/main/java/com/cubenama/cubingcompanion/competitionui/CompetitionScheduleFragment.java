@@ -75,13 +75,13 @@ public class CompetitionScheduleFragment extends Fragment {
                 event_rounds.orderBy("round_id").get().addOnCompleteListener(innerTask -> {
 
                     // Create a new event instance
-                    CompetitionEvent compEvent = new CompetitionEvent(event.getId(), event.getString("name"), event.getLong("solve_count"));
+                    CompetitionEvent compEvent = new CompetitionEvent(event.getId(), event.getString("name"), event.getLong("solve_count"), event.getString("result_calc_method"));
                     Log.d("CC_COMP_SCHEDULE", "Event ID : " + compEvent.eventId + " Round Count : " + innerTask.getResult().size());
 
                     // Individual rounds for each event are obtained here
                     for(QueryDocumentSnapshot round : innerTask.getResult())
                     {
-                        EventRound eventRound = new EventRound(round.getLong("participant_count"), round.getTimestamp("start_time"), round.getTimestamp("end_time"));
+                        EventRound eventRound = new EventRound(round.getLong("qualification_criteria"), round.getTimestamp("start_time"), round.getTimestamp("end_time"));
                         compEvent.eventRounds.add(eventRound);
                     }
                     competitionEventList.add(compEvent);
@@ -89,11 +89,10 @@ public class CompetitionScheduleFragment extends Fragment {
                     // Sort Events by name
                     Collections.sort(competitionEventList, (event1, event2) -> event1.eventName.compareTo(event2.eventName));
                     competitionEventAdapter.notifyDataSetChanged();
-
-                    // Dismiss loading screen
-                    ((CompetitionDetailActivity)getActivity()).loadingScreenController.dismissLoadingScreen();
                 });
             }
+            // Dismiss loading screen
+            ((CompetitionDetailActivity)getActivity()).loadingScreenController.dismissLoadingScreen();
         });
 
         return root;
