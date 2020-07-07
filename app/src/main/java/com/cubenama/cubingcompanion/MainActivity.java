@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private SharedPreferences userDetailsSharedPreferences;
 
-    private NavigationView navigationView;
     private PopupWindow popupWindow;
 
     // Database reference
@@ -60,11 +59,11 @@ public class MainActivity extends AppCompatActivity {
         // Create database instance
         db = FirebaseFirestore.getInstance();
 
-        // Create reference to cuber details
+        // Create reference to userDetailsReference details
         userDetailsSharedPreferences = getSharedPreferences("user_details", Context.MODE_PRIVATE);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         ImageButton expandMenuButton = findViewById(R.id.expandMenuButton);
 
         // Create the navigation drawer
@@ -72,12 +71,10 @@ public class MainActivity extends AppCompatActivity {
                 .setDrawerLayout(drawer)
                 .build();
 
-        DocumentReference cuber = db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", ""));
-        cuber.get().addOnCompleteListener(cuberTask -> {
-            DocumentSnapshot cuberDocumentSnapshot = cuberTask.getResult();
-
+        DocumentReference userDetailsReference = db.collection(getString(R.string.db_field_name_user_details)).document(userDetailsSharedPreferences.getString("uid", ""));
+        userDetailsReference.get().addOnCompleteListener(userDetailsTask -> {
             // Check if user's WCA ID is linked to the account
-            if (!cuberDocumentSnapshot.contains("wca_id")) {
+            if (!userDetailsTask.getResult().contains(getString(R.string.db_field_name_wca_id))) {
                 Log.d("CC_ACCOUNT", "Linking account with WCA ID");
                 // Get inflater for the current activity
                 LayoutInflater inflater = getLayoutInflater();
@@ -90,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
                 // Deny access if account is not linked
                 popupWindow.setOnDismissListener(() -> {
                             // Ensure WCA ID is unique
-                            db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task -> {
-                                if(task.getResult().getString("wca_id") == null)
+                           userDetailsReference.get().addOnCompleteListener(task -> {
+                                if(task.getResult().getString(getString(R.string.db_field_name_wca_id)) == null)
                                 {
                                     Toast.makeText(this, "Please link account with WCA ID to continue",Toast.LENGTH_LONG).show();
-                                    // Signout the current user
+                                    // Sign out the current user
                                     FirebaseAuth.getInstance().signOut();
                                     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
                                     GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -112,11 +109,11 @@ public class MainActivity extends AppCompatActivity {
                 EditText phoneEditText = popupLinkAccountView.findViewById(R.id.phoneEditText);
 
                 // Fill out information obtained via Google Sign In
-                if (cuberDocumentSnapshot.get("mobile") != null) {
-                    phoneEditText.setText(cuberDocumentSnapshot.get("mobile").toString());
+                if (userDetailsTask.getResult().get(getString(R.string.db_field_name_mobile)) != null) {
+                    phoneEditText.setText(userDetailsTask.getResult().getString(getString(R.string.db_field_name_mobile)));
                 }
-                if (cuberDocumentSnapshot.get("name") != null) {
-                    nameEditText.setText(cuberDocumentSnapshot.get("name").toString());
+                if (userDetailsTask.getResult().get(getString(R.string.db_field_name_name)) != null) {
+                    nameEditText.setText(userDetailsTask.getResult().getString(getString(R.string.db_field_name_name)));
                 }
 
                 // Load spinning cube GIF
@@ -148,18 +145,18 @@ public class MainActivity extends AppCompatActivity {
                     // All fields are valid.
                     else {
                         // Ensure WCA ID is unique
-                        db.collection("cuber_details").whereEqualTo("wca_id", wcaId).get()
+                        db.collection(getString(R.string.db_field_name_user_details)).whereEqualTo(getString(R.string.db_field_name_wca_id), wcaId).get()
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         // WCA ID unique
                                         if (task.getResult().size() == 0) {
                                             Map<String, Object> accountDetails = new HashMap<>();
-                                            accountDetails.put("wca_id", wcaId);
-                                            accountDetails.put("name", name);
-                                            accountDetails.put("mobile", mobile);
-                                            accountDetails.put("dob", dob);
+                                            accountDetails.put(getString(R.string.db_field_name_wca_id), wcaId);
+                                            accountDetails.put(getString(R.string.db_field_name_name), name);
+                                            accountDetails.put(getString(R.string.db_field_name_mobile), mobile);
+                                            accountDetails.put(getString(R.string.db_field_name_dob), dob);
 
-                                            db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).update(accountDetails);
+                                            userDetailsReference.update(accountDetails);
                                             Toast.makeText(this, "Account linked successfully.", Toast.LENGTH_SHORT).show();
                                             popupWindow.dismiss();
                                         }
@@ -179,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Add listener to update UI when data changes
-        cuber.addSnapshotListener((snapshot, e) -> {
+        userDetailsReference.addSnapshotListener((snapshot, e) -> {
             // Check for exception
             if (e != null) {
                 Log.w("CC_PROFILE_READ", "Unable to listen for data.", e);
@@ -187,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
             if (snapshot != null && snapshot.exists()) {
                 Log.d("CC_PROFILE_READ", "Data : " + snapshot.getData());
-                updateUserDetailsUI(String.valueOf(snapshot.get("name")), String.valueOf(snapshot.get("wca_id")), String.valueOf(snapshot.get("photo_url")));
+                updateUserDetailsUI(String.valueOf(snapshot.get(getString(R.string.db_field_name_name))), String.valueOf(snapshot.get(getString(R.string.db_field_name_wca_id))), String.valueOf(snapshot.get(getString(R.string.db_field_name_photo_url))));
             } else
                 Log.d("CC_PROFILE_READ", "Data : null");
         });
@@ -202,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Function to load user details into UI
     private void updateUserDetailsUI(String name, String wcaId, String photoURL) {
-        // Update cuber name
+        // Update userDetailsReference name
         TextView userNameTextView = findViewById(R.id.cuberNameTextView);
         TextView userNameTextViewAlt = findViewById(R.id.cuberNameTextViewAlt);
         userNameTextView.setText(name);

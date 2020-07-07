@@ -31,20 +31,23 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.okhttp.Dispatcher;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.grpc.Compressor;
+
 
 public class ProfileFragment extends Fragment {
-
-    private SharedPreferences userDetailsSharedPreferences;
 
     // Database reference
     private FirebaseFirestore db;
     // Firestore document reference
-    private DocumentReference cuber;
+    private DocumentReference userDetailsReference;
     // Firebase Storage reference
     private StorageReference profilePictureRef;
 
@@ -66,14 +69,12 @@ public class ProfileFragment extends Fragment {
         // Create database instance
         db = FirebaseFirestore.getInstance();
 
-        // Create reference to cuber details
-        userDetailsSharedPreferences = requireActivity().getSharedPreferences("user_details", Context.MODE_PRIVATE);
+        // Create reference to userDetailsReference details
+        SharedPreferences userDetailsSharedPreferences = requireActivity().getSharedPreferences("user_details", Context.MODE_PRIVATE);
 
         // Create storage instance
-        profilePictureRef = FirebaseStorage.getInstance().getReference().child("profile_pictures").child(userDetailsSharedPreferences.getString("uid",""));
-
-
-        cuber = db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid",""));
+        profilePictureRef = FirebaseStorage.getInstance().getReference().child(getString(R.string.db_field_name_profile_pictures)).child(userDetailsSharedPreferences.getString("uid",""));
+        userDetailsReference = db.collection(getString(R.string.db_field_name_user_details)).document(userDetailsSharedPreferences.getString("uid",""));
 
         // Create listener for add picture button
         FloatingActionButton addPictureButton = root.findViewById(R.id.addPictureFloatingActionButton);
@@ -114,19 +115,19 @@ public class ProfileFragment extends Fragment {
             else {
                 Map<String, Object> accountDetails = new HashMap<>();
                 if(!mainEvent.equals(""))
-                    accountDetails.put("main_event", mainEvent);
-                accountDetails.put("name", name);
-                accountDetails.put("mobile", mobile);
-                accountDetails.put("dob", dob);
+                    accountDetails.put(getString(R.string.db_field_name_main_event), mainEvent);
+                accountDetails.put(getString(R.string.db_field_name_name), name);
+                accountDetails.put(getString(R.string.db_field_name_mobile), mobile);
+                accountDetails.put(getString(R.string.db_field_name_dob), dob);
 
                 // Update profile on backend
-                db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid","")).update(accountDetails);
+                userDetailsReference.update(accountDetails);
                 Toast.makeText(requireActivity(), "Account details updated.", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Add listener to update UI when data changes
-        cuber.addSnapshotListener((snapshot, e) -> {
+        userDetailsReference.addSnapshotListener((snapshot, e) -> {
             // Check for exception
             if (e != null) {
                 Log.w("CC_PROFILE_READ", "Unable to listen for data.", e);
@@ -138,14 +139,14 @@ public class ProfileFragment extends Fragment {
                 ImageView profilePictureImageView = root.findViewById(R.id.profilePictureImageView);
 
                 // Main event may not exist in user profile
-                if(snapshot.contains("main_event"))
+                if(snapshot.contains(getString(R.string.db_field_name_main_event)))
                 {
-                    mainEventEditText.setText(snapshot.get("main_event").toString());
+                    mainEventEditText.setText(snapshot.getString(getString(R.string.db_field_name_main_event)));
                 }
-                nameEditText.setText(snapshot.get("name").toString());
-                dobEditText.setText(snapshot.get("dob").toString());
-                phoneEditText.setText(snapshot.get("mobile").toString());
-                Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(snapshot.get("photo_url").toString())).into(profilePictureImageView);
+                nameEditText.setText(snapshot.getString(getString(R.string.db_field_name_main_event)));
+                dobEditText.setText(snapshot.getString(getString(R.string.db_field_name_dob)));
+                phoneEditText.setText(snapshot.getString(getString(R.string.db_field_name_mobile)));
+                Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(snapshot.getString(getString(R.string.db_field_name_photo_url)))).into(profilePictureImageView);
             }
             else
                 Log.d("CC_PROFILE_READ",  "Data : null");
@@ -199,7 +200,7 @@ public class ProfileFragment extends Fragment {
         android.content.Intent intent = new android.content.Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(android.content.Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
-        startActivityForResult(android.content.Intent.createChooser(intent, "Choose a Picture"), 1);
+        startActivityForResult(android.content.Intent.createChooser(intent, "Choose a Profile Picture."), 1);
     }
 
 
@@ -218,19 +219,18 @@ public class ProfileFragment extends Fragment {
                 profilePictureRef.putFile(imageURI).addOnSuccessListener(taskSnapshot -> profilePictureRef.getDownloadUrl()
                         .addOnSuccessListener(uri -> {
                             Log.d("CC_PROFILE", "Profile picture uploaded");
-                            // Upload link for profile picture to cuber details
+                            // Upload link for profile picture to userDetailsReference details
                             Map<String, Object> accountDetails = new HashMap<>();
-                            accountDetails.put("photo_url", uri.toString());
-                            db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid","")).update(accountDetails).addOnCompleteListener(task -> {
+                            accountDetails.put(getString(R.string.db_field_name_photo_url), uri.toString());
+                            userDetailsReference.update(accountDetails).addOnCompleteListener(task -> {
                                 // reset background GIF
                                 Glide.with(this).asGif().load(R.drawable.background_profile).into(backgroundGifView);
-                                Toast.makeText(requireActivity(), "Account details updated.", Toast.LENGTH_SHORT).show();
                             });
                         }))
                         .addOnProgressListener(taskSnapshot -> {
                             // change background GIF
                             Glide.with(requireActivity()).asGif().load(R.drawable.cube_loading_2).into(backgroundGifView);
-                            Toast.makeText(requireActivity(), "Uploading picture to Database.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireActivity(), "Uploading to Database. Please be patient.", Toast.LENGTH_SHORT).show();
                             Log.d("CC_PROFILE", "Profile picture uploading");
                         });
             }

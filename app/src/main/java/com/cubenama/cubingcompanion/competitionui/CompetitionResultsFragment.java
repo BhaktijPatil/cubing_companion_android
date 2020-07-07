@@ -28,8 +28,6 @@ import java.util.List;
 
 public class CompetitionResultsFragment extends Fragment {
 
-    // Database reference
-    private FirebaseFirestore db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,10 +35,10 @@ public class CompetitionResultsFragment extends Fragment {
         View root =  inflater.inflate(R.layout.fragment_competition_results, container, false);
 
         // Create database instance
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Show loading screen
-        ((CompetitionDetailActivity)getActivity()).loadingScreenController.showLoadingScreen("Fetching result status ...");
+        ((CompetitionDetailActivity)requireActivity()).loadingScreenController.showLoadingScreen(getString(R.string.loading_screen_msg_3));
 
         // Setup recycler views and adapters
         List<CompetitionEvent> competitionEventList = new ArrayList<>();
@@ -55,54 +53,49 @@ public class CompetitionResultsFragment extends Fragment {
 
         // Get competition ID
         Intent intent = requireActivity().getIntent();
-        String comp_id = intent.getStringExtra("comp_id");
+        String compId = intent.getStringExtra("comp_id");
 
         TextView resultStatusTextView = root.findViewById(R.id.resultStatusTextView);
 
-        DocumentReference competition = db.collection("competition_details").document(comp_id);
-        competition.get().addOnCompleteListener(task -> {
-            if (Calendar.getInstance().getTimeInMillis() > task.getResult().getTimestamp("start_time").getSeconds() * 1000)
-            {
+        DocumentReference competitionDetailsReference = db.collection(getString(R.string.db_field_name_comp_details)).document(compId);
+        competitionDetailsReference.get().addOnCompleteListener(compDetailsTask -> {
+            // Set overall result status
+            if (Calendar.getInstance().getTimeInMillis() > compDetailsTask.getResult().getTimestamp(getString(R.string.db_field_name_start_time)).getSeconds() * 1000)
                 // Competition is live
-                if(Calendar.getInstance().getTimeInMillis() < task.getResult().getTimestamp("end_time").getSeconds() * 1000)
-                {
+                if(Calendar.getInstance().getTimeInMillis() < compDetailsTask.getResult().getTimestamp(getString(R.string.db_field_name_end_time)).getSeconds() * 1000)
                     resultStatusTextView.setText("Live");
-                }
                 // Competition is done
                 else
-                {
                     // Results verified
-                    if(task.getResult().getBoolean("results_verified"))
+                    if(compDetailsTask.getResult().getBoolean(getString(R.string.db_field_name_results_verified)))
                         resultStatusTextView.setText("Verified");
                     // Results not verified
                     else
                         resultStatusTextView.setText("Done (Verification pending)");
-                }
-            }
             // Competition hasn't started
             else
                 resultStatusTextView.setText("To be declared ...");
 
-            CollectionReference competition_schedule = competition.collection("schedule");
-            competition_schedule.get().addOnCompleteListener(task1 -> {
+            CollectionReference eventDetailsReference = competitionDetailsReference.collection(getString(R.string.db_field_name_events));
+            eventDetailsReference.get().addOnCompleteListener(eventDetailsTask -> {
                 competitionEventList.clear();
                 // Individual events are obtained here
-                for(QueryDocumentSnapshot event : task1.getResult())
+                for(QueryDocumentSnapshot event : eventDetailsTask.getResult())
                 {
-                    CollectionReference event_rounds = db.collection("competition_details").document(comp_id).collection("schedule").document(event.getId()).collection("rounds");
-                    event_rounds.orderBy("round_id").get().addOnCompleteListener(innerTask -> {
+                    CollectionReference roundDetailsReference = eventDetailsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds));
+                    roundDetailsReference.orderBy(getString(R.string.db_field_name_name)).get().addOnCompleteListener(roundDetailsTask -> {
 
                         // Create a new event instance
-                        CompetitionEvent compEvent = new CompetitionEvent(event.getId(), event.getString("name"), event.getLong("solve_count"), event.getString("result_calc_method"));
-                        Log.d("CC_COMP_SCHEDULE", "Event ID : " + compEvent.eventId + " Round Count : " + innerTask.getResult().size());
+                        CompetitionEvent competitionEvent = new CompetitionEvent(event.getId(), event.getString(getString(R.string.db_field_name_name)), event.getLong(getString(R.string.db_field_name_solve_count)), event.getString(getString(R.string.db_field_name_result_calc_method)));
+                        Log.d("CC_COMP_SCHEDULE", "Event ID : " + competitionEvent.eventId + " Round Count : " + roundDetailsTask.getResult().size());
 
                         // Individual rounds for each event are obtained here
-                        for(QueryDocumentSnapshot round : innerTask.getResult())
+                        for(QueryDocumentSnapshot round : roundDetailsTask.getResult())
                         {
-                            EventRound eventRound = new EventRound(round.getId(), round.getLong("qualification_criteria"), round.getTimestamp("start_time"), round.getTimestamp("end_time"));
-                            compEvent.eventRounds.add(eventRound);
+                            CompetitionEventRound competitionEventRound = new CompetitionEventRound(competitionEvent.eventName, round.getString(getString(R.string.db_field_name_name)), round.getId(), round.getLong(getString(R.string.qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
+                            competitionEvent.competitionEventRounds.add(competitionEventRound);
                         }
-                        competitionEventList.add(compEvent);
+                        competitionEventList.add(competitionEvent);
 
                         // Sort Events by name
                         Collections.sort(competitionEventList, (event1, event2) -> event1.eventName.compareTo(event2.eventName));
@@ -110,7 +103,7 @@ public class CompetitionResultsFragment extends Fragment {
                     });
                 }
                 // Dismiss loading screen
-                ((CompetitionDetailActivity)getActivity()).loadingScreenController.dismissLoadingScreen();
+                ((CompetitionDetailActivity)requireActivity()).loadingScreenController.dismissLoadingScreen();
             });
         });
 

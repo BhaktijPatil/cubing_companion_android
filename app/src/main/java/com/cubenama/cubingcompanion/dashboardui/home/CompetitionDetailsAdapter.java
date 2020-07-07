@@ -38,15 +38,15 @@ public class CompetitionDetailsAdapter extends RecyclerView.Adapter<CompetitionD
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        CompetitionDetails competitionDetail = competitionDetailsList.get(position);
+        CompetitionDetails competitionDetails = competitionDetailsList.get(position);
 
         // Assign values to list row
-        holder.competitionNameTextView.setText(competitionDetail.name);
-        holder.competitionDurationTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy hh:mm aa", competitionDetail.startTime) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy hh:mm aa", competitionDetail.endTime));
+        holder.competitionNameTextView.setText(competitionDetails.name);
+        holder.competitionDurationTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMMM hh:mm aa", competitionDetails.startTime) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("dd-MMMM hh:mm aa", competitionDetails.endTime));
         holder.competitionHolderLayout.setOnClickListener(v->{
             // Start competition detail activity
             Intent competitionDetailActivityIntent = new Intent(mContext, CompetitionDetailActivity.class);
-            competitionDetailActivityIntent.putExtra("comp_id", competitionDetail.id);
+            competitionDetailActivityIntent.putExtra("comp_id", competitionDetails.id);
             mContext.startActivity(competitionDetailActivityIntent);
         });
 

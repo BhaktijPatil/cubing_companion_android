@@ -23,7 +23,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -32,8 +31,8 @@ import java.util.Map;
 public class SignInActivity extends AppCompatActivity {
 
     // Time for which splash screen should be shown
-    private static final int splashScreenTime = 3000;
-
+    private static final int SPLASH_SCREEN_TIME = 3000;
+    private static final long VERSION_ID = 1;
     private static final int RC_SIGN_IN = 69;
 
     private FirebaseAuth mAuth;
@@ -63,7 +62,7 @@ public class SignInActivity extends AppCompatActivity {
         Glide.with(this).asGif().load(R.drawable.cube_loading_1).into(loadingGifView);
 
         // Request app permissions permission
-        new Handler().postDelayed(this::requestPermissions, splashScreenTime);
+        new Handler().postDelayed(this::requestPermissions, SPLASH_SCREEN_TIME);
     }
 
 
@@ -136,25 +135,23 @@ public class SignInActivity extends AppCompatActivity {
                     if (signInTask.isSuccessful()) {
                         // Firebase authentication successful
                         Log.d("CC_USER_LOGIN", "Firebase Authentication successful");
-                        Toast.makeText(this, "Initiating companion AI.", Toast.LENGTH_SHORT).show();
                         // Firebase user
                         FirebaseUser user = mAuth.getCurrentUser();
                         // Add account UID to shared preferences
                         userDetailsSharedPreferences.edit().putString("uid", user.getUid()).apply();
 
                         // Check if account UID exists in database
-                        DocumentReference cuber = db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid",""));
-                        cuber.get().addOnCompleteListener(cuberTask -> {
-                            DocumentSnapshot cuberDocumentSnapshot = cuberTask.getResult();
+                        DocumentReference userDetailsReference = db.collection(getString(R.string.db_field_name_user_details)).document(userDetailsSharedPreferences.getString("uid",""));
+                        userDetailsReference.get().addOnCompleteListener(userDetailsTask -> {
                             // Add account to firebase if it does not exist
-                            if(!cuberDocumentSnapshot.exists()) {
+                            if(!userDetailsTask.getResult().exists()) {
                                 // Get new user's details from firebase
                                 Map<String, Object> newCuber = new HashMap<>();
-                                newCuber.put("name", user.getDisplayName());
-                                newCuber.put("email", user.getEmail());
-                                newCuber.put("mobile", user.getPhoneNumber());
-                                newCuber.put("photo_url", user.getPhotoUrl().toString());
-                                db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid","")).set(newCuber);
+                                newCuber.put(getString(R.string.db_field_name_name), user.getDisplayName());
+                                newCuber.put(getString(R.string.db_field_name_email), user.getEmail());
+                                newCuber.put(getString(R.string.db_field_name_mobile), user.getPhoneNumber());
+                                newCuber.put(getString(R.string.db_field_name_photo_url), user.getPhotoUrl().toString());
+                                userDetailsReference.set(newCuber);
                             }
                             // Initiate user dashboard
                             startActivity(new Intent(SignInActivity.this, MainActivity.class));
@@ -177,7 +174,17 @@ public class SignInActivity extends AppCompatActivity {
     // Function to request application permissions
     private void requestPermissions()
     {
-        // No permissions needed yet
-        authenticateUser();
+        // Check if current application version is valid
+        db.collection(getString(R.string.db_field_name_app_details)).document(getString(R.string.db_field_name_app_version)).get().addOnCompleteListener(appVersionTask -> {
+           if(appVersionTask.getResult().getLong(getString(R.string.db_field_name_min_version_id)) <= VERSION_ID)
+               // No permissions needed yet
+               authenticateUser();
+           else 
+           {
+               Toast.makeText(this, "A newer version is available. Please update to continue.", Toast.LENGTH_LONG).show();
+               new Handler().postDelayed(this::finish, SPLASH_SCREEN_TIME);
+           }
+        });
+        
     }
 }

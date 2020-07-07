@@ -121,6 +121,7 @@
                         android:layout_marginBottom="8dp"
                         app:cardBackgroundColor="#4D565656"
                         app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -192,6 +193,7 @@
                         android:layout_marginBottom="8dp"
                         app:cardBackgroundColor="#4D565656"
                         app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -264,6 +266,7 @@
                         android:layout_marginBottom="8dp"
                         app:cardBackgroundColor="#4D565656"
                         app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -397,7 +400,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <TextView
                         android:id="@+id/competitionInstructionsTextView"
@@ -435,6 +438,7 @@
                         android:layout_marginEnd="16dp"
                         app:cardBackgroundColor="#4D565656"
                         app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/competitionInstructionsTextView">
@@ -480,7 +484,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/competitionInstructionsCardView2"
+                        android:id="@+id/competitionInstructionsCardView3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -489,7 +493,62 @@
                         android:layout_marginBottom="16dp"
                         app:cardBackgroundColor="#4D565656"
                         app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/competitionInstructionsCardView2">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/competitionInstructionsHeaderTextView3"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="16dp"
+                                android:fontFamily="@font/abel"
+                                android:text="@string/competition_instructions_how_to_use_timer_header"
+                                android:textAlignment="viewStart"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorTextSecondaryLight"
+                                android:textSize="18sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ListView
+                                android:id="@+id/howToUseTimerListView"
+                                style="@android:style/Widget.Material.ListView"
+                                android:layout_width="0dp"
+                                android:layout_height="120dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="8dp"
+                                android:divider="@android:color/transparent"
+                                android:entries="@array/competition_instructions_how_to_compete_details"
+                                android:nestedScrollingEnabled="true"
+                                android:scrollbars="vertical"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="@+id/competitionInstructionsHeaderTextView3"
+                                app:layout_constraintStart_toStartOf="@+id/competitionInstructionsHeaderTextView3"
+                                app:layout_constraintTop_toBottomOf="@+id/competitionInstructionsHeaderTextView3" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/competitionInstructionsCardView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        app:cardBackgroundColor="#4D565656"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="0dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/competitionInstructionsCardView1">

@@ -10,14 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cubenama.cubingcompanion.competitionui.CompetitionScheduleFragment;
-import com.cubenama.cubingcompanion.competitionui.EventRound;
+import com.cubenama.cubingcompanion.competitionui.CompetitionEventRound;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdapter.MyViewHolder>{
 
-    private List<EventRound> eventRoundsList;
+    private List<CompetitionEventRound> competitionEventRoundsList;
     private CompetitionScheduleFragment.ClickListener clickListener;
     private Context context;
 
@@ -36,24 +36,24 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
 
     @Override
     public void onBindViewHolder(@NonNull UpcomingRoundAdapter.MyViewHolder holder, int position) {
-        EventRound eventRound = eventRoundsList.get(position);
+        CompetitionEventRound competitionEventRound = competitionEventRoundsList.get(position);
 
         // Assign values to list row
         holder.roundIdTextView.setText("Round " + (position + 1));
         // Qualifying criteria for rounds
         if(position == 0)
-            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : NA");
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : NA");
         else
-            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : Top " + eventRound.qualificationCriteria);
-        holder.eventNameTextView.setText(eventRound.eventName);
-        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", eventRound.startTimestamp) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", eventRound.endTimestamp));
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : Top " + competitionEventRound.qualificationCriteria);
+        holder.eventNameTextView.setText(competitionEventRound.eventName);
+        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", competitionEventRound.startTimestamp) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", competitionEventRound.endTimestamp));
     }
 
 
 
     @Override
     public int getItemCount() {
-        return eventRoundsList.size();
+        return competitionEventRoundsList.size();
     }
 
 
@@ -81,8 +81,9 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
         }
     }
 
-    UpcomingRoundAdapter(List<EventRound> eventRoundsList, CompetitionScheduleFragment.ClickListener clickListener){
-        this.eventRoundsList = eventRoundsList;
+    UpcomingRoundAdapter(List<CompetitionEventRound> competitionEventRoundsList, CompetitionScheduleFragment.ClickListener clickListener){
+
+        this.competitionEventRoundsList = competitionEventRoundsList;
         this.clickListener = clickListener;
     }
 }

@@ -18,19 +18,18 @@ import com.cubenama.cubingcompanion.CompetitionDetailActivity;
 import com.cubenama.cubingcompanion.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class CompetitionScheduleFragment extends Fragment {
 
     // Database reference
     private FirebaseFirestore db;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class CompetitionScheduleFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         // Show loading screen
-        ((CompetitionDetailActivity)getActivity()).loadingScreenController.showLoadingScreen("Almost there ...");
+        ((CompetitionDetailActivity)requireActivity()).loadingScreenController.showLoadingScreen(getString(R.string.loading_screen_msg_2));
 
         // Setup recycler views and adapters
         List<CompetitionEvent> competitionEventList = new ArrayList<>();
@@ -54,35 +53,33 @@ public class CompetitionScheduleFragment extends Fragment {
         competitionEventRecyclerView.setLayoutManager(competitionEventLayoutManager);
         competitionEventRecyclerView.setAdapter(competitionEventAdapter);
 
-
         // Get competition ID
         Intent intent = requireActivity().getIntent();
-        String comp_id = intent.getStringExtra("comp_id");
+        String compId = intent.getStringExtra("comp_id");
 
         TextView eventCountTextView = root.findViewById(R.id.eventCountTextView);
 
-        CollectionReference competition_schedule = db.collection("competition_details").document(comp_id).collection("schedule");
-        competition_schedule.get().addOnCompleteListener(task -> {
+        CollectionReference eventsReference = db.collection(getString(R.string.db_field_name_comp_details)).document(compId).collection(getString(R.string.db_field_name_events));
+        eventsReference.get().addOnCompleteListener(eventDetailsTask -> {
             // Set number of events
-            Log.d("CC_COMP_SCHEDULE", "Number of events : " + task.getResult().size());
-            eventCountTextView.setText(task.getResult().size() + " Events");
+            Log.d("CC_COMP_SCHEDULE", "Number of events : " + eventDetailsTask.getResult().size());
+            eventCountTextView.setText(eventDetailsTask.getResult().size() + " Events");
+
             competitionEventList.clear();
-
             // Individual events are obtained here
-            for(QueryDocumentSnapshot event : task.getResult())
+            for(QueryDocumentSnapshot event : eventDetailsTask.getResult())
             {
-                CollectionReference event_rounds = db.collection("competition_details").document(comp_id).collection("schedule").document(event.getId()).collection("rounds");
-                event_rounds.orderBy("round_id").get().addOnCompleteListener(innerTask -> {
-
+                CollectionReference eventRoundsReference = eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds));
+                eventRoundsReference.orderBy(getString(R.string.db_field_name_name)).get().addOnCompleteListener(innerTask -> {
                     // Create a new event instance
-                    CompetitionEvent compEvent = new CompetitionEvent(event.getId(), event.getString("name"), event.getLong("solve_count"), event.getString("result_calc_method"));
+                    CompetitionEvent compEvent = new CompetitionEvent(event.getId(), event.getString(getString(R.string.db_field_name_name)), event.getLong(getString(R.string.db_field_name_solve_count)), event.getString(getString(R.string.db_field_name_result_calc_method)));
                     Log.d("CC_COMP_SCHEDULE", "Event ID : " + compEvent.eventId + " Round Count : " + innerTask.getResult().size());
 
                     // Individual rounds for each event are obtained here
                     for(QueryDocumentSnapshot round : innerTask.getResult())
                     {
-                        EventRound eventRound = new EventRound(round.getLong("qualification_criteria"), round.getTimestamp("start_time"), round.getTimestamp("end_time"));
-                        compEvent.eventRounds.add(eventRound);
+                        CompetitionEventRound competitionEventRound = new CompetitionEventRound(event.getString(getString(R.string.db_field_name_name)), round.getString(getString(R.string.db_field_name_name)), round.getId(), round.getLong(getString(R.string.qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
+                        compEvent.competitionEventRounds.add(competitionEventRound);
                     }
                     competitionEventList.add(compEvent);
 
@@ -92,7 +89,7 @@ public class CompetitionScheduleFragment extends Fragment {
                 });
             }
             // Dismiss loading screen
-            ((CompetitionDetailActivity)getActivity()).loadingScreenController.dismissLoadingScreen();
+            ((CompetitionDetailActivity)requireActivity()).loadingScreenController.dismissLoadingScreen();
         });
 
         return root;

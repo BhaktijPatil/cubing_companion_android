@@ -42,6 +42,7 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
         // Assign values to list row
         holder.eventNameTextView.setText(competitionEvent.eventName);
 
+        // Set event format
         switch (competitionEvent.resultCalcMethod)
         {
             case "Average" : holder.formatTextView.setText("Average of " + competitionEvent.solveCount);
@@ -53,13 +54,13 @@ public class CompetitionEventAdapter extends RecyclerView.Adapter<CompetitionEve
         }
 
         // Setup inner recycler view
-        EventRoundAdapter eventRoundAdapter = new EventRoundAdapter(competitionEvent.eventRounds, innerPosition -> Toast.makeText(mContext, Integer.toString(innerPosition + 1), Toast.LENGTH_SHORT).show());
+        CompetitionEventRoundAdapter competitionEventRoundAdapter = new CompetitionEventRoundAdapter(competitionEvent.competitionEventRounds, innerPosition -> Toast.makeText(mContext, Integer.toString(innerPosition + 1), Toast.LENGTH_SHORT).show());
         RecyclerView.LayoutManager eventRoundLayoutManager = new LinearLayoutManager(mContext);
 
         holder.competitionEventRecyclerView.setLayoutManager(eventRoundLayoutManager);
-        holder.competitionEventRecyclerView.setAdapter(eventRoundAdapter);
+        holder.competitionEventRecyclerView.setAdapter(competitionEventRoundAdapter);
 
-        eventRoundAdapter.notifyDataSetChanged();
+        competitionEventRoundAdapter.notifyDataSetChanged();
 
     }
 

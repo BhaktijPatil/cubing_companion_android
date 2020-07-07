@@ -10,22 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cubenama.cubingcompanion.R;
-import com.cubenama.cubingcompanion.competitionui.CompetitionEvent;
-import com.cubenama.cubingcompanion.competitionui.CompetitionEventAdapter;
-import com.cubenama.cubingcompanion.competitionui.EventRound;
+import com.cubenama.cubingcompanion.competitionui.CompetitionEventRound;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -50,11 +43,11 @@ public class LiveRoundsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_round);
 
-        final long UPCOMING_ROUND_OFFSET = 18000;
+        final long UPCOMING_ROUND_OFFSET = 36000;
 
         // Initialize loading screen
         LoadingScreenController loadingScreenController = new LoadingScreenController(this);
-        loadingScreenController.showLoadingScreen("Digging up information ...");
+        loadingScreenController.showLoadingScreen(getString(R.string.loading_screen_msg_1));
 
         // Get competition ID
         Intent intent = getIntent();
@@ -73,17 +66,18 @@ public class LiveRoundsActivity extends AppCompatActivity {
         // Initialize live round
         TextView eventNameTextView = findViewById(R.id.eventNameTextView);
         TextView roundNameTextView = findViewById(R.id.roundNameTextView);
-        TextView roundFormatTextView = findViewById(R.id.roundFormatTextView);
+        TextView formatTextView = findViewById(R.id.formatTextView);
         TextView qualificationCriteriaTextView = findViewById(R.id.qualificationCriteriaTextView);
         TextView roundTimeTextView = findViewById(R.id.roundTimeTextView);
         TextView noRoundLiveTextView = findViewById(R.id.noRoundLiveTextView);
+        TextView noUpcomingRoundTextView = findViewById(R.id.noUpcomingRoundsTextView);
 
         CardView eventDetailsCardView = findViewById(R.id.eventDetailsCardView);
 
         Button beginButton = findViewById(R.id.beginButton);
 
         // Setup recycler views and adapters
-        List<EventRound> upcomingRoundList = new ArrayList<>();
+        List<CompetitionEventRound> upcomingRoundList = new ArrayList<>();
 
         RecyclerView upcomingRoundRecyclerView = findViewById(R.id.upcomingRoundsRecyclerView);
         UpcomingRoundAdapter upcomingRoundAdapter = new UpcomingRoundAdapter(upcomingRoundList, position -> Toast.makeText(this, upcomingRoundList.get(position).eventName, Toast.LENGTH_SHORT).show());
@@ -96,145 +90,171 @@ public class LiveRoundsActivity extends AppCompatActivity {
 
 
         // Get competition details
-        CollectionReference schedule = db.collection("competition_details").document(comp_id).collection("schedule");
-        schedule.get().addOnCompleteListener(task -> {
-            for (QueryDocumentSnapshot event : task.getResult())
+        CollectionReference eventsReference = db.collection(getString(R.string.db_field_name_comp_details)).document(comp_id).collection(getString(R.string.db_field_name_events));
+        eventsReference.get().addOnCompleteListener(eventTask -> {
+            for (QueryDocumentSnapshot event : eventTask.getResult())
             {
-                schedule.document(event.getId()).collection("rounds").get().addOnCompleteListener(roundTask -> {
+                eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds)).get().addOnCompleteListener(roundTask -> {
                     for(QueryDocumentSnapshot round : roundTask.getResult())
                     {
-                        EventRound eventRound = new EventRound(event.getString("name"), String.valueOf(round.getLong("round_id")), round.getLong("qualification_criteria"), round.getTimestamp("start_time"), round.getTimestamp("end_time"));
+                        CompetitionEventRound competitionEventRound = new CompetitionEventRound(event.getString(getString(R.string.db_field_name_name)), round.getString(getString(R.string.db_field_name_name)), round.getId(), round.getLong(getString(R.string.db_field_name_qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
                         // Set live round details
-                        if(currTime > eventRound.startTimestamp.getSeconds() && currTime < eventRound.endTimestamp.getSeconds())
+                        if(currTime > competitionEventRound.startTimestamp.getSeconds() && currTime < competitionEventRound.endTimestamp.getSeconds())
                         {
+                            // Make live round visible
                             noRoundLiveTextView.setVisibility(View.GONE);
                             eventDetailsCardView.setVisibility(View.VISIBLE);
                             eventNameTextView.setVisibility(View.VISIBLE);
 
                             // Update live round info
-                            eventNameTextView.setText(event.getString("name"));
-                            roundNameTextView.setText("Round : " + round.getLong("round_id"));
-                            roundFormatTextView.setText(event.getString("result_calc_method") + " of " + event.getLong("solve_count"));
-                            roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", round.getTimestamp("start_time")) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", round.getTimestamp("end_time")));
+                            eventNameTextView.setText(event.getString(getString(R.string.db_field_name_name)));
+                            roundNameTextView.setText("Round " + round.getLong(getString(R.string.db_field_name_round_name)));
+                            roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", round.getTimestamp(getString(R.string.db_field_name_start_time))) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", round.getTimestamp(getString(R.string.db_field_name_end_time))));
+
+                            // Set event format
+                            switch (event.getString(event.getString(getString(R.string.db_field_name_result_calc_method))))
+                            {
+                                case "Average" : formatTextView.setText("Average of " + event.getString(getString(R.string.db_field_name_solve_count)));
+                                    break;
+                                case "Mean" : formatTextView.setText("Mean of " + event.getString(getString(R.string.db_field_name_solve_count)));
+                                    break;
+                                case "Single" : formatTextView.setText("Single from " + event.getString(getString(R.string.db_field_name_solve_count)));
+                                    break;
+                            }
+                            
                             // Qualifying criteria for rounds
-                            if(round.getLong("round_id") == 1)
+                            if(round.getString(getString(R.string.db_field_name_round_name)).equals("1"))
                                 qualificationCriteriaTextView.setText("Qualification Criteria : NA");
                             else
-                                qualificationCriteriaTextView.setText("Qualification Criteria : Top " + eventRound.qualificationCriteria);
+                                qualificationCriteriaTextView.setText("Qualification Criteria : Top " + competitionEventRound.qualificationCriteria);
 
                             beginButton.setOnClickListener(v->{
-                                // Button press on time
-                                if(Calendar.getInstance().getTimeInMillis()/1000 < eventRound.endTimestamp.getSeconds())
-                                {
-                                    // Check if user has qualified for the round
-                                    schedule.document(event.getId()).collection("rounds").document(round.getId()).collection("results").orderBy("results", Query.Direction.ASCENDING).limit(eventRound.qualificationCriteria).whereEqualTo("competitor_id", userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task1 -> {
-                                        // Eligible for round
-                                        if(!task1.getResult().isEmpty() || round.getLong("round_id") == 1)
-                                        {
-                                            // Confirmation dialog
-                                            final Dialog confirmationDialog = new Dialog(this);
-                                            confirmationDialog.setContentView(R.layout.dialog_box_confirm_begin);
-                                            confirmationDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-                                            Button cancelButton = confirmationDialog.findViewById(R.id.cancelButton);
-                                            Button beginConfirmButton = confirmationDialog.findViewById(R.id.confirmButton);
-
-                                            cancelButton.setOnClickListener(view -> confirmationDialog.dismiss());
-                                            // Begin solves
-                                            beginConfirmButton.setOnClickListener(view1 -> {
-                                                // Retrieve solve ID
-                                                schedule.document(event.getId()).collection("rounds").document(round.getId()).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task2 -> {
-                                                    // Some solves are done
-                                                    if(task2.getResult().exists())
-                                                    {
-                                                        ArrayList<Long> timeList = (ArrayList<Long>) task2.getResult().get("time_list");
-                                                        int i;
-                                                        for(i = 0; i < timeList.size(); i ++)
-                                                        {
-                                                            Log.d("CC_PREV_TIMES", String.valueOf(timeList.get(i)));
-                                                            // Find current solve ID
-                                                            if(timeList.get(i).equals(ResultCodes.DNS_CODE))
-                                                            {
-                                                                Intent timerIntent = new Intent(this, TimerActivity.class);
-                                                                timerIntent.putExtra("comp_id", comp_id);
-                                                                timerIntent.putExtra("event_id", event.getId());
-                                                                timerIntent.putExtra("round_id", round.getId());
-                                                                timerIntent.putExtra("solve_id", i);
-                                                                timerIntent.putExtra("result_calc_method", event.getString("result_calc_method"));
-
-                                                                confirmationDialog.dismiss();
-                                                                startActivity(timerIntent);
-                                                                break;
-                                                            }
-                                                        }
-                                                        // Participant has already participated
-                                                        if(i == timeList.size())
-                                                            Toast.makeText(this, "You have already finished your solves.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                    // Participants first solve
-                                                    else {
-                                                        // Warning for time
-                                                        Toast.makeText(this, "You'll be redirected shortly. Oh, and good luck.", Toast.LENGTH_SHORT).show();
-                                                        // Make solves DNS
-                                                        ArrayList<Long> timeList = new ArrayList<>();
-                                                        for (int i = 0; i < event.getLong("solve_count"); i++)
-                                                            timeList.add(ResultCodes.DNS_CODE);
-                                                        db.collection("cuber_details").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task3 -> {
-
-                                                            Map<String, Object> resultDetails = new HashMap<>();
-                                                            resultDetails.put("competitor_id", userDetailsSharedPreferences.getString("uid", ""));
-                                                            resultDetails.put("wca_id", task3.getResult().getString("wca_id"));
-                                                            resultDetails.put("name", task3.getResult().getString("name"));
-                                                            resultDetails.put("time_list", timeList);
-                                                            resultDetails.put("result", ResultCodes.DNS_CODE);
-                                                            resultDetails.put("single", ResultCodes.DNS_CODE);
-
-                                                            schedule.document(event.getId()).collection("rounds").document(round.getId()).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).set(resultDetails).addOnCompleteListener(task4 -> {
-                                                                Intent timerIntent = new Intent(this, TimerActivity.class);
-                                                                timerIntent.putExtra("comp_id", comp_id);
-                                                                timerIntent.putExtra("event_id", event.getId());
-                                                                timerIntent.putExtra("round_id", round.getId());
-                                                                timerIntent.putExtra("solve_id", 0);
-                                                                timerIntent.putExtra("result_calc_method", event.getString("result_calc_method"));
-
-                                                                confirmationDialog.dismiss();
-                                                                startActivity(timerIntent);
-                                                            });
-                                                        });
-                                                    }
-                                                });
-
-                                            });
-
-                                            confirmationDialog.show();
-                                        }
-                                        // Not eligible
-                                        else {
-                                            Toast.makeText(this, "You have not qualified for this round.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                                }
-                                // Button press after event has ended
+                                // Check is automatic date & time zone are enabled
+                                if (Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME, 0) != 1 || Settings.Global.getInt(getContentResolver(), Settings.Global.AUTO_TIME_ZONE, 0) != 1)
+                                    Toast.makeText(this, "Enable automatic date and time-zone from settings to continue", Toast.LENGTH_LONG).show();
                                 else
                                 {
-                                    Toast.makeText(this, "Oops, too late !",Toast.LENGTH_LONG).show();
-                                    finish();
-                                    overridePendingTransition(0, 0);
-                                    startActivity(getIntent());
-                                    overridePendingTransition(0, 0);
+                                    // Button press on time
+                                    if(Calendar.getInstance().getTimeInMillis()/1000 < competitionEventRound.endTimestamp.getSeconds()) {
+                                        // Check if user has qualified for the round
+                                        CollectionReference resultsReference = eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds)).document(round.getId()).collection(getString(R.string.db_field_name_results));
+                                        resultsReference.orderBy(getString(R.string.db_field_name_final_result), Query.Direction.ASCENDING).limit(competitionEventRound.qualificationCriteria).get().addOnCompleteListener(competitorTask -> {
+                                            boolean isQualified = false;
+                                            for(QueryDocumentSnapshot competitor : competitorTask.getResult())
+                                            {
+                                                // Eligible for round
+                                                if(competitor.getId().equals(userDetailsSharedPreferences.getString("uid", "")) || round.getString(getString(R.string.db_field_name_name)).equals("1")) {
+                                                    // Confirmation dialog
+                                                    final Dialog confirmationDialog = new Dialog(this);
+                                                    confirmationDialog.setContentView(R.layout.dialog_box_confirm_begin);
+                                                    confirmationDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+                                                    Button cancelButton = confirmationDialog.findViewById(R.id.cancelButton);
+                                                    Button beginConfirmButton = confirmationDialog.findViewById(R.id.confirmButton);
+
+                                                    cancelButton.setOnClickListener(view -> confirmationDialog.dismiss());
+                                                    // Begin solves
+                                                    beginConfirmButton.setOnClickListener(view1 -> {
+                                                        // Retrieve solve ID
+                                                        resultsReference.document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(resultDetailsTask -> {
+                                                            // Some solves are done
+                                                            if(resultDetailsTask.getResult().exists())
+                                                            {
+                                                                ArrayList<Long> timeList = (ArrayList<Long>) resultDetailsTask.getResult().get(getString(R.string.db_field_name_time_list));
+                                                                int i;
+                                                                for(i = 0; i < timeList.size(); i ++)
+                                                                {
+                                                                    Log.d("CC_PREV_TIMES", String.valueOf(timeList.get(i)));
+                                                                    // Find current solve ID
+                                                                    if(timeList.get(i).equals(ResultCodes.DNS_CODE))
+                                                                    {
+                                                                        Intent timerIntent = new Intent(this, TimerActivity.class);
+                                                                        timerIntent.putExtra("comp_id", comp_id);
+                                                                        timerIntent.putExtra("event_id", event.getId());
+                                                                        timerIntent.putExtra("round_id", round.getId());
+                                                                        timerIntent.putExtra("solve_id", i);
+                                                                        timerIntent.putExtra("result_calc_method", event.getString("result_calc_method"));
+
+                                                                        confirmationDialog.dismiss();
+                                                                        startActivity(timerIntent);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                // Participant has already participated
+                                                                if(i == timeList.size())
+                                                                    Toast.makeText(this, "You have already finished your solves.", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                            // Participants first solve
+                                                            else {
+                                                                // Warning for time
+                                                                Toast.makeText(this, "We'll redirect you shortly.", Toast.LENGTH_SHORT).show();
+                                                                // Make solves DNS
+                                                                ArrayList<Long> timeList = new ArrayList<>();
+                                                                for (int i = 0; i < event.getLong(getString(R.string.db_field_name_solve_count)); i++)
+                                                                    timeList.add(ResultCodes.DNS_CODE);
+                                                                db.collection(getString(R.string.db_field_name_user_details)).document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(userDetailsTask -> {
+
+                                                                    Map<String, Object> resultDetails = new HashMap<>();
+                                                                    resultDetails.put(getString(R.string.db_field_name_wca_id), userDetailsTask.getResult().getString(getString(R.string.db_field_name_wca_id)));
+                                                                    resultDetails.put(getString(R.string.db_field_name_name), userDetailsTask.getResult().getString(getString(R.string.db_field_name_name)));
+                                                                    resultDetails.put(getString(R.string.db_field_name_time_list), timeList);
+                                                                    resultDetails.put(getString(R.string.db_field_name_final_result), ResultCodes.DNS_CODE);
+                                                                    resultDetails.put(getString(R.string.db_field_name_single), ResultCodes.DNS_CODE);
+                                                                    resultDetails.put("isVerified", false);
+
+                                                                    eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds)).document(round.getId()).collection(getString(R.string.db_field_name_results)).document(userDetailsSharedPreferences.getString("uid", "")).set(resultDetails).addOnCompleteListener(newResultTask -> {
+                                                                        Intent timerIntent = new Intent(this, TimerActivity.class);
+                                                                        timerIntent.putExtra("comp_id", comp_id);
+                                                                        timerIntent.putExtra("event_id", event.getId());
+                                                                        timerIntent.putExtra("round_id", round.getId());
+                                                                        timerIntent.putExtra("solve_id", 0);
+                                                                        timerIntent.putExtra(getString(R.string.db_field_name_result_calc_method), event.getString(getString(R.string.db_field_name_result_calc_method)));
+
+                                                                        confirmationDialog.dismiss();
+                                                                        startActivity(timerIntent);
+                                                                    });
+                                                                });
+                                                            }
+                                                        });
+                                                    });
+                                                    isQualified = true;
+                                                    confirmationDialog.show();
+                                                    break;
+                                                }
+                                            }
+                                            // Not eligible
+                                            if(!isQualified)
+                                                Toast.makeText(this, "You have not qualified for this round.", Toast.LENGTH_SHORT).show();
+                                        });
+                                    }
+                                    // Button press after event has ended
+                                    else
+                                    {
+                                        Toast.makeText(this, "Oops, too late !",Toast.LENGTH_LONG).show();
+                                        finish();
+                                        overridePendingTransition(0, 0);
+                                        startActivity(getIntent());
+                                        overridePendingTransition(0, 0);
+                                    }
                                 }
                             });
                         }
                         // Add upcoming rounds
-                        else if(currTime >= eventRound.startTimestamp.getSeconds() - UPCOMING_ROUND_OFFSET && currTime < eventRound.endTimestamp.getSeconds())
-                            upcomingRoundList.add(eventRound);
+                        else if(currTime >= competitionEventRound.startTimestamp.getSeconds() - UPCOMING_ROUND_OFFSET && currTime < competitionEventRound.endTimestamp.getSeconds())
+                            upcomingRoundList.add(competitionEventRound);
+
+                        if(upcomingRoundList.isEmpty())
+                        {
+                            Log.d("CC_UPCOMING_ROUNDS", "No upcoming rounds found.");
+                            noUpcomingRoundTextView.setVisibility(View.VISIBLE);
+                        }
+
                         // Sort Rounds by start time
                         Collections.sort(upcomingRoundList, (round1, round2) -> Long.compare(round1.startTimestamp.getSeconds(), round2.startTimestamp.getSeconds()));
                         upcomingRoundAdapter.notifyDataSetChanged();
-
-                        loadingScreenController.dismissLoadingScreen();
                     }
+                    loadingScreenController.dismissLoadingScreen();
                 });
             }
         });

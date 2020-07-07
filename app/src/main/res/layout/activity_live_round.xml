@@ -37,6 +37,23 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/background_6" />
 
+            <TextView
+                android:id="@+id/noUpcomingRoundsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:alpha="0.85"
+                android:fontFamily="@font/abel"
+                android:text="@string/error_404"
+                android:textAllCaps="false"
+                android:textColor="@color/colorTextSecondaryLight"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/upcomingRoundsRecyclerView"
                 android:layout_width="0dp"
@@ -45,8 +62,10 @@
                 android:layout_marginBottom="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
 
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -105,14 +124,14 @@
                     android:backgroundTint="#4D565656">
 
                     <TextView
-                        android:id="@+id/roundFormatTextView"
+                        android:id="@+id/formatTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="16dp"
                         android:fontFamily="sans-serif-condensed-light"
                         android:text="Round Format"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         app:layout_constraintBottom_toBottomOf="@+id/roundNameTextView"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="1.0"
@@ -128,7 +147,7 @@
                         android:text="Start Time - End Time"
                         android:textColor="@color/colorAccent"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="@+id/roundFormatTextView"
+                        app:layout_constraintEnd_toEndOf="@+id/formatTextView"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="@+id/roundNameTextView"
                         app:layout_constraintTop_toBottomOf="@+id/qualificationCriteriaTextView" />
@@ -142,7 +161,7 @@
                         android:fontFamily="sans-serif-condensed-light"
                         android:text="Round ID"
                         android:textColor="@color/colorTextSecondaryLight"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -155,7 +174,7 @@
                         android:text="Qualification criteria : NA"
                         android:textColor="@color/colorTextSecondaryLight"
                         android:textSize="16sp"
-                        app:layout_constraintEnd_toEndOf="@+id/roundFormatTextView"
+                        app:layout_constraintEnd_toEndOf="@+id/formatTextView"
                         app:layout_constraintHorizontal_bias="1.0"
                         app:layout_constraintStart_toStartOf="@+id/roundNameTextView"
                         app:layout_constraintTop_toBottomOf="@+id/roundNameTextView" />

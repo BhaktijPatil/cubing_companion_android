@@ -15,43 +15,43 @@ import com.cubenama.cubingcompanion.R;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class EventRoundAdapter extends RecyclerView.Adapter<EventRoundAdapter.MyViewHolder>{
+public class CompetitionEventRoundAdapter extends RecyclerView.Adapter<CompetitionEventRoundAdapter.MyViewHolder>{
 
-    private List<EventRound> eventRoundsList;
+    private List<CompetitionEventRound> competitionEventRoundsList;
     private CompetitionScheduleFragment.ClickListener clickListener;
     private Context context;
 
     @NonNull
     @Override
-    public EventRoundAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CompetitionEventRoundAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row_schedule_round, parent, false);
 
         context = parent.getContext();
 
-        return new EventRoundAdapter.MyViewHolder(itemView, clickListener);
+        return new CompetitionEventRoundAdapter.MyViewHolder(itemView, clickListener);
     }
 
 
 
     @Override
-    public void onBindViewHolder(@NonNull EventRoundAdapter.MyViewHolder holder, int position) {
-        EventRound eventRound = eventRoundsList.get(position);
+    public void onBindViewHolder(@NonNull CompetitionEventRoundAdapter.MyViewHolder holder, int position) {
+        CompetitionEventRound competitionEventRound = competitionEventRoundsList.get(position);
 
         // Assign values to list row
-        holder.roundIdTextView.setText("Round : " + (position + 1));
+        holder.roundIdTextView.setText("Round " + competitionEventRound.roundName);
         // Qualifying criteria for rounds
-        if(position == 0)
-            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : NA");
+        if(competitionEventRound.roundName.equals("1"))
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : NA");
         else
-            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualificaiton_criteria) + " : Top " + eventRound.qualificationCriteria);
-        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", eventRound.startTimestamp) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", eventRound.endTimestamp));
+            holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : Top " + competitionEventRound.qualificationCriteria);
+        holder.roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", competitionEventRound.startTimestamp) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", competitionEventRound.endTimestamp));
     }
 
 
 
     @Override
     public int getItemCount() {
-        return eventRoundsList.size();
+        return competitionEventRoundsList.size();
     }
 
 
@@ -78,8 +78,8 @@ public class EventRoundAdapter extends RecyclerView.Adapter<EventRoundAdapter.My
         }
     }
 
-    EventRoundAdapter(List<EventRound> eventRoundsList, CompetitionScheduleFragment.ClickListener clickListener){
-        this.eventRoundsList = eventRoundsList;
+    CompetitionEventRoundAdapter(List<CompetitionEventRound> competitionEventRoundsList, CompetitionScheduleFragment.ClickListener clickListener){
+        this.competitionEventRoundsList = competitionEventRoundsList;
         this.clickListener = clickListener;
     }
 }

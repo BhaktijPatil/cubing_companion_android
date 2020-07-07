@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,14 +26,18 @@ import java.util.List;
 
 public class CompetitionsFragment  extends Fragment {
 
-    // Database reference
-    private FirebaseFirestore db;
-
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_competitions, container, false);
 
         // Create database instance
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Setup progress bar & placeholder text
+        ProgressBar upcomingCompetitionsProgressBar = root.findViewById(R.id.upcomingCompetitionsProgressBar);
+        ProgressBar pastCompetitionsProgressBar = root.findViewById(R.id.pastCompetitionsProgressBar);
+
+        TextView upcomingCompetitionPlaceholderTextView = root.findViewById(R.id.upcomingCompetitionPlaceholderTextView);
+        TextView pastCompetitionPlaceholderTextView = root.findViewById(R.id.pastCompetitionPlaceholderTextView);
 
         // Setup recycler views and adapters
         List<CompetitionDetails> upcomingCompetitionDetailsList = new ArrayList<>();
@@ -54,22 +60,33 @@ public class CompetitionsFragment  extends Fragment {
         pastCompetitionsRecyclerView.setAdapter(competitionDetailsAdapter2);
 
         // Load data from firebase into UI
-        CollectionReference competition_details = db.collection("competition_details");
-        competition_details.orderBy("start_time", Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
+        CollectionReference competition_details = db.collection(getString(R.string.db_field_name_comp_details));
+        competition_details.orderBy(getString(R.string.db_field_name_start_time), Query.Direction.ASCENDING).get().addOnCompleteListener(task -> {
             upcomingCompetitionDetailsList.clear();
             pastCompetitionDetailsList.clear();
             for(QueryDocumentSnapshot competition : task.getResult())
             {
-                Log.d("CC_COMPETITION", String.valueOf(competition.get("name")));
-                CompetitionDetails competitionDetails = new CompetitionDetails(competition.getId(), competition.getString("name"), competition.getString("organizer"), competition.getTimestamp("start_time"), competition.getTimestamp("end_time"));
+                Log.d("CC_COMPETITION", competition.getString(getString(R.string.db_field_name_name)));
+                CompetitionDetails competitionDetails = new CompetitionDetails(competition.getId(), competition.getString(getString(R.string.db_field_name_name)), competition.getString(getString(R.string.db_field_name_organizer)), competition.getTimestamp(getString(R.string.db_field_name_start_time)), competition.getTimestamp(getString(R.string.db_field_name_end_time)));
                 // Check if competition has been conducted
-                if (Calendar.getInstance().getTimeInMillis()/1000 < competition.getTimestamp("end_time").getSeconds())
+                if (Calendar.getInstance().getTimeInMillis()/1000 < competition.getTimestamp(getString(R.string.db_field_name_end_time)).getSeconds())
                     upcomingCompetitionDetailsList.add(competitionDetails);
                 else
                     pastCompetitionDetailsList.add(competitionDetails);
             }
             competitionDetailsAdapter1.notifyDataSetChanged();
             competitionDetailsAdapter2.notifyDataSetChanged();
+
+            // Disable progress bars
+            upcomingCompetitionsProgressBar.setVisibility(View.GONE);
+            pastCompetitionsProgressBar.setVisibility(View.GONE);
+
+            // Enable placeholder textviews
+            if(upcomingCompetitionDetailsList.isEmpty())
+                upcomingCompetitionPlaceholderTextView.setVisibility(View.VISIBLE);
+            if(pastCompetitionDetailsList.isEmpty())
+                pastCompetitionPlaceholderTextView.setVisibility(View.VISIBLE);
+
         });
 
         return root;

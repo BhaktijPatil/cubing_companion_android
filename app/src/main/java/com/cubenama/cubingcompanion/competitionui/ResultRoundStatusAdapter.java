@@ -8,18 +8,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.fragment.app.Fragment;
 
 import com.cubenama.cubingcompanion.R;
 import com.cubenama.cubingcompanion.RoundResultActivity;
 
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
-import java.util.List;
 
 public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.cubingcompanion.competitionui.ResultRoundStatusAdapter.MyViewHolder>{
 
@@ -41,13 +40,13 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull com.cubenama.cubingcompanion.competitionui.ResultRoundStatusAdapter.MyViewHolder holder, int position) {
-        EventRound eventRound = event.eventRounds.get(position);
+        CompetitionEventRound competitionEventRound = event.competitionEventRounds.get(position);
 
         // Assign values to list row
-        holder.roundIdTextView.setText("Round " + (position + 1));
+        holder.roundIdTextView.setText("Round " + competitionEventRound.roundName);
 
         // Assign result status
-        if(Calendar.getInstance().getTimeInMillis() > eventRound.startTimestamp.getSeconds()*1000)
+        if(Calendar.getInstance().getTimeInMillis() > competitionEventRound.startTimestamp.getSeconds()*1000)
         {
             // Start new activity to load results
             holder.resultHolderCardView.setOnClickListener(v -> {
@@ -55,19 +54,21 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
                 resultIntent.putExtra("event_id", event.eventId);
                 resultIntent.putExtra("result_calc_method", event.resultCalcMethod);
                 resultIntent.putExtra("comp_id", ((Activity)context).getIntent().getStringExtra("comp_id"));
-                resultIntent.putExtra("event_name", event.eventName);
-                resultIntent.putExtra("round_id", eventRound.roundId);
-                resultIntent.putExtra("round_name", String.valueOf(position + 1));
+                resultIntent.putExtra("event_name", competitionEventRound.eventName);
+                resultIntent.putExtra("round_id", competitionEventRound.roundId);
+                resultIntent.putExtra("round_name", competitionEventRound.roundName);
+
                 // Send qualification criteria for next round
-                if(position + 1 < event.eventRounds.size())
-                    resultIntent.putExtra("qualification_criteria", event.eventRounds.get(position+1).qualificationCriteria);
+                if(Long.parseLong(competitionEventRound.roundName) < event.competitionEventRounds.size())
+                    resultIntent.putExtra("qualification_criteria", event.competitionEventRounds.get(position + 1).qualificationCriteria);
                 // Set qualification criteria to 3 (podiums) if final round
                 else
                     resultIntent.putExtra("qualification_criteria", 3);
+
                 context.startActivity(resultIntent);
             });
 
-            if(Calendar.getInstance().getTimeInMillis() < eventRound.endTimestamp.getSeconds()*1000) {
+            if(Calendar.getInstance().getTimeInMillis() < competitionEventRound.endTimestamp.getSeconds()*1000) {
                 // Round is Live
                 holder.resultStatusTextView.setText("Live");
                 holder.resultStatusTextView.setTextColor(context.getColor(R.color.colorAccent));
@@ -82,6 +83,8 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
             // Round hasn't started
             holder.resultStatusTextView.setText("NA");
             holder.resultStatusTextView.setTextColor(context.getColor(R.color.colorTextSecondaryLight));
+
+            holder.resultHolderCardView.setOnClickListener(v -> Toast.makeText(context, "Results for " + event.eventName + " Round " + competitionEventRound.roundName + " are not yet live.", Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -89,7 +92,7 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
 
     @Override
     public int getItemCount() {
-        return event.eventRounds.size();
+        return event.competitionEventRounds.size();
     }
 
 

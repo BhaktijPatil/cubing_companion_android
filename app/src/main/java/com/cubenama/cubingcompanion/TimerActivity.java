@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import static java.util.Collections.max;
@@ -34,9 +35,8 @@ import static java.util.Collections.min;
 
 public class TimerActivity extends AppCompatActivity {
 
-    // Database reference
-    private FirebaseFirestore db;
-    DocumentReference event;
+    DocumentReference eventDetailsReference;
+    DocumentReference resultDetailsReference;
 
     // Shared preferences to store user details
     SharedPreferences userDetailsSharedPreferences;
@@ -70,14 +70,14 @@ public class TimerActivity extends AppCompatActivity {
 
         loadingScreenController = new LoadingScreenController(this);
         // Show loading screen for
-        loadingScreenController.showLoadingScreen("Decoding scrambles ...");
+        loadingScreenController.showLoadingScreen(getString(R.string.loading_screen_msg_4));
 
         dateFormat = new SimpleDateFormat("mm:ss.SS");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 
         // Create database instance
-        db = FirebaseFirestore.getInstance();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Create reference to cuber details
         userDetailsSharedPreferences = getSharedPreferences("user_details", Context.MODE_PRIVATE);
@@ -103,17 +103,16 @@ public class TimerActivity extends AppCompatActivity {
 
         Log.d("CC_COMP_SOLVE", "Comp ID : " + getIntent().getStringExtra("comp_id") + " Event ID : " + getIntent().getStringExtra("event_id"));
 
-        // Reference to event
-        event = db.collection("competition_details").document(getIntent().getStringExtra("comp_id")).collection("schedule").document(getIntent().getStringExtra("event_id"));
-        event.get().addOnCompleteListener(task -> {
-           // Get scrambles
-           event.collection("rounds").document(getIntent().getStringExtra("round_id")).get().addOnCompleteListener(task1 -> {
+        // Reference to eventDetailsReference
+        eventDetailsReference = db.collection(getString(R.string.db_field_name_comp_details)).document(Objects.requireNonNull(getIntent().getStringExtra("comp_id"))).collection(getString(R.string.db_field_name_events)).document(Objects.requireNonNull(getIntent().getStringExtra("event_id")));
+        resultDetailsReference = eventDetailsReference.collection(getString(R.string.db_field_name_rounds)).document(Objects.requireNonNull(getIntent().getStringExtra("round_id"))).collection(getString(R.string.db_field_name_results)).document(userDetailsSharedPreferences.getString("uid", ""));
 
-               // Get round details
-               roundEndTime = task1.getResult().getTimestamp("end_time").getSeconds() * 1000;
-               scrambles = (ArrayList<String>) task1.getResult().get("scrambles");
-               processSolve();
-           });
+        // Get scrambles
+        eventDetailsReference.collection(getString(R.string.db_field_name_rounds)).document(Objects.requireNonNull(getIntent().getStringExtra("round_id"))).get().addOnCompleteListener(eventDetailsTask -> {
+            // Get round details
+            roundEndTime = eventDetailsTask.getResult().getTimestamp(getString(R.string.db_field_name_end_time)).getSeconds() * 1000;
+            scrambles = (ArrayList<String>) eventDetailsTask.getResult().get(getString(R.string.db_field_name_scrambles));
+            processSolve();
         });
     }
 
@@ -122,12 +121,12 @@ public class TimerActivity extends AppCompatActivity {
     // Function to regulate process for one solve
     private void processSolve()
     {
-        if(solveId < scrambles.size()) {
+       if(solveId < scrambles.size()) {
             // DNF the current solve
-            event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task -> {
-                ArrayList<Long> timeList = (ArrayList<Long>) task.getResult().get("time_list");
+            resultDetailsReference.get().addOnCompleteListener(retrieveTimesTask -> {
+                ArrayList<Long> timeList = (ArrayList<Long>) retrieveTimesTask.getResult().get(getString(R.string.db_field_name_time_list));
                 timeList.set(solveId, ResultCodes.DNF_CODE);
-                event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("time_list", timeList).addOnCompleteListener(task1 -> {
+                resultDetailsReference.update(getString(R.string.db_field_name_time_list), timeList).addOnCompleteListener(uploadResultTask -> {
                     // Dimiss loading screen
                     loadingScreenController.dismissLoadingScreen();
                     // Reset timer
@@ -138,9 +137,9 @@ public class TimerActivity extends AppCompatActivity {
                     // Set solve ID
                     solveIdTextView.setText("Solve " + (solveId + 1));
                     // Listener for +2
-                    plusTwoButton.setOnClickListener(v3 -> Toast.makeText(this, "Finish the solve to add a penalty.", Toast.LENGTH_SHORT).show());
+                    plusTwoButton.setOnClickListener(v3 -> Toast.makeText(this, R.string.penalty_unusable_warning, Toast.LENGTH_SHORT).show());
                     // Listener for DNF
-                    dnfButton.setOnClickListener(v3 -> Toast.makeText(this, "Finish the solve to add a penalty.", Toast.LENGTH_SHORT).show());
+                    dnfButton.setOnClickListener(v3 -> Toast.makeText(this, R.string.penalty_unusable_warning, Toast.LENGTH_SHORT).show());
 
                     // Show current scramble to user
                     createScramblePopup(scrambles.get(solveId), solveId);
@@ -274,7 +273,7 @@ public class TimerActivity extends AppCompatActivity {
     private void uploadResult(long roundEndTime)
     {
         // show loading screen
-        loadingScreenController.showLoadingScreen("Uploading result ...");
+        loadingScreenController.showLoadingScreen(getString(R.string.loading_screen_msg_5));
 
         // Round has ended
         if(Calendar.getInstance().getTimeInMillis() > roundEndTime)
@@ -289,10 +288,10 @@ public class TimerActivity extends AppCompatActivity {
             Log.d("CC_SOLVE_TIME", solveTime);
 
             // Upload time to DB
-            event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(task -> {
-                ArrayList<Long> timeList = (ArrayList<Long>) task.getResult().get("time_list");
+            resultDetailsReference.get().addOnCompleteListener(uploadResultTask -> {
+                ArrayList<Long> timeList = (ArrayList<Long>) uploadResultTask.getResult().get(getString(R.string.db_field_name_time_list));
                 timeList.set(solveId, solveTime.equals("DNF") ? ResultCodes.DNF_CODE : convertTime(solveTime));
-                event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update("time_list", timeList).addOnCompleteListener(task1 -> {
+                resultDetailsReference.update(getString(R.string.db_field_name_time_list), timeList).addOnCompleteListener(uploadFinalResultTask -> {
                     // Load next scramble
                     solveId += 1;
                     // Last solve
@@ -300,9 +299,9 @@ public class TimerActivity extends AppCompatActivity {
                     {
                         long result = calculateResult(timeList);
                         Map<String, Object> resultDetails = new HashMap<>();
-                        resultDetails.put("result", result);
-                        resultDetails.put("single", min(timeList));
-                        event.collection("rounds").document(getIntent().getStringExtra("round_id")).collection("results").document(userDetailsSharedPreferences.getString("uid", "")).update(resultDetails).addOnCompleteListener(task2 -> {
+                        resultDetails.put(getString(R.string.db_field_name_final_result), result);
+                        resultDetails.put(getString(R.string.db_field_name_single), min(timeList));
+                        eventDetailsReference.collection(getString(R.string.db_field_name_rounds)).document(Objects.requireNonNull(getIntent().getStringExtra("round_id"))).collection(getString(R.string.db_field_name_results)).document(userDetailsSharedPreferences.getString("uid", "")).update(resultDetails).addOnCompleteListener(task -> {
                             showResult(result);
                             loadingScreenController.dismissLoadingScreen();
                         });
@@ -318,7 +317,7 @@ public class TimerActivity extends AppCompatActivity {
 
     // Function to calculate final result
     private long calculateResult(ArrayList<Long> timeList) {
-        switch (getIntent().getStringExtra("result_calc_method"))
+        switch (Objects.requireNonNull(getIntent().getStringExtra("result_calc_method")))
         {
             // Calculate average of solves
             case "Average" :

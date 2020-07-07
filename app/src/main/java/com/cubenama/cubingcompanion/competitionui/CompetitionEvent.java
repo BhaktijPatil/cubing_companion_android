@@ -3,19 +3,19 @@ package com.cubenama.cubingcompanion.competitionui;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompetitionEvent {
-    public String eventId;
-    public String eventName;
-    public String resultCalcMethod;
-    public long solveCount;
-    public List<EventRound> eventRounds;
+class CompetitionEvent {
+    String eventId;
+    String eventName;
+    String resultCalcMethod;
+    long solveCount;
+    List<CompetitionEventRound> competitionEventRounds;
 
-    public CompetitionEvent(String eventId, String eventName, long solveCount, String resultCalcMethod)
+    CompetitionEvent(String eventId, String eventName, long solveCount, String resultCalcMethod)
     {
         this.eventId = eventId;
         this.eventName = eventName;
         this.solveCount = solveCount;
         this.resultCalcMethod = resultCalcMethod;
-        eventRounds = new ArrayList<>();
+        competitionEventRounds = new ArrayList<>();
     }
 }

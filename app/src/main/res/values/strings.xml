@@ -13,26 +13,82 @@
     <string name="menu_faq">"FAQ"</string>
 
     <string name="competition_instructions_how_to_compete_header">"How do I compete :"</string>
+    <string name="competition_instructions_how_to_use_timer_header">"Using the timer :"</string>
     <string name="competition_instructions_podium_details_header">"Podium details :"</string>
-    <string name="confirmation_description">Participant must finish all solves before round ends. Participants expecting a podium must record beginning from this screen. On confirmation, the participant will be taken to their first scramble, and can begin their solves once ready. Ensure network connectivity to avoid your results from being DNF\'d. Once a parcipant is shown a scramble, he must finish the solve without closing the application, else that solve will be DNF\'d."</string>
+    <string name="confirmation_description">Competitors will be presented with the first scramble on confirmation. All solves must be completed before the round ends and those expecting to podium should begin recording from this point forward. Competitors must ensure that they have read through WCA regulations as well as guidelines mentioned in the app before they begin. Good luck for your solves and have fun."</string>
     <string name="default_time">00:00.00</string>
     <string name="internet_warning">Ensure good network connectivity in case the loading screen persists for a long time.</string>
-    <string name="qualificaiton_criteria">QC</string>
+    <string name="qualification_criteria">QC</string>
+    <string name="app_version">Version 0.0.1</string>
+    <string name="profile_mobile_number">Mobile No.</string>
+    <string name="profile_dob">DOB</string>
+    <string name="profile_name">Name</string>
+    <string name="error_404">Error 404 : Not found</string>
 
+    <string name="loading_screen_msg_1">Digging up information …</string>
+    <string name="loading_screen_msg_2">Almost there …</string>
+    <string name="loading_screen_msg_3">Fetching result status …</string>
+    <string name="loading_screen_msg_4">Decoding scrambles …</string>
+    <string name="loading_screen_msg_5">Uploading result …</string>
+
+    <!-- Firebase field names -->
+    <string name="db_field_name_events">events</string>
+    <string name="db_field_name_comp_details">competition_details</string>
+    <string name="db_field_name_rounds">rounds</string>
+    <string name="db_field_name_results">results</string>
+    <string name="db_field_name_round_name">round_name</string>
+    <string name="db_field_name_result_calc_method">result_calc_method</string>
+    <string name="db_field_name_solve_count">solve_count</string>
+    <string name="db_field_name_start_time">start_time</string>
+    <string name="db_field_name_end_time">end_time</string>
+    <string name="db_field_name_name">name</string>
+    <string name="db_field_name_qualification_criteria">qualification_criteria</string>
+    <string name="db_field_name_final_result">final_result</string>
+    <string name="db_field_name_time_list">time_list</string>
+    <string name="db_field_name_user_details">cuber_details</string>
+    <string name="db_field_name_wca_id">wca_id</string>
+    <string name="db_field_name_single">single</string>
+    <string name="db_field_name_photo_url">photo_url</string>
+    <string name="db_field_name_mobile">mobile</string>
+    <string name="db_field_name_email">email</string>
+    <string name="db_field_name_dob">dob</string>
+    <string name="db_field_name_profile_pictures">profile_pictures</string>
+    <string name="db_field_name_main_event">main_event</string>
+    <string name="db_field_name_organizer">organizer</string>
+    <string name="db_field_name_reg_start_time">registration_start_time</string>
+    <string name="db_field_name_reg_end_time">registration_end_time</string>
+    <string name="db_field_name_competitor_limit">competitor_limit</string>
+    <string name="db_field_value_competitors">competitors</string>
+    <string name="db_field_name_results_verified">results_verified</string>
+    <string name="db_field_name_app_details">app_details</string>
+    <string name="db_field_name_app_version">app_version</string>
+    <string name="db_field_name_min_version_id">min_version_id</string>
+    <string name="db_field_name_scrambles">scrambles</string>
+    <string name="penalty_unusable_warning">Finish the solve to add a penalty.</string>
 
     <string-array name="competition_instructions_how_to_compete_details">
-        <item>"When a competition begins, the 'PARTICIPATE' button will go live. Click here to begin."</item>
-        <item>"Details of the current event will be shown on a new page. Participants eligible for the event can initiate by clicking the 'START' button."</item>
-        <item>"You are now competing. A scramble will be presented to you, upon execution of which you can begin inspection followed by the solve itself."</item>
-        <item>"Repeat this process for all the solves in a round. Your results will automatically be submitted.</item>
-        <item>"After each solve, you will get an option to add '+2's or 'DNF' the solve. You must complete all solves before the round ends, else all your solves will be disqualified."</item>
-        <item>"If you expect to podium in any event, make sure you record your solves. You can then submit them for verification."</item>
+        <item>"The REGISTER button will go live in the mentioned registration period. Once a user registers for a competition, they are eligible to participate in all of it's events."</item>
+        <item>"Competitors can check out the schedule and other competitors in a competition before registering. We request you to only register for competitions you are genuinely interested in."</item>
+        <item>"The PARTICIPATE button will go live for the duration of the competition. On clicking PARTICIPATE, competitors can see live and upcoming rounds. On confirmation, participants can begin their solves once they are ready."</item>
+        <item>"Competitors found guilty of cheating or other forms of misconduct may be temporarily/permanently banned from the platform. This includes registering for many competitions in a row without participating in any.</item>
+        <item>"If a competitor expects a podium in any event, they must ensure that they records their solves as per the platform guidelines."</item>
+    </string-array>
+
+    <string-array name="competition_instructions_using_the_timer_details">
+        <item>"Competitors must ensure good internet connectivity before they begin their solves."</item>
+        <item>"The scramble for each solve will be presented before it begins. Once scrambled, competitors can cover their cubes and move on to the timer."</item>
+        <item>"Timer has inspection built in, and will begin inspection time on long press and release. Inspection penalties are as per WCA guidelines (15s +2, 17s DNF)."</item>
+        <item>"During the inspection, competitors can long press and release to begin the timer. While doing so, one hand must be on the timer and the other on a flat surface. The cube itself should not be held or touched during this period."</item>
+        <item>"Once the timer begins, competitors can finish their solves and then tap on the timer to stop. Penalties (+2 and DNF) can be added once the solve is done."</item>
+        <item>"On finishing the solve, UPLOAD button will activate. Clicking on it will upload your result to our backend and show you the next scramble. Rinse and repeat, easy."</item>
+        <item>"If the app is closed without finishing a solve, the scramble for which is seen, that solve will count as DNF. We recommend finishing all solves in one go."</item>
     </string-array>
 
     <string-array name="competition_instructions_podium_details">
-        <item>"Any competitor expecting a podium must record his solves in the final round for that event."</item>
-        <item>"Videos concerned must contain an original uncut footage that starts when the user clicks on 'START'."</item>
-        <item>"The organizers may directly contact a competitor for verification purposes."</item>
-        <item>"Videos concerned can be uploaded on YouTube/Drive/Link provided by the organizer."</item>
+        <item>"Competitors expecting a podium must record their solves in the final round for that event."</item>
+        <item>"Concerned videos can be uploaded either to Youtube or Google Drive, and the links to them must be submitted at teamcubenama@gmail.com"</item>
+        <item>"Competitors should begin recording at the live rounds screen and continue recording till the final solve is done. Recordings must contain footage/screen capture for both the screens."</item>
+        <item>"Organizers may directly contact competitors to verify results or raise enquiries."</item>
+        <item>"Results without video proof will be DNF'd/deranked."</item>
     </string-array>
 </resources>

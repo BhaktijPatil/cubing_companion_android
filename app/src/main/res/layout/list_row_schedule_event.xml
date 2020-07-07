@@ -58,9 +58,9 @@
                 android:fontFamily="@font/abel"
                 android:text="Event Name"
                 android:textAlignment="viewStart"
-                android:textAllCaps="true"
+                android:textAllCaps="false"
                 android:textColor="@color/colorTextPrimaryLight"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -85,7 +85,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="16dp" />
+                    android:layout_marginBottom="8dp" />
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
