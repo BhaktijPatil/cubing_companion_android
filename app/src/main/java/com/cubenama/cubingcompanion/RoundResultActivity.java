@@ -39,7 +39,7 @@ public class RoundResultActivity extends AppCompatActivity {
         finalResultHeaderTextView.setText(getIntent().getStringExtra("result_calc_method"));
 
         eventNameTextView.setText(getIntent().getStringExtra("event_name"));
-        roundIdTextView.setText("Round " + getIntent().getStringExtra("round_name"));
+        roundIdTextView.setText("Round " + getIntent().getLongExtra("round_no", 1));
 
         // Setup recycler views and adapters
         List<RoundResult> roundResultList = new ArrayList<>();
@@ -53,20 +53,20 @@ public class RoundResultActivity extends AppCompatActivity {
 
         // Show loading screen
         LoadingScreenController loadingScreenController = new LoadingScreenController(this);
-        loadingScreenController.showLoadingScreen("Building up suspense ...");
+        loadingScreenController.showLoadingScreen(getString(R.string.loading_screen_msg_6));
 
-        db.collection("competition_details")
+        db.collection(getString(R.string.db_field_name_comp_details))
                 .document(getIntent().getStringExtra("comp_id"))
-                .collection("schedule")
+                .collection(getString(R.string.db_field_name_events))
                 .document(getIntent().getStringExtra("event_id"))
-                .collection("rounds")
+                .collection(getString(R.string.db_field_name_rounds))
                 .document(getIntent().getStringExtra("round_id"))
-                .collection("results")
-                .orderBy("result", Query.Direction.ASCENDING).addSnapshotListener((snapshot, e) -> {
+                .collection(getString(R.string.db_field_name_results))
+                .orderBy(getString(R.string.db_field_name_final_result), Query.Direction.ASCENDING).addSnapshotListener((snapshot, e) -> {
                     roundResultList.clear();
                     for(QueryDocumentSnapshot result : snapshot)
                     {
-                        RoundResult roundResult = new RoundResult(result.getString("name"), result.getString("wca_id"), result.getLong("result"), result.getLong("single"), (ArrayList<Long>) result.get("time_list"));
+                        RoundResult roundResult = new RoundResult(result.getString(getString(R.string.db_field_name_name)), result.getString(getString(R.string.db_field_name_wca_id)), result.getLong(getString(R.string.db_field_name_final_result)), result.getLong(getString(R.string.db_field_name_single)), (ArrayList<Long>) result.get(getString(R.string.db_field_name_time_list)));
                         roundResultList.add(roundResult);
                     }
                     roundResultAdapter.notifyDataSetChanged();

@@ -70,15 +70,15 @@ public class CompetitionScheduleFragment extends Fragment {
             for(QueryDocumentSnapshot event : eventDetailsTask.getResult())
             {
                 CollectionReference eventRoundsReference = eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds));
-                eventRoundsReference.orderBy(getString(R.string.db_field_name_name)).get().addOnCompleteListener(innerTask -> {
+                eventRoundsReference.orderBy(getString(R.string.db_field_name_id)).get().addOnCompleteListener(roundDetailsTask -> {
                     // Create a new event instance
                     CompetitionEvent compEvent = new CompetitionEvent(event.getId(), event.getString(getString(R.string.db_field_name_name)), event.getLong(getString(R.string.db_field_name_solve_count)), event.getString(getString(R.string.db_field_name_result_calc_method)));
-                    Log.d("CC_COMP_SCHEDULE", "Event ID : " + compEvent.eventId + " Round Count : " + innerTask.getResult().size());
+                    Log.d("CC_COMP_SCHEDULE", "Event ID : " + compEvent.eventId + " Round Count : " + roundDetailsTask.getResult().size());
 
                     // Individual rounds for each event are obtained here
-                    for(QueryDocumentSnapshot round : innerTask.getResult())
+                    for(QueryDocumentSnapshot round : roundDetailsTask.getResult())
                     {
-                        CompetitionEventRound competitionEventRound = new CompetitionEventRound(event.getString(getString(R.string.db_field_name_name)), round.getString(getString(R.string.db_field_name_name)), round.getId(), round.getLong(getString(R.string.qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
+                        CompetitionEventRound competitionEventRound = new CompetitionEventRound(event.getString(getString(R.string.db_field_name_name)), round.getLong(getString(R.string.db_field_name_id)), round.getId(), round.getLong(getString(R.string.db_field_name_qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
                         compEvent.competitionEventRounds.add(competitionEventRound);
                     }
                     competitionEventList.add(compEvent);

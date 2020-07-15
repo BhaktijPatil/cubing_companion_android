@@ -24,19 +24,20 @@
     <string name="profile_dob">DOB</string>
     <string name="profile_name">Name</string>
     <string name="error_404">Error 404 : Not found</string>
+    <string name="penalty_unusable_warning">Finish the solve to add a penalty.</string>
 
     <string name="loading_screen_msg_1">Digging up information …</string>
     <string name="loading_screen_msg_2">Almost there …</string>
     <string name="loading_screen_msg_3">Fetching result status …</string>
     <string name="loading_screen_msg_4">Decoding scrambles …</string>
     <string name="loading_screen_msg_5">Uploading result …</string>
+    <string name="loading_screen_msg_6">Building up suspense …</string>
 
     <!-- Firebase field names -->
     <string name="db_field_name_events">events</string>
     <string name="db_field_name_comp_details">competition_details</string>
     <string name="db_field_name_rounds">rounds</string>
     <string name="db_field_name_results">results</string>
-    <string name="db_field_name_round_name">round_name</string>
     <string name="db_field_name_result_calc_method">result_calc_method</string>
     <string name="db_field_name_solve_count">solve_count</string>
     <string name="db_field_name_start_time">start_time</string>
@@ -45,7 +46,7 @@
     <string name="db_field_name_qualification_criteria">qualification_criteria</string>
     <string name="db_field_name_final_result">final_result</string>
     <string name="db_field_name_time_list">time_list</string>
-    <string name="db_field_name_user_details">cuber_details</string>
+    <string name="db_field_name_user_details">user_details</string>
     <string name="db_field_name_wca_id">wca_id</string>
     <string name="db_field_name_single">single</string>
     <string name="db_field_name_photo_url">photo_url</string>
@@ -63,8 +64,12 @@
     <string name="db_field_name_app_details">app_details</string>
     <string name="db_field_name_app_version">app_version</string>
     <string name="db_field_name_min_version_id">min_version_id</string>
+    <string name="db_field_name_admin_min_version_id">admin_min_version_id</string>
     <string name="db_field_name_scrambles">scrambles</string>
-    <string name="penalty_unusable_warning">Finish the solve to add a penalty.</string>
+    <string name="db_field_name_organizer_details">organizer_details</string>
+    <string name="db_field_name_key">key</string>
+    <string name="db_field_name_access">access</string>
+    <string name="db_field_name_id">id</string>
 
     <string-array name="competition_instructions_how_to_compete_details">
         <item>"The REGISTER button will go live in the mentioned registration period. Once a user registers for a competition, they are eligible to participate in all of it's events."</item>

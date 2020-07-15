@@ -291,20 +291,21 @@ public class TimerActivity extends AppCompatActivity {
             resultDetailsReference.get().addOnCompleteListener(uploadResultTask -> {
                 ArrayList<Long> timeList = (ArrayList<Long>) uploadResultTask.getResult().get(getString(R.string.db_field_name_time_list));
                 timeList.set(solveId, solveTime.equals("DNF") ? ResultCodes.DNF_CODE : convertTime(solveTime));
-                resultDetailsReference.update(getString(R.string.db_field_name_time_list), timeList).addOnCompleteListener(uploadFinalResultTask -> {
+                long result = calculateResult(timeList);
+
+                Map<String, Object> resultDetails = new HashMap<>();
+                resultDetails.put(getString(R.string.db_field_name_time_list), timeList);
+                resultDetails.put(getString(R.string.db_field_name_final_result), result);
+                resultDetails.put(getString(R.string.db_field_name_single), min(timeList));
+
+                resultDetailsReference.update(resultDetails).addOnCompleteListener(task -> {
                     // Load next scramble
                     solveId += 1;
-                    // Last solve
+                    // Show result if last solve
                     if(solveId == scrambles.size())
                     {
-                        long result = calculateResult(timeList);
-                        Map<String, Object> resultDetails = new HashMap<>();
-                        resultDetails.put(getString(R.string.db_field_name_final_result), result);
-                        resultDetails.put(getString(R.string.db_field_name_single), min(timeList));
-                        eventDetailsReference.collection(getString(R.string.db_field_name_rounds)).document(Objects.requireNonNull(getIntent().getStringExtra("round_id"))).collection(getString(R.string.db_field_name_results)).document(userDetailsSharedPreferences.getString("uid", "")).update(resultDetails).addOnCompleteListener(task -> {
-                            showResult(result);
-                            loadingScreenController.dismissLoadingScreen();
-                        });
+                        showResult(result);
+                        loadingScreenController.dismissLoadingScreen();
                     }
                     else
                         processSolve();
@@ -325,14 +326,14 @@ public class TimerActivity extends AppCompatActivity {
                 // Remove max and min times
                 tempList.remove(max(tempList));
                 tempList.remove(min(tempList));
-                if(tempList.contains(ResultCodes.DNF_CODE))
+                if(tempList.contains(ResultCodes.DNF_CODE) || timeList.contains(ResultCodes.DNS_CODE))
                     return ResultCodes.DNF_CODE;
                 else
                     // Find mean of remaining solves
                     return mean(tempList);
             // Calculate mean of solves
             case "Mean" :
-                if(timeList.contains(ResultCodes.DNF_CODE))
+                if(timeList.contains(ResultCodes.DNF_CODE) || timeList.contains(ResultCodes.DNS_CODE))
                     return ResultCodes.DNF_CODE;
                 else
                     return mean(timeList);

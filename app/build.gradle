@@ -26,6 +26,17 @@ android {
         targetCompatibility = 1.8
     }
 
+//    flavorDimensions "cubing_companion"
+//    productFlavors {
+//        default_app {
+//            dimension "cubing_companion"
+//            applicationIdSuffix ".app"
+//        }
+//        admin_app {
+//            dimension "cubing_companion"
+//            applicationIdSuffix ".admin"
+//        }
+//    }
 }
 
 dependencies {
@@ -33,7 +44,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'com.google.firebase:firebase-firestore:21.4.3'
+    implementation 'com.google.firebase:firebase-firestore:21.5.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.0'
@@ -44,6 +55,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.google.firebase:firebase-auth:19.3.1'
+    implementation 'com.google.firebase:firebase-auth:19.3.2'
     implementation 'com.google.android.gms:play-services-auth:18.0.0'
 }

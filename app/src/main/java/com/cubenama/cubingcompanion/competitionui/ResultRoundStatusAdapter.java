@@ -43,7 +43,7 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
         CompetitionEventRound competitionEventRound = event.competitionEventRounds.get(position);
 
         // Assign values to list row
-        holder.roundIdTextView.setText("Round " + competitionEventRound.roundName);
+        holder.roundIdTextView.setText("Round " + competitionEventRound.roundNo);
 
         // Assign result status
         if(Calendar.getInstance().getTimeInMillis() > competitionEventRound.startTimestamp.getSeconds()*1000)
@@ -56,10 +56,10 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
                 resultIntent.putExtra("comp_id", ((Activity)context).getIntent().getStringExtra("comp_id"));
                 resultIntent.putExtra("event_name", competitionEventRound.eventName);
                 resultIntent.putExtra("round_id", competitionEventRound.roundId);
-                resultIntent.putExtra("round_name", competitionEventRound.roundName);
+                resultIntent.putExtra("round_no", competitionEventRound.roundNo);
 
                 // Send qualification criteria for next round
-                if(Long.parseLong(competitionEventRound.roundName) < event.competitionEventRounds.size())
+                if(competitionEventRound.roundNo < event.competitionEventRounds.size())
                     resultIntent.putExtra("qualification_criteria", event.competitionEventRounds.get(position + 1).qualificationCriteria);
                 // Set qualification criteria to 3 (podiums) if final round
                 else
@@ -84,7 +84,7 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
             holder.resultStatusTextView.setText("NA");
             holder.resultStatusTextView.setTextColor(context.getColor(R.color.colorTextSecondaryLight));
 
-            holder.resultHolderCardView.setOnClickListener(v -> Toast.makeText(context, "Results for " + event.eventName + " Round " + competitionEventRound.roundName + " are not yet live.", Toast.LENGTH_SHORT).show());
+            holder.resultHolderCardView.setOnClickListener(v -> Toast.makeText(context, "Results for " + event.eventName + " Round " + competitionEventRound.roundNo + " are not yet live.", Toast.LENGTH_SHORT).show());
         }
     }
 

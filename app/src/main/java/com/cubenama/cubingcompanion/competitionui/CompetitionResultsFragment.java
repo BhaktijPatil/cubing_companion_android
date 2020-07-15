@@ -83,7 +83,7 @@ public class CompetitionResultsFragment extends Fragment {
                 for(QueryDocumentSnapshot event : eventDetailsTask.getResult())
                 {
                     CollectionReference roundDetailsReference = eventDetailsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds));
-                    roundDetailsReference.orderBy(getString(R.string.db_field_name_name)).get().addOnCompleteListener(roundDetailsTask -> {
+                    roundDetailsReference.orderBy(getString(R.string.db_field_name_id)).get().addOnCompleteListener(roundDetailsTask -> {
 
                         // Create a new event instance
                         CompetitionEvent competitionEvent = new CompetitionEvent(event.getId(), event.getString(getString(R.string.db_field_name_name)), event.getLong(getString(R.string.db_field_name_solve_count)), event.getString(getString(R.string.db_field_name_result_calc_method)));
@@ -92,7 +92,7 @@ public class CompetitionResultsFragment extends Fragment {
                         // Individual rounds for each event are obtained here
                         for(QueryDocumentSnapshot round : roundDetailsTask.getResult())
                         {
-                            CompetitionEventRound competitionEventRound = new CompetitionEventRound(competitionEvent.eventName, round.getString(getString(R.string.db_field_name_name)), round.getId(), round.getLong(getString(R.string.qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
+                            CompetitionEventRound competitionEventRound = new CompetitionEventRound(competitionEvent.eventName, round.getLong(getString(R.string.db_field_name_id)), round.getId(), round.getLong(getString(R.string.db_field_name_qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
                             competitionEvent.competitionEventRounds.add(competitionEventRound);
                         }
                         competitionEventList.add(competitionEvent);

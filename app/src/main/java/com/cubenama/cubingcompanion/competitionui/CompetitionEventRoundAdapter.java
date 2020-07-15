@@ -38,9 +38,9 @@ public class CompetitionEventRoundAdapter extends RecyclerView.Adapter<Competiti
         CompetitionEventRound competitionEventRound = competitionEventRoundsList.get(position);
 
         // Assign values to list row
-        holder.roundIdTextView.setText("Round " + competitionEventRound.roundName);
+        holder.roundIdTextView.setText("Round " + competitionEventRound.roundNo);
         // Qualifying criteria for rounds
-        if(competitionEventRound.roundName.equals("1"))
+        if(competitionEventRound.roundNo == 1)
             holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : NA");
         else
             holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : Top " + competitionEventRound.qualificationCriteria);
