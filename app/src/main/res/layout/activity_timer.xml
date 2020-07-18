@@ -88,6 +88,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:id="@+id/timerBackgroundImageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:tint="#CC212121"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/background_7" />
+
             <TextView
                 android:id="@+id/timeTextView"
                 android:layout_width="wrap_content"
@@ -99,7 +111,7 @@
                 android:fontFamily="@font/timer"
                 android:text="@string/default_time"
                 android:textAlignment="viewStart"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/colorTextPrimaryLight"
                 android:textSize="75sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -131,7 +143,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:fontFamily="@font/abel"
-                android:text="Congratulations !"
+                android:text="Hold and Release to begin"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textSize="18sp"
@@ -139,7 +151,8 @@
                 app:layout_constraintBottom_toTopOf="@+id/timeTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.75" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -143,7 +143,7 @@ public class ProfileFragment extends Fragment {
                 {
                     mainEventEditText.setText(snapshot.getString(getString(R.string.db_field_name_main_event)));
                 }
-                nameEditText.setText(snapshot.getString(getString(R.string.db_field_name_main_event)));
+                nameEditText.setText(snapshot.getString(getString(R.string.db_field_name_name)));
                 dobEditText.setText(snapshot.getString(getString(R.string.db_field_name_dob)));
                 phoneEditText.setText(snapshot.getString(getString(R.string.db_field_name_mobile)));
                 Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(snapshot.getString(getString(R.string.db_field_name_photo_url)))).into(profilePictureImageView);

@@ -32,7 +32,7 @@ public class SignInActivity extends AppCompatActivity {
 
     // Time for which splash screen should be shown
     private static final int SPLASH_SCREEN_TIME = 3000;
-    private static final long VERSION_ID = 1;
+    private static final long VERSION_ID = 5;
     private static final int RC_SIGN_IN = 69;
 
     private FirebaseAuth mAuth;

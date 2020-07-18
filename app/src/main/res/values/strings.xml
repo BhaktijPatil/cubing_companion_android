@@ -19,7 +19,7 @@
     <string name="default_time">00:00.00</string>
     <string name="internet_warning">Ensure good network connectivity in case the loading screen persists for a long time.</string>
     <string name="qualification_criteria">QC</string>
-    <string name="app_version">Version 0.0.1</string>
+    <string name="app_version">Version 0.0.5</string>
     <string name="profile_mobile_number">Mobile No.</string>
     <string name="profile_dob">DOB</string>
     <string name="profile_name">Name</string>

@@ -3,6 +3,7 @@ package com.cubenama.cubingcompanion;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -131,7 +132,7 @@ public class TimerActivity extends AppCompatActivity {
                     loadingScreenController.dismissLoadingScreen();
                     // Reset timer
                     timerTextView.setText(R.string.default_time);
-                    timerTextView.setTextColor(getColor(R.color.colorAccent));
+                    timerTextView.setTextColor(getColor(R.color.colorTextPrimaryLight));
                     // Make upload button invisible
                     uploadSolveButton.setVisibility(View.GONE);
                     // Set solve ID
@@ -167,15 +168,17 @@ public class TimerActivity extends AppCompatActivity {
                                 dnfButton.setOnClickListener(v3 -> dnfSolve());
                                 // Listener for upload button
                                 uploadSolveButton.setVisibility(View.VISIBLE);
-                                uploadSolveButton.setOnClickListener(v3 -> uploadResult(roundEndTime));
+                                uploadSolveButton.setOnClickListener(v3 -> {
+                                    timerTouchArea.setOnClickListener(null);
+                                    uploadResult(roundEndTime);
+                                });
                             });
                             timerHandler.postDelayed(updateTimerThread, 0);
                         });
 
-                        timerTextView.setTextColor(getResources().getColor(R.color.colorTextPrimaryLight, null));
+                        timerTextView.setTextColor(getResources().getColor(R.color.colorAccent, null));
                         // Make the timer unclickable
                         timerTouchArea.setLongClickable(false);
-
                         return false;
                     });
 
@@ -191,6 +194,11 @@ public class TimerActivity extends AppCompatActivity {
     // Function to show final result
     private void showResult(long result)
     {
+        // Deactivate buttons
+        plusTwoButton.setOnClickListener(null);
+        dnfButton.setOnClickListener(null);
+        showScrambleButton.setOnClickListener(null);
+
         // Set result into text view
         if(result != ResultCodes.DNF_CODE) {
             infoTextView.setText("Congratulations ! You have finished your solves with a " + getIntent().getStringExtra("result_calc_method") + " of");
@@ -368,23 +376,23 @@ public class TimerActivity extends AppCompatActivity {
 
 
 
-    // Function to create popup window for scramble
+    // Function to create dialog window for scramble
     private void createScramblePopup(String scramble , int solveId)
     {
-        // Inflate the popup window layout (show scramble)
-        View popupScrambleView = getLayoutInflater().inflate(R.layout.popup_scramble, null);
-        // Setup popup window
-        PopupWindow popupWindow = new PopupWindow(popupScrambleView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-        // Show popup view at the center
-        popupWindow.showAtLocation(popupScrambleView, Gravity.CENTER, 0, 0);
-        // Exit popup window
-        ImageButton exitButton = popupScrambleView.findViewById(R.id.exitButton);
-        exitButton.setOnClickListener(v -> popupWindow.dismiss());
+        // Scramble dialog
+        final Dialog scrambleDialog = new Dialog(this);
+        scrambleDialog.setContentView(R.layout.dialog_box_show_scramble);
+        scrambleDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
         // Set scramble
-        TextView scrambleTitle = popupScrambleView.findViewById(R.id.scrambleTitleTextView);
+        TextView scrambleTitle = scrambleDialog.findViewById(R.id.scrambleTitleTextView);
+        TextView scrambleTextView = scrambleDialog.findViewById(R.id.scrambleTextView);
         scrambleTitle.setText("Scramble " + (solveId + 1));
-        TextView scrambleTextView = popupScrambleView.findViewById(R.id.scrambleTextView);
         scrambleTextView.setText(scramble);
+        if(scramble.length() < 100)
+            scrambleTextView.setTextSize(24);
+
+        scrambleDialog.show();
     }
 
 

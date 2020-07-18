@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cubenama.cubingcompanion.competitionui.CompetitionEvent;
 import com.cubenama.cubingcompanion.competitionui.CompetitionEventRound;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,6 +40,7 @@ public class LiveRoundsActivity extends AppCompatActivity {
     SharedPreferences userDetailsSharedPreferences;
 
     CollectionReference eventsReference;
+    CollectionReference roundsReference;
     CollectionReference resultsReference;
 
     String compId;
@@ -97,10 +99,13 @@ public class LiveRoundsActivity extends AppCompatActivity {
         eventsReference.get().addOnCompleteListener(eventTask -> {
             for (QueryDocumentSnapshot event : eventTask.getResult())
             {
-                eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds)).get().addOnCompleteListener(roundTask -> {
+                CompetitionEvent competitionEvent = new CompetitionEvent(event.getId(), event.getString(getString(R.string.db_field_name_name)), event.getLong(getString(R.string.db_field_name_solve_count)), event.getString(getString(R.string.db_field_name_result_calc_method)));
+                eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds)).orderBy(getString(R.string.db_field_name_id)).get().addOnCompleteListener(roundTask -> {
                     for(QueryDocumentSnapshot round : roundTask.getResult())
                     {
                         CompetitionEventRound competitionEventRound = new CompetitionEventRound(event.getString(getString(R.string.db_field_name_name)), round.getLong(getString(R.string.db_field_name_id)), round.getId(), round.getLong(getString(R.string.db_field_name_qualification_criteria)), round.getTimestamp(getString(R.string.db_field_name_start_time)), round.getTimestamp(getString(R.string.db_field_name_end_time)));
+                        competitionEvent.competitionEventRounds.add(competitionEventRound);
+
                         // Set live round details
                         if(currTime > competitionEventRound.startTimestamp.getSeconds() && currTime < competitionEventRound.endTimestamp.getSeconds())
                         {
@@ -110,23 +115,23 @@ public class LiveRoundsActivity extends AppCompatActivity {
                             eventNameTextView.setVisibility(View.VISIBLE);
 
                             // Update live round info
-                            eventNameTextView.setText(event.getString(getString(R.string.db_field_name_name)));
-                            roundNameTextView.setText("Round " + round.getLong(getString(R.string.db_field_name_id)));
-                            roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", round.getTimestamp(getString(R.string.db_field_name_start_time))) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", round.getTimestamp(getString(R.string.db_field_name_end_time))));
+                            eventNameTextView.setText(competitionEventRound.eventName);
+                            roundNameTextView.setText("Round " + competitionEventRound.roundNo);
+                            roundTimeTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMM-yyyy  hh:mm aa", competitionEventRound.startTimestamp) + " - " + new DateTimeFormat().firebaseTimestampToDate("hh:mm aa", competitionEventRound.endTimestamp));
 
                             // Set event format
-                            switch (event.getString(getString(R.string.db_field_name_result_calc_method)))
+                            switch (competitionEvent.resultCalcMethod)
                             {
-                                case "Average" : formatTextView.setText("Average of " + event.getLong(getString(R.string.db_field_name_solve_count)));
+                                case "Average" : formatTextView.setText("Average of " + competitionEvent.solveCount);
                                     break;
-                                case "Mean" : formatTextView.setText("Mean of " + event.getLong(getString(R.string.db_field_name_solve_count)));
+                                case "Mean" : formatTextView.setText("Mean of " + competitionEvent.solveCount);
                                     break;
-                                case "Single" : formatTextView.setText("Single from " + event.getLong(getString(R.string.db_field_name_solve_count)));
+                                case "Single" : formatTextView.setText("Single from " + competitionEvent.solveCount);
                                     break;
                             }
                             
                             // Qualifying criteria for rounds
-                            if(round.getLong(getString(R.string.db_field_name_id)) == 1)
+                            if(competitionEventRound.roundNo == 1)
                                 qualificationCriteriaTextView.setText("Qualification Criteria : NA");
                             else
                                 qualificationCriteriaTextView.setText("Qualification Criteria : Top " + competitionEventRound.qualificationCriteria);
@@ -150,14 +155,16 @@ public class LiveRoundsActivity extends AppCompatActivity {
                                 {
                                     // Button press on time
                                     if(Calendar.getInstance().getTimeInMillis()/1000 < competitionEventRound.endTimestamp.getSeconds()) {
-                                        resultsReference = eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds)).document(round.getId()).collection(getString(R.string.db_field_name_results));
+                                        roundsReference = eventsReference.document(competitionEvent.eventId).collection(getString(R.string.db_field_name_rounds));
                                         // All competitors are eligible for round 1
-                                        if(round.getLong(getString(R.string.db_field_name_id)) == 1)
+                                        if(competitionEventRound.roundNo == 1)
                                             showConfirmationDialog(event, round);
                                         else
                                         {
+                                            String prevRoundId = competitionEvent.competitionEventRounds.get((int) competitionEventRound.roundNo - 2).roundId;
+                                            Log.d("CC_RR", prevRoundId);
                                             // Check if user has qualified for the round
-                                            resultsReference.orderBy(getString(R.string.db_field_name_final_result), Query.Direction.ASCENDING).limit(competitionEventRound.qualificationCriteria).get().addOnCompleteListener(competitorTask -> {
+                                            roundsReference.document(prevRoundId).collection(getString(R.string.db_field_name_results)).orderBy(getString(R.string.db_field_name_final_result), Query.Direction.ASCENDING).limit(competitionEventRound.qualificationCriteria).get().addOnCompleteListener(competitorTask -> {
                                                 boolean isQualified = false;
                                                 for(QueryDocumentSnapshot competitor : competitorTask.getResult())
                                                 {
@@ -190,10 +197,10 @@ public class LiveRoundsActivity extends AppCompatActivity {
                         else if(currTime >= competitionEventRound.startTimestamp.getSeconds() - UPCOMING_ROUND_OFFSET && currTime < competitionEventRound.endTimestamp.getSeconds())
                             upcomingRoundList.add(competitionEventRound);
 
-                        if(upcomingRoundList.isEmpty())
+                        if(!upcomingRoundList.isEmpty())
                         {
                             Log.d("CC_UPCOMING_ROUNDS", "No upcoming rounds found.");
-                            noUpcomingRoundTextView.setVisibility(View.VISIBLE);
+                            noUpcomingRoundTextView.setVisibility(View.GONE);
                         }
 
                         // Sort Rounds by start time
@@ -222,6 +229,7 @@ public class LiveRoundsActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(cancelButtonView -> confirmationDialog.dismiss());
         // Begin solves
         beginConfirmButton.setOnClickListener(beginButtonView -> {
+            resultsReference = roundsReference.document(round.getId()).collection(getString(R.string.db_field_name_results));
             // Retrieve solve ID
             resultsReference.document(userDetailsSharedPreferences.getString("uid", "")).get().addOnCompleteListener(resultDetailsTask -> {
                 // Some solves are done

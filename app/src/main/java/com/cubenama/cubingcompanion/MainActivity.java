@@ -1,6 +1,7 @@
 package com.cubenama.cubingcompanion;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +27,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.cardview.widget.CardView;
@@ -46,10 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private SharedPreferences userDetailsSharedPreferences;
 
-    private PopupWindow popupWindow;
-
     // Database reference
     private FirebaseFirestore db;
+
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +63,15 @@ public class MainActivity extends AppCompatActivity {
         userDetailsSharedPreferences = getSharedPreferences("user_details", Context.MODE_PRIVATE);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         ImageButton expandMenuButton = findViewById(R.id.expandMenuButton);
+
+        NavController navController = Navigation.findNavController(this, R.id.dashboard_nav_host_fragment);
+        NavigationUI.setupWithNavController(navigationView, navController);
 
         // Create the navigation drawer
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_profile, R.id.nav_faq)
-                .setDrawerLayout(drawer)
+                .setOpenableLayout(drawer)
                 .build();
 
         DocumentReference userDetailsReference = db.collection(getString(R.string.db_field_name_user_details)).document(userDetailsSharedPreferences.getString("uid", ""));
@@ -76,37 +79,16 @@ public class MainActivity extends AppCompatActivity {
             // Check if user's WCA ID is linked to the account
             if (!userDetailsTask.getResult().contains(getString(R.string.db_field_name_wca_id))) {
                 Log.d("CC_ACCOUNT", "Linking account with WCA ID");
-                // Get inflater for the current activity
-                LayoutInflater inflater = getLayoutInflater();
-                // Inflate the popup window layout (link WCA ID to account)
-                View popupLinkAccountView = inflater.inflate(R.layout.popup_profile, null);
-                // Setup popup window
-                popupWindow = new PopupWindow(popupLinkAccountView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, true);
-                // Show popup view at the center
-                popupWindow.showAtLocation(popupLinkAccountView, Gravity.CENTER, 0, 0);
-                // Deny access if account is not linked
-                popupWindow.setOnDismissListener(() -> {
-                            // Ensure WCA ID is unique
-                           userDetailsReference.get().addOnCompleteListener(task -> {
-                                if(task.getResult().getString(getString(R.string.db_field_name_wca_id)) == null)
-                                {
-                                    Toast.makeText(this, "Please link account with WCA ID to continue",Toast.LENGTH_LONG).show();
-                                    // Sign out the current user
-                                    FirebaseAuth.getInstance().signOut();
-                                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-                                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-                                    mGoogleSignInClient.signOut().addOnCompleteListener(this, task1 -> {
-                                        // Start login activity
-                                        new Handler().postDelayed(()->startActivity(new Intent(this, SignInActivity.class)),2000);
-                                    });
-                                }
-                            });
-                });
+                // Link account dialog
+                final Dialog linkAccountDialog = new Dialog(this);
+                linkAccountDialog.setContentView(R.layout.dialog_box_link_account);
+                linkAccountDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                linkAccountDialog.setCancelable(false);
 
-                EditText wcaIdEditText = popupLinkAccountView.findViewById(R.id.wcaIdEditText);
-                EditText nameEditText = popupLinkAccountView.findViewById(R.id.nameEditText);
-                EditText dobEditText = popupLinkAccountView.findViewById(R.id.dobEditText);
-                EditText phoneEditText = popupLinkAccountView.findViewById(R.id.phoneEditText);
+                EditText wcaIdEditText = linkAccountDialog.findViewById(R.id.wcaIdEditText);
+                EditText nameEditText = linkAccountDialog.findViewById(R.id.nameEditText);
+                EditText dobEditText = linkAccountDialog.findViewById(R.id.dobEditText);
+                EditText phoneEditText = linkAccountDialog.findViewById(R.id.phoneEditText);
 
                 // Fill out information obtained via Google Sign In
                 if (userDetailsTask.getResult().get(getString(R.string.db_field_name_mobile)) != null) {
@@ -117,15 +99,15 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // Load spinning cube GIF
-                ImageView loadingGifView = popupLinkAccountView.findViewById(R.id.loadingGifView);
+                ImageView loadingGifView = linkAccountDialog.findViewById(R.id.loadingGifView);
                 Glide.with(this).asGif().load(R.drawable.cube_loading_5).into(loadingGifView);
 
                 // Create Listener for DOB
-                ImageView dobButton = popupLinkAccountView.findViewById(R.id.selectDateButton);
-                dobButton.setOnClickListener(v -> getDate(popupLinkAccountView.findViewById(R.id.dobEditText)));
+                ImageView dobButton = linkAccountDialog.findViewById(R.id.selectDateButton);
+                dobButton.setOnClickListener(v -> getDate(linkAccountDialog.findViewById(R.id.dobEditText)));
 
                 // Create listener for link account button
-                CardView linkAccountButton = popupLinkAccountView.findViewById(R.id.linkAccountCardView);
+                CardView linkAccountButton = linkAccountDialog.findViewById(R.id.linkAccountCardView);
                 linkAccountButton.setOnClickListener(v -> {
                     String wcaId = String.valueOf(wcaIdEditText.getText());
                     String name = String.valueOf(nameEditText.getText());
@@ -158,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
 
                                             userDetailsReference.update(accountDetails);
                                             Toast.makeText(this, "Account linked successfully.", Toast.LENGTH_SHORT).show();
-                                            popupWindow.dismiss();
+                                            linkAccountDialog.dismiss();
                                         }
                                         // WCA ID duplicate
                                         else {
@@ -171,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 });
+                linkAccountDialog.show();
             }
 
         });
@@ -190,29 +173,29 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Inflate the navigation drawer
-        expandMenuButton.setOnClickListener(v -> mAppBarConfiguration.getDrawerLayout().openDrawer(Gravity.LEFT));
-
-        NavController navController = Navigation.findNavController(this, R.id.dashboard_nav_host_fragment);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        expandMenuButton.setOnClickListener(v -> mAppBarConfiguration.getOpenableLayout().open());
     }
 
 
     // Function to load user details into UI
     private void updateUserDetailsUI(String name, String wcaId, String photoURL) {
+        // Get text views in navigation header
+        View navigationViewHeader = navigationView.getHeaderView(0);
+
         // Update userDetailsReference name
         TextView userNameTextView = findViewById(R.id.cuberNameTextView);
-        TextView userNameTextViewAlt = findViewById(R.id.cuberNameTextViewAlt);
+        TextView userNameTextViewAlt = navigationViewHeader.findViewById(R.id.cuberNameTextViewAlt);
         userNameTextView.setText(name);
         userNameTextViewAlt.setText(name);
 
         // Update WCA ID
         TextView wcaIdTextView = findViewById(R.id.wcaIdTextView);
-        TextView wcaIdTextViewAlt = findViewById(R.id.wcaIdTextViewAlt);
+        TextView wcaIdTextViewAlt = navigationViewHeader.findViewById(R.id.wcaIdTextViewAlt);
         wcaIdTextView.setText(wcaId);
         wcaIdTextViewAlt.setText(wcaId);
 
         // Update profile picture
-        ImageView profilePictureImageView = findViewById(R.id.miniProfilePictureImageView);
+        ImageView profilePictureImageView = navigationViewHeader.findViewById(R.id.miniProfilePictureImageView);
         Glide.with(this).load(Uri.parse(photoURL)).into(profilePictureImageView);
 
         Log.d("CC_UPDATE_UI", "Name : " + name + " WCA ID : " + wcaId);
@@ -275,16 +258,5 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.dashboard_nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
-    }
-
-
-    // Function to handle back button presses
-    @Override
-    public void onBackPressed() {
-        // Disable back button if popup window is showing
-        if (popupWindow != null && popupWindow.isShowing())
-            Toast.makeText(this, "Link Account with WCA ID to continue.", Toast.LENGTH_LONG).show();
-        else
-            super.onBackPressed();
     }
 }

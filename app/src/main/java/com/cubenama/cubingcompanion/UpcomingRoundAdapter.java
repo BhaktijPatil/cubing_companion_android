@@ -39,9 +39,9 @@ public class UpcomingRoundAdapter extends RecyclerView.Adapter<UpcomingRoundAdap
         CompetitionEventRound competitionEventRound = competitionEventRoundsList.get(position);
 
         // Assign values to list row
-        holder.roundIdTextView.setText("Round " + (position + 1));
+        holder.roundIdTextView.setText("Round " + competitionEventRound.roundNo);
         // Qualifying criteria for rounds
-        if(position == 0)
+        if(competitionEventRound.roundNo == 0)
             holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : NA");
         else
             holder.qualificationCriteriaTextView.setText(context.getString(R.string.qualification_criteria) + " : Top " + competitionEventRound.qualificationCriteria);
