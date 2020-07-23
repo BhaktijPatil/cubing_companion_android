@@ -1,5 +1,10 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="nav_header_height">225dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="general_card_border_side">16dp</dimen>
+    <dimen name="general_card_view_bottom">24dp</dimen>
+    <dimen name="main_activity_card_top">16dp</dimen>
+    <dimen name="comp_details_card_vertical">16dp</dimen>
+    <dimen name="general_inner_card_margin">16dp</dimen>
+    <dimen name="dialog_box_side">24dp</dimen>
+    <dimen name="profile_field_side">16dp</dimen>
 </resources>

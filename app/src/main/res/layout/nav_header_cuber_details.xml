@@ -6,22 +6,23 @@
     android:background="@drawable/nav_bar_background_edit"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:paddingStart="24dp"
+    android:paddingStart="16dp"
     android:paddingTop="24dp"
+    android:paddingEnd="16dp"
     android:paddingBottom="24dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         app:cardBackgroundColor="#00FFFFFF"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="0dp">
+        app:cardCornerRadius="35dp"
+        app:cardElevation="2dp">
 
         <ImageView
             android:id="@+id/miniProfilePictureImageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:contentDescription="@string/nav_header_desc"
             android:scaleType="centerCrop"
             app:srcCompat="@drawable/default_avatar" />
@@ -44,7 +45,7 @@
         android:id="@+id/wcaIdTextViewAlt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/abel"
+        android:fontFamily="@font/share_tech_mono"
         android:text="@string/nav_header_subtitle"
         android:textColor="@color/colorAccent"
         android:textSize="18sp"

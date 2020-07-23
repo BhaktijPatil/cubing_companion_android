@@ -6,11 +6,16 @@ import androidx.cardview.widget.CardView;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -130,8 +135,10 @@ public class TimerActivity extends AppCompatActivity {
                 resultDetailsReference.update(getString(R.string.db_field_name_time_list), timeList).addOnCompleteListener(uploadResultTask -> {
                     // Dimiss loading screen
                     loadingScreenController.dismissLoadingScreen();
-                    // Reset timer
-                    timerTextView.setText(R.string.default_time);
+                    // Reset inspection
+                    timerTextView.setText("15");
+                    infoTextView.setVisibility(View.VISIBLE);
+                    infoTextView.setText(getString(R.string.info_text_inspection));
                     timerTextView.setTextColor(getColor(R.color.colorTextPrimaryLight));
                     // Make upload button invisible
                     uploadSolveButton.setVisibility(View.GONE);
@@ -149,36 +156,86 @@ public class TimerActivity extends AppCompatActivity {
                     Handler timerHandler = new Handler();
 
                     timerTouchArea.setOnLongClickListener(v -> {
-                        timerTouchArea.setOnClickListener(v1 -> {
-                            long startTime = System.nanoTime();
-                            Runnable updateTimerThread = new Runnable() {
-                                public void run() {
-                                    long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;
-                                    updateTime(elapsedMilliseconds, timerTextView);
-                                    timerHandler.postDelayed(this, 10);
-                                }
-                            };
-
-                            timerTouchArea.setOnClickListener(v2 -> {
-                                // Stop timer
-                                timerHandler.removeCallbacks(updateTimerThread);
-                                // Listener for +2
-                                plusTwoButton.setOnClickListener(v3 -> plusTwoSolve());
-                                // Listener for DNF
-                                dnfButton.setOnClickListener(v3 -> dnfSolve());
-                                // Listener for upload button
-                                uploadSolveButton.setVisibility(View.VISIBLE);
-                                uploadSolveButton.setOnClickListener(v3 -> {
-                                    timerTouchArea.setOnClickListener(null);
-                                    uploadResult(roundEndTime);
-                                });
-                            });
-                            timerHandler.postDelayed(updateTimerThread, 0);
-                        });
-
                         timerTextView.setTextColor(getResources().getColor(R.color.colorAccent, null));
-                        // Make the timer unclickable
-                        timerTouchArea.setLongClickable(false);
+                        timerTouchArea.setOnClickListener(v1 -> {
+                            timerTouchArea.setOnClickListener(null);
+                            infoTextView.setText(getString(R.string.info_text_solve));
+                            // Inspection begins on hold and release
+                            new CountDownTimer(17000,1000) {
+                                int countDown = 14;
+                                boolean inspectionPenalty = false;
+                                @Override
+                                public void onTick(long millisUntilFinished) {
+                                    // Warning at 8 & 12 seconds
+                                    if(countDown == 7 || countDown == 3)
+                                        new ToneGenerator(AudioManager.STREAM_MUSIC, 100).startTone(ToneGenerator.TONE_PROP_PROMPT,200);
+                                    // +2 at 15 seconds
+                                    if(countDown == 0)
+                                        inspectionPenalty = true;
+                                    // Show countdown to user
+                                    if(countDown >= 0)
+                                        timerTextView.setText(String.valueOf(countDown));
+                                    else
+                                        timerTextView.setText("+2");
+                                    countDown --;
+                                    timerTouchArea.setOnLongClickListener(v -> {
+                                        timerTextView.setTextColor(getColor(R.color.colorPrimary));
+                                        timerTouchArea.setOnClickListener(v1 -> {
+                                            timerTextView.setTextColor(getColor(R.color.colorAccent));
+                                            // Remove info text
+                                            infoTextView.setVisibility(View.GONE);
+                                            // Cancel countdown
+                                            cancel();
+                                            long startTime = System.nanoTime();
+                                            Runnable updateTimerThread = new Runnable() {
+                                                public void run() {
+                                                    long elapsedMilliseconds = (System.nanoTime() - startTime) / 1000000;
+                                                    updateTime(elapsedMilliseconds, timerTextView);
+                                                    timerHandler.postDelayed(this, 10);
+                                                }
+                                            };
+
+                                            timerTouchArea.setOnClickListener(v2 -> {
+                                                // Stop timer
+                                                timerHandler.removeCallbacks(updateTimerThread);
+                                                // Add inspection penalty if applicable
+                                                if(inspectionPenalty) {
+                                                    solveTime =  timerTextView.getText().toString();
+                                                    infoTextView.setVisibility(View.VISIBLE);
+                                                    infoTextView.setText(getString(R.string.info_text_inspection_penalty));
+                                                    timerTextView.setText(dateFormat.format(convertTime() + 2000));
+                                                }
+                                                // Listener for +2
+                                                plusTwoButton.setOnClickListener(v3 -> plusTwoSolve());
+                                                // Listener for DNF
+                                                dnfButton.setOnClickListener(v3 -> dnfSolve());
+                                                // Listener for upload button
+                                                uploadSolveButton.setVisibility(View.VISIBLE);
+                                                uploadSolveButton.setOnClickListener(v3 -> {
+                                                    timerTouchArea.setOnClickListener(null);
+                                                    uploadResult(roundEndTime);
+                                                });
+                                            });
+                                            timerHandler.postDelayed(updateTimerThread, 0);
+                                        });
+                                        // Make the timer unclickable
+                                        timerTouchArea.setLongClickable(false);
+                                        return false;
+                                    });
+                                }
+                                @Override
+                                public void onFinish() {
+                                    timerTouchArea.setOnClickListener(null);
+                                    timerTouchArea.setLongClickable(false);
+                                    timerTextView.setText("DNF");
+                                    // Listener for upload button
+                                    uploadSolveButton.setVisibility(View.VISIBLE);
+                                    uploadSolveButton.setOnClickListener(v -> {
+                                        uploadResult(roundEndTime);
+                                    });
+                                }
+                            }.start();
+                        });
                         return false;
                     });
 
@@ -246,7 +303,7 @@ public class TimerActivity extends AppCompatActivity {
     private void plusTwoSolve()
     {
         solveTime = timerTextView.getText().toString();
-        timerTextView.setText(dateFormat.format(convertTime(solveTime) + 2000));
+        timerTextView.setText(dateFormat.format(convertTime() + 2000));
         Toast.makeText(this, "Added +2 Penalty.", Toast.LENGTH_SHORT).show();
         // Undo plus two
         plusTwoButton.setOnClickListener(v-> undoPlusTwo());
@@ -267,7 +324,7 @@ public class TimerActivity extends AppCompatActivity {
 
 
     // Function to convert mm:ss.SS to milliseconds
-    private long convertTime(String time)
+    private long convertTime()
     {
         long minutes = Long.parseLong(solveTime.substring(0,2));
         long seconds = Long.parseLong(solveTime.substring(3,5));
@@ -275,6 +332,7 @@ public class TimerActivity extends AppCompatActivity {
         // Calculate solve time in milliseconds
         return minutes * 60 * 1000 + seconds * 1000 + milliseconds;
     }
+
 
 
     // Function to upload results to firebase
@@ -298,7 +356,7 @@ public class TimerActivity extends AppCompatActivity {
             // Upload time to DB
             resultDetailsReference.get().addOnCompleteListener(uploadResultTask -> {
                 ArrayList<Long> timeList = (ArrayList<Long>) uploadResultTask.getResult().get(getString(R.string.db_field_name_time_list));
-                timeList.set(solveId, solveTime.equals("DNF") ? ResultCodes.DNF_CODE : convertTime(solveTime));
+                timeList.set(solveId, solveTime.equals("DNF") ? ResultCodes.DNF_CODE : convertTime());
                 long result = calculateResult(timeList);
 
                 Map<String, Object> resultDetails = new HashMap<>();
@@ -382,7 +440,10 @@ public class TimerActivity extends AppCompatActivity {
         // Scramble dialog
         final Dialog scrambleDialog = new Dialog(this);
         scrambleDialog.setContentView(R.layout.dialog_box_show_scramble);
-        scrambleDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Window window = scrambleDialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER);
+        window.setBackgroundDrawableResource(android.R.color.transparent);
 
         // Set scramble
         TextView scrambleTitle = scrambleDialog.findViewById(R.id.scrambleTitleTextView);

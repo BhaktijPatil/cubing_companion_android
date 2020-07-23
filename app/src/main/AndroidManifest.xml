@@ -12,12 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         
-        <activity android:name=".RoundResultActivity" />
-        <activity android:name=".TimerActivity" />
-        <activity android:name=".LiveRoundsActivity" />
-        <activity android:name=".CompetitionDetailActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".SignInActivity">
+        <activity android:name=".RoundResultActivity" android:screenOrientation="nosensor"/>
+        <activity android:name=".TimerActivity" android:screenOrientation="nosensor"/>
+        <activity android:name=".LiveRoundsActivity"  android:screenOrientation="nosensor"/>
+        <activity android:name=".CompetitionDetailActivity" android:screenOrientation="nosensor"/>
+        <activity android:name=".MainActivity"  android:screenOrientation="nosensor"/>
+        <activity android:name=".SignInActivity"  android:screenOrientation="nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

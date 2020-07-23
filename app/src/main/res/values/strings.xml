@@ -11,6 +11,7 @@
     <string name="menu_home">"Home"</string>
     <string name="menu_profile">"Profile""</string>
     <string name="menu_faq">"FAQ"</string>
+    <string name="menu_about_us">About Us</string>
 
     <string name="competition_instructions_how_to_compete_header">"How do I compete :"</string>
     <string name="competition_instructions_how_to_use_timer_header">"Using the timer :"</string>
@@ -19,12 +20,19 @@
     <string name="default_time">00:00.00</string>
     <string name="internet_warning">Ensure good network connectivity in case the loading screen persists for a long time.</string>
     <string name="qualification_criteria">QC</string>
-    <string name="app_version">Version 0.0.5</string>
+    <string name="app_version">Version 0.0.6</string>
     <string name="profile_mobile_number">Mobile No.</string>
     <string name="profile_dob">DOB</string>
-    <string name="profile_name">Name</string>
+    <string name="profile_name">Name (as on WCA)</string>
     <string name="error_404">Error 404 : Not found</string>
     <string name="penalty_unusable_warning">Finish the solve to add a penalty.</string>
+    <string name="about_me"><![CDATA[I\'m a terrible speedcuber and a not so terrible developer, and I made this thing. You can reach out to me with suggestions or complaints on one of these links.]]></string>
+    <string name="about_us_description"><![CDATA[our only goal is to take speedcubing to the next level. We organize competitions, meet-ups & workshops, we create cube artworks & mosaics, and most importantly expand and bring together the speedcubing community around us. You can follow or reach out to us on one of the links below.]]></string>
+
+
+    <string name="info_text_inspection"><![CDATA[Hold & Release to begin inspection.]]></string>
+    <string name="info_text_solve"><![CDATA[Hold & Release to begin solve.]]></string>
+    <string name="info_text_inspection_penalty">Inspection penalty (+2) added.</string>
 
     <string name="loading_screen_msg_1">Digging up information …</string>
     <string name="loading_screen_msg_2">Almost there …</string>
@@ -70,6 +78,11 @@
     <string name="db_field_name_key">key</string>
     <string name="db_field_name_access">access</string>
     <string name="db_field_name_id">id</string>
+    <string name="db_field_name_app_ratings">app_ratings</string>
+    <string name="db_field_name_user_votes">user_votes</string>
+    <string name="db_field_name_up_votes">up_votes</string>
+    <string name="db_field_name_down_votes">down_votes</string>
+    <string name="db_field_name_is_up_vote">isUpVote</string>
 
     <string-array name="competition_instructions_how_to_compete_details">
         <item>"The REGISTER button will go live in the mentioned registration period. Once a user registers for a competition, they are eligible to participate in all of it's events."</item>

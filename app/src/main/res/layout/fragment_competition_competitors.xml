@@ -11,10 +11,9 @@
         android:id="@+id/competitorIconImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/competitors_icon_white"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/competitorsHolderCardView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -22,14 +21,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="32dp"
         android:fontFamily="@font/abel"
         android:text="Competitors"
         android:textAllCaps="true"
         android:textColor="@color/colorTextPrimaryLight"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/competitorsHolderCardView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/competitorIconImageView"
         app:layout_constraintTop_toTopOf="@+id/competitorIconImageView" />
@@ -45,6 +43,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/competitorIconImageView"
+        app:layout_constraintEnd_toEndOf="@+id/competitorsHolderCardView"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/competitorsTitleTextView"
         app:layout_constraintTop_toBottomOf="@+id/competitorsTitleTextView" />
 
@@ -52,18 +52,19 @@
         android:id="@+id/competitorsHolderCardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="@dimen/general_card_border_side"
+        android:layout_marginTop="@dimen/comp_details_card_vertical"
+        android:layout_marginEnd="@dimen/general_card_border_side"
+        android:layout_marginBottom="@dimen/comp_details_card_vertical"
         android:alpha="0.8"
-        android:visibility="gone"
+        android:visibility="visible"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/competitorCountTextView">
+        app:layout_constraintTop_toBottomOf="@+id/competitorCountTextView"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

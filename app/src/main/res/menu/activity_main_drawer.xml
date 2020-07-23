@@ -16,5 +16,9 @@
             android:id="@+id/nav_faq"
             android:icon="@drawable/faq_icon"
             android:title="@string/menu_faq" />
+        <item
+            android:id="@+id/nav_about_us"
+            android:icon="@drawable/info_icon"
+            android:title="@string/menu_about_us" />
     </group>
 </menu>

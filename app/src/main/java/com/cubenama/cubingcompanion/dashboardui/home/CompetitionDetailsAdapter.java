@@ -42,7 +42,7 @@ public class CompetitionDetailsAdapter extends RecyclerView.Adapter<CompetitionD
 
         // Assign values to list row
         holder.competitionNameTextView.setText(competitionDetails.name);
-        holder.competitionDurationTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMMM hh:mm aa", competitionDetails.startTime) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("dd-MMMM hh:mm aa", competitionDetails.endTime));
+        holder.competitionDurationTextView.setText(new DateTimeFormat().firebaseTimestampToDate("dd-MMMM hh:mm aa", competitionDetails.startTime) + "  to  " + new DateTimeFormat().firebaseTimestampToDate("dd-MMMM-yyyy hh:mm aa", competitionDetails.endTime));
         holder.competitionHolderLayout.setOnClickListener(v->{
             // Start competition detail activity
             Intent competitionDetailActivityIntent = new Intent(mContext, CompetitionDetailActivity.class);

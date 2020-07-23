@@ -40,8 +40,7 @@ public class CompetitionCompetitorAdapter extends RecyclerView.Adapter<Competiti
         holder.competitorNameTextView.setText(competitionCompetitor.name);
         holder.competitorWcaIdTextView.setText(competitionCompetitor.wcaId);
         holder.competitorWcaIdTextView.setOnClickListener(v-> {
-            Uri uri = Uri.parse("https://www.worldcubeassociation.org/persons/" + competitionCompetitor.wcaId);
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.worldcubeassociation.org/persons/" + competitionCompetitor.wcaId));
             context.startActivity(intent);
         });
     }

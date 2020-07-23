@@ -6,72 +6,104 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/bestSingleTextView"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/abel"
-        android:text="00:00.00"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/rankTextView"
-        app:layout_constraintEnd_toStartOf="@+id/finalResultTextView"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/competitorNameTextView"
-        app:layout_constraintTop_toTopOf="@+id/rankTextView" />
-
-    <TextView
-        android:id="@+id/competitorNameTextView"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:fontFamily="@font/abel"
-        android:singleLine="true"
-        android:text="Name"
-        android:textColor="@color/colorTextSecondaryLight"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/rankTextView"
-        app:layout_constraintStart_toEndOf="@+id/rankTextView"
-        app:layout_constraintTop_toTopOf="@+id/rankTextView" />
-
-    <TextView
-        android:id="@+id/rankTextView"
-        android:layout_width="36dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:fontFamily="@font/abel"
-        android:text="0"
-        android:textColor="@color/colorTextSecondaryLight"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/resultsDivider"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/finalResultTextView"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/abel"
-        android:text="00:00.00"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/rankTextView"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rankTextView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="2.5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/rankTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/abel"
+                android:text="0"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextSecondaryLight"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1.75"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/competitorNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/abel"
+                android:singleLine="true"
+                android:text="Name"
+                android:textColor="@color/colorTextSecondaryLight"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="2.25"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/bestSingleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/abel"
+                android:text="00:00.00"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="2.25"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/finalResultTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/abel"
+                android:text="00:00.00"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
 
     <View
         android:id="@+id/resultsDivider"
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:alpha="0.7"
         android:background="@color/colorPrimaryDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

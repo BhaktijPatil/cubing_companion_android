@@ -2,6 +2,7 @@ package com.cubenama.cubingcompanion;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 

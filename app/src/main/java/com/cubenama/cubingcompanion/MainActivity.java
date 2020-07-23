@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         // Create the navigation drawer
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_profile, R.id.nav_faq)
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_profile, R.id.nav_faq, R.id.nav_about_us)
                 .setOpenableLayout(drawer)
                 .build();
 
@@ -82,7 +84,10 @@ public class MainActivity extends AppCompatActivity {
                 // Link account dialog
                 final Dialog linkAccountDialog = new Dialog(this);
                 linkAccountDialog.setContentView(R.layout.dialog_box_link_account);
-                linkAccountDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                Window window = linkAccountDialog.getWindow();
+                window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                window.setGravity(Gravity.CENTER);
+                window.setBackgroundDrawableResource(android.R.color.transparent);
                 linkAccountDialog.setCancelable(false);
 
                 EditText wcaIdEditText = linkAccountDialog.findViewById(R.id.wcaIdEditText);
@@ -94,9 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 if (userDetailsTask.getResult().get(getString(R.string.db_field_name_mobile)) != null) {
                     phoneEditText.setText(userDetailsTask.getResult().getString(getString(R.string.db_field_name_mobile)));
                 }
-                if (userDetailsTask.getResult().get(getString(R.string.db_field_name_name)) != null) {
-                    nameEditText.setText(userDetailsTask.getResult().getString(getString(R.string.db_field_name_name)));
-                }
 
                 // Load spinning cube GIF
                 ImageView loadingGifView = linkAccountDialog.findViewById(R.id.loadingGifView);
@@ -105,6 +107,20 @@ public class MainActivity extends AppCompatActivity {
                 // Create Listener for DOB
                 ImageView dobButton = linkAccountDialog.findViewById(R.id.selectDateButton);
                 dobButton.setOnClickListener(v -> getDate(linkAccountDialog.findViewById(R.id.dobEditText)));
+
+                // Create listener for change account
+                CardView selectAnotherAccountButton = linkAccountDialog.findViewById(R.id.selectEmailCardView);
+                selectAnotherAccountButton.setOnClickListener(v -> {
+                    Toast.makeText(this, "Just a second...",Toast.LENGTH_SHORT).show();
+                    // Sign out the current user
+                    FirebaseAuth.getInstance().signOut();
+                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+                    GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+                    mGoogleSignInClient.signOut().addOnCompleteListener(this, task1 -> {
+                        // Start login activity
+                        new Handler().postDelayed(()->startActivity(new Intent(this, SignInActivity.class)),2000);
+                    });
+                });
 
                 // Create listener for link account button
                 CardView linkAccountButton = linkAccountDialog.findViewById(R.id.linkAccountCardView);

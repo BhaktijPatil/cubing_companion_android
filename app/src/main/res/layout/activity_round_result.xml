@@ -7,12 +7,13 @@
     tools:context=".RoundResultActivity">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="@dimen/general_card_border_side"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/general_card_border_side"
+        android:layout_marginBottom="@dimen/general_card_view_bottom"
         android:alpha="0.8"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
@@ -43,83 +44,122 @@
                 android:id="@+id/resultDetailsHeaderLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/singleHeaderTextView"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="@font/abel"
-                    android:text="Single"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorTextSecondaryLight"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/rankHeaderTextView"
-                    app:layout_constraintEnd_toStartOf="@+id/finalResultHeaderTextView"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toEndOf="@+id/competitorNameHeaderTextView"
-                    app:layout_constraintTop_toTopOf="@+id/rankHeaderTextView" />
-
-                <TextView
-                    android:id="@+id/competitorNameHeaderTextView"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    android:fontFamily="@font/abel"
-                    android:singleLine="true"
-                    android:text="Name"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorTextSecondaryLight"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/rankHeaderTextView"
-                    app:layout_constraintStart_toEndOf="@+id/rankHeaderTextView"
-                    app:layout_constraintTop_toTopOf="@+id/rankTextView" />
-
-                <TextView
-                    android:id="@+id/rankHeaderTextView"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
+                <LinearLayout
+                    android:id="@+id/linearLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="12dp"
-                    android:fontFamily="@font/abel"
-                    android:text="Rank"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorTextSecondaryLight"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toTopOf="@+id/resultsDivider"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/finalResultHeaderTextView"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:fontFamily="@font/abel"
-                    android:text="Average"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorTextSecondaryLight"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/rankHeaderTextView"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/rankHeaderTextView" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="2.5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/rankHeaderTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/abel"
+                            android:text="Rank"
+                            android:textAlignment="textStart"
+                            android:textAllCaps="false"
+                            android:textColor="@color/colorTextPrimaryLight"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="1.75"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/competitorNameHeaderTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/abel"
+                            android:singleLine="true"
+                            android:text="Name"
+                            android:textAlignment="center"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorTextPrimaryLight"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="2.25"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/bestSingleHeaderTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/abel"
+                            android:text="Single"
+                            android:textAlignment="textStart"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorTextPrimaryLight"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_weight="2.25"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/finalResultHeaderTextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/abel"
+                            android:text="Result"
+                            android:textAlignment="textStart"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorTextPrimaryLight"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
 
                 <View
                     android:id="@+id/resultsDivider"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:alpha="0.7"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@color/colorAccent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/linearLayout" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -139,10 +179,9 @@
         android:id="@+id/resultsIconImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/results_icon_white"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/cardView3"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -150,14 +189,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginEnd="32dp"
         android:fontFamily="@font/abel"
         android:text="3x3x3"
         android:textAllCaps="true"
         android:textColor="@color/colorTextPrimaryLight"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cardView3"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/resultsIconImageView"
         app:layout_constraintTop_toTopOf="@+id/resultsIconImageView" />
@@ -173,6 +211,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/resultsIconImageView"
+        app:layout_constraintEnd_toEndOf="@+id/cardView3"
         app:layout_constraintStart_toStartOf="@+id/eventNameTextView"
         app:layout_constraintTop_toBottomOf="@+id/eventNameTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

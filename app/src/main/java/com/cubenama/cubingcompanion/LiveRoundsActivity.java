@@ -12,7 +12,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -219,9 +222,12 @@ public class LiveRoundsActivity extends AppCompatActivity {
     private void showConfirmationDialog(QueryDocumentSnapshot event, QueryDocumentSnapshot round)
     {
         // Confirmation dialog
-        final Dialog confirmationDialog = new Dialog(this);
+        final Dialog confirmationDialog = new Dialog(this, R.style.Theme_AppCompat_NoActionBar);
         confirmationDialog.setContentView(R.layout.dialog_box_confirm_begin);
-        confirmationDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Window window = confirmationDialog.getWindow();
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER);
+        window.setBackgroundDrawableResource(android.R.color.transparent);
 
         Button cancelButton = confirmationDialog.findViewById(R.id.cancelButton);
         Button beginConfirmButton = confirmationDialog.findViewById(R.id.confirmButton);

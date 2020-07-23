@@ -3,9 +3,11 @@ package com.cubenama.cubingcompanion;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -54,9 +56,12 @@ public class RoundResultAdapter extends RecyclerView.Adapter<RoundResultAdapter.
         
         // Show dialog with result details
         holder.resultDetailsLayout.setOnClickListener(v-> {
-            final Dialog resultDetailsDialog = new Dialog(context);
+            final Dialog resultDetailsDialog = new Dialog(context, R.style.Theme_AppCompat_NoActionBar);
             resultDetailsDialog.setContentView(R.layout.dialog_box_result_details);
-            resultDetailsDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            Window window = resultDetailsDialog.getWindow();
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setGravity(Gravity.CENTER);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
 
             TextView nameTextView = resultDetailsDialog.findViewById(R.id.nameTextView);
             TextView wcaIdTextView = resultDetailsDialog.findViewById(R.id.wcaIdTextView);

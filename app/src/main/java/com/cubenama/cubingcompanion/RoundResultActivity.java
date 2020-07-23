@@ -31,7 +31,7 @@ public class RoundResultActivity extends AppCompatActivity {
 
         TextView eventNameTextView = findViewById(R.id.eventNameTextView);
         TextView roundIdTextView = findViewById(R.id.roundIdTextView);
-        TextView singleHeaderTextView = findViewById(R.id.singleHeaderTextView);
+        TextView singleHeaderTextView = findViewById(R.id.bestSingleHeaderTextView);
         TextView finalResultHeaderTextView = findViewById(R.id.finalResultHeaderTextView);
 
         if(getIntent().getStringExtra("result_calc_method").equals("Single"))

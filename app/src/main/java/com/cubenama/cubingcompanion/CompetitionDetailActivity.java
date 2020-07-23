@@ -69,19 +69,4 @@ public class CompetitionDetailActivity extends AppCompatActivity {
             return false;
         });
     }
-
-
-
-    // Function to load fragment into container
-    private boolean loadFragment(Fragment fragment) {
-        // Switch fragment
-        if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.competition_nav_host_fragment_container, fragment)
-                    .commit();
-            return true;
-        }
-        return false;
-    }
 }

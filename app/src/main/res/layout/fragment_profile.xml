@@ -9,10 +9,10 @@
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="@dimen/general_card_border_side"
+        android:layout_marginTop="@dimen/main_activity_card_top"
+        android:layout_marginEnd="@dimen/general_card_border_side"
+        android:layout_marginBottom="@dimen/general_card_view_bottom"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/background_29" />
+                app:srcCompat="@drawable/background_16" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -98,9 +98,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="16dp"
                 android:fillViewport="true"
-                app:layout_constraintBottom_toTopOf="@+id/updateProfileCardView"
+                app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cardView">
@@ -120,7 +120,7 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="24dp"
+                            android:layout_marginStart="@dimen/profile_field_side"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:alpha="0.9"
@@ -138,7 +138,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="24dp"
+                            android:layout_marginEnd="@dimen/profile_field_side"
                             android:layout_marginBottom="8dp"
                             android:backgroundTint="@color/colorTextPrimaryLight"
                             android:ems="10"
@@ -164,7 +164,7 @@
                             android:id="@+id/selectDateButton"
                             android:layout_width="0dp"
                             android:layout_height="0dp"
-                            android:layout_marginEnd="24dp"
+                            android:layout_marginEnd="@dimen/profile_field_side"
                             android:alpha="0.85"
                             android:background="#00FFFFFF"
                             android:scaleType="fitCenter"
@@ -204,7 +204,7 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="24dp"
+                            android:layout_marginStart="@dimen/profile_field_side"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:alpha="0.9"
@@ -228,7 +228,7 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="24dp"
+                            android:layout_marginStart="@dimen/profile_field_side"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:alpha="0.9"
@@ -245,7 +245,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="24dp"
+                            android:layout_marginEnd="@dimen/profile_field_side"
                             android:layout_marginBottom="8dp"
                             android:backgroundTint="@color/colorTextPrimaryLight"
                             android:ems="10"
@@ -271,7 +271,7 @@
                             android:layout_width="0dp"
                             android:layout_height="0dp"
                             android:layout_gravity="center_vertical"
-                            android:layout_marginStart="24dp"
+                            android:layout_marginStart="@dimen/profile_field_side"
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="4dp"
                             android:alpha="0.9"
@@ -288,7 +288,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="8dp"
-                            android:layout_marginEnd="24dp"
+                            android:layout_marginEnd="@dimen/profile_field_side"
                             android:layout_marginBottom="8dp"
                             android:backgroundTint="@color/colorTextPrimaryLight"
                             android:ems="10"
@@ -308,111 +308,132 @@
 
             </androidx.core.widget.NestedScrollView>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/updateProfileCardView"
-                android:layout_width="140dp"
+            <LinearLayout
+                android:id="@+id/buttonLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginBottom="50dp"
-                app:cardBackgroundColor="@color/colorPrimary"
-                app:cardCornerRadius="4dp"
+                android:layout_marginBottom="24dp"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/updateProfileImageView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="2dp"
-                        android:scaleType="fitCenter"
-                        android:tint="@color/colorTextPrimaryLight"
-                        app:layout_constraintBottom_toBottomOf="@id/updateProfileTextView"
-                        app:layout_constraintDimensionRatio="1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/updateProfileTextView"
-                        app:srcCompat="@drawable/upload_icon" />
-
-                    <TextView
-                        android:id="@+id/updateProfileTextView"
-                        android:layout_width="0dp"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/updateProfileCardView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:text="Update"
-                        android:textAlignment="center"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorTextPrimaryLight"
-                        android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/updateProfileImageView"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:cardBackgroundColor="@color/colorPrimary"
+                        app:cardCornerRadius="4dp">
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-            </androidx.cardview.widget.CardView>
+                            <ImageView
+                                android:id="@+id/updateProfileImageView"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginBottom="2dp"
+                                android:scaleType="fitCenter"
+                                android:tint="@color/colorTextPrimaryLight"
+                                app:layout_constraintBottom_toBottomOf="@id/updateProfileTextView"
+                                app:layout_constraintDimensionRatio="1"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/updateProfileTextView"
+                                app:srcCompat="@drawable/upload_icon" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/signOutCardView"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="50dp"
-                app:cardBackgroundColor="@color/colorPrimary"
-                app:cardCornerRadius="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                            <TextView
+                                android:id="@+id/updateProfileTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginBottom="8dp"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:text="Update"
+                                android:textAlignment="center"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorTextPrimaryLight"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/updateProfileImageView"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/signOutImageView"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="2dp"
-                        android:layout_marginBottom="2dp"
-                        android:scaleType="fitCenter"
-                        android:tint="@color/colorTextPrimaryLight"
-                        app:layout_constraintBottom_toBottomOf="@id/signOutTextView"
-                        app:layout_constraintDimensionRatio="1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/signOutTextView"
-                        app:srcCompat="@drawable/sign_out_icon" />
-
-                    <TextView
-                        android:id="@+id/signOutTextView"
-                        android:layout_width="0dp"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/signOutCardView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:fontFamily="sans-serif-condensed-light"
-                        android:text="Sign Out"
-                        android:textAlignment="center"
-                        android:textAllCaps="true"
-                        android:textColor="@color/colorTextPrimaryLight"
-                        android:textSize="18sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/signOutImageView"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:cardBackgroundColor="@color/colorPrimary"
+                        app:cardCornerRadius="4dp">
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
 
-            </androidx.cardview.widget.CardView>
+                            <ImageView
+                                android:id="@+id/signOutImageView"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginBottom="2dp"
+                                android:scaleType="fitCenter"
+                                android:tint="@color/colorTextPrimaryLight"
+                                app:layout_constraintBottom_toBottomOf="@id/signOutTextView"
+                                app:layout_constraintDimensionRatio="1"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="@id/signOutTextView"
+                                app:srcCompat="@drawable/sign_out_icon" />
+
+                            <TextView
+                                android:id="@+id/signOutTextView"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="16dp"
+                                android:layout_marginBottom="8dp"
+                                android:fontFamily="sans-serif-condensed-light"
+                                android:text="Sign Out"
+                                android:textAlignment="center"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorTextPrimaryLight"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@id/signOutImageView"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".dashboardui.aboutus.AboutUsFragment">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/aboutMeCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/aboutMeBackgroundImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    android:tint="#99000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/background_5" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/devPicCardView"
+                    android:layout_width="100dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="24dp"
+                    app:cardCornerRadius="5dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/aboutMeTextView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/hiTextView">
+
+                    <ImageView
+                        android:id="@+id/devPicImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/dev_pic"
+                        app:srcCompat="@drawable/dev_icon_tall" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/hiTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/abel"
+                    android:text="Hi!"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/devPicCardView"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/aboutMeTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:text="@string/about_me"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/colorTextSecondaryLight"
+                    app:layout_constraintEnd_toEndOf="@+id/aboutMeBackgroundImageView"
+                    app:layout_constraintStart_toStartOf="@+id/hiTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/hiTextView" />
+
+                <ImageView
+                    android:id="@+id/gmailImageView"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:src="@drawable/gmail_icon"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/aboutMeTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/aboutMeTextView" />
+
+                <ImageView
+                    android:id="@+id/twitterImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/twitter_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/gmailImageView"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintEnd_toStartOf="@+id/gmailImageView"
+                    app:layout_constraintTop_toTopOf="@+id/gmailImageView" />
+
+                <ImageView
+                    android:id="@+id/githubImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/github_icon"
+                    android:tint="#E6E6E6"
+                    app:layout_constraintBottom_toBottomOf="@+id/gmailImageView"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintEnd_toStartOf="@+id/twitterImageView"
+                    app:layout_constraintTop_toTopOf="@+id/gmailImageView" />
+
+                <TextView
+                    android:id="@+id/devNameTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/abel"
+                    android:text="Bhaktij Patil"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/gmailImageView"
+                    app:layout_constraintEnd_toStartOf="@+id/githubImageView"
+                    app:layout_constraintStart_toStartOf="@+id/devPicCardView"
+                    app:layout_constraintTop_toTopOf="@+id/gmailImageView" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/likeCounterCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:layout_constraintEnd_toEndOf="@+id/aboutMeCardView"
+            app:layout_constraintStart_toStartOf="@+id/aboutMeCardView"
+            app:layout_constraintTop_toBottomOf="@+id/aboutMeCardView">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/likeCounterBackgroundImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    android:tint="#99000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/background_5" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/containerCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    app:cardBackgroundColor="#4D565656"
+                    app:cardCornerRadius="5dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/likeCounterDescriptionTextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:fontFamily="sans-serif-condensed-light"
+                        android:text="It took us several months to transform a simple idea into a functional product. If you think we did a good job, keep us motivated by letting us know."
+                        android:textColor="@color/colorTextSecondaryLight" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/likeCountTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/abel"
+                    android:text="0 cubers recommend"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/containerCardView"
+                    app:layout_constraintTop_toBottomOf="@id/containerCardView" />
+
+                <ImageView
+                    android:id="@+id/thumbsUpImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/thumbs_up_icon"
+                    android:tint="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/likeCountTextView"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintEnd_toStartOf="@+id/thumbsDownImageView"
+                    app:layout_constraintTop_toTopOf="@+id/likeCountTextView" />
+
+                <ImageView
+                    android:id="@+id/thumbsDownImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:tint="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@+id/likeCountTextView"
+                    app:layout_constraintDimensionRatio="1"
+                    app:layout_constraintEnd_toEndOf="@+id/containerCardView"
+                    app:layout_constraintTop_toTopOf="@+id/likeCountTextView"
+                    app:srcCompat="@drawable/thumbs_down_icon" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/aboutTeamCardView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/aboutMeCardView"
+            app:layout_constraintStart_toStartOf="@+id/aboutMeCardView"
+            app:layout_constraintTop_toBottomOf="@+id/likeCounterCardView">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/aboutTeamBackgroundImageView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    android:tint="#99000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/background_5" />
+
+                <TextView
+                    android:id="@+id/aboutUsTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="sans-serif-condensed-light"
+                    android:text="@string/about_us_description"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/colorTextSecondaryLight"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/aboutUsTitleTextView"
+                    app:layout_constraintTop_toBottomOf="@+id/aboutUsTitleTextView" />
+
+                <TextView
+                    android:id="@+id/aboutUsTitleTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/abel"
+                    android:text="At Cubenama,"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/cubenamaGmailImageView"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toEndOf="@+id/aboutUsTextView"
+                    app:layout_constraintTop_toBottomOf="@id/aboutUsTextView"
+                    app:srcCompat="@drawable/gmail_icon" />
+
+                <ImageView
+                    android:id="@+id/cubenamaInstagramImageView"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/cubenamaGmailImageView"
+                    app:layout_constraintEnd_toStartOf="@+id/cubenamaGmailImageView"
+                    app:layout_constraintTop_toTopOf="@+id/cubenamaGmailImageView"
+                    app:srcCompat="@drawable/instagram_icon" />
+
+                <ImageView
+                    android:id="@+id/cubenamaYoutubeImageView"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/cubenamaGmailImageView"
+                    app:layout_constraintEnd_toStartOf="@+id/cubenamaInstagramImageView"
+                    app:layout_constraintTop_toTopOf="@+id/cubenamaGmailImageView"
+                    app:srcCompat="@drawable/youtube_icon" />
+
+                <ImageView
+                    android:id="@+id/cubenamaFacebookImageView"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/cubenamaGmailImageView"
+                    app:layout_constraintEnd_toStartOf="@+id/cubenamaYoutubeImageView"
+                    app:layout_constraintTop_toTopOf="@+id/cubenamaGmailImageView"
+                    app:srcCompat="@drawable/facebook_icon" />
+
+                <ImageView
+                    android:id="@+id/cubenamaWebsiteImageView"
+                    android:layout_width="120dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintBottom_toBottomOf="@+id/cubenamaGmailImageView"
+                    app:layout_constraintEnd_toStartOf="@+id/cubenamaFacebookImageView"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/aboutUsTextView"
+                    app:layout_constraintTop_toTopOf="@+id/cubenamaGmailImageView"
+                    app:srcCompat="@drawable/cubenama_webstite_logo" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cubenamaTeamCardView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="24dp"
+                    app:cardCornerRadius="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="2"
+                    app:layout_constraintEnd_toEndOf="@+id/cubenamaGmailImageView"
+                    app:layout_constraintStart_toStartOf="@+id/cubenamaWebsiteImageView"
+                    app:layout_constraintTop_toBottomOf="@+id/cubenamaGmailImageView">
+
+                    <ImageView
+                        android:id="@+id/cubenamaTeamImageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/cn_team_icon" />
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

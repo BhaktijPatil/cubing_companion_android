@@ -6,24 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".CompetitionDetailActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/competition_nav_host_fragment_container"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginStart="@dimen/general_card_border_side"
+        android:layout_marginEnd="@dimen/general_card_border_side"
+        android:layout_marginBottom="24dp"
         android:alpha="0.9"
         android:background="@drawable/bottom_nav_bar"
         android:elevation="5dp"
