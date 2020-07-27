@@ -18,10 +18,12 @@ public class CompetitionDetailActivity extends AppCompatActivity {
     public LoadingScreenController loadingScreenController;
 
     // Initialize all fragments
-    final Fragment infoFragment = new CompetitionInformationFragment();
-    final Fragment scheduleFragment = new CompetitionScheduleFragment();
-    final Fragment competitorsFragment = new CompetitionCompetitorsFragment();
-    final Fragment resultsFragment = new CompetitionResultsFragment();
+    private final Fragment infoFragment = new CompetitionInformationFragment();
+    private final Fragment scheduleFragment = new CompetitionScheduleFragment();
+    private final Fragment competitorsFragment = new CompetitionCompetitorsFragment();
+    private final Fragment resultsFragment = new CompetitionResultsFragment();
+
+    private FragmentManager fm;
 
     Fragment currFragment = infoFragment;
 
@@ -32,14 +34,18 @@ public class CompetitionDetailActivity extends AppCompatActivity {
 
         // Initialize loading screen
         loadingScreenController = new LoadingScreenController(this);
-
         // Initialize fragment manager
-        final FragmentManager fm = getSupportFragmentManager();
+        fm = getSupportFragmentManager();
+    }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+        fm.beginTransaction().add(R.id.fragmentContainerLayout, infoFragment, "1").commit();
         fm.beginTransaction().add(R.id.fragmentContainerLayout, scheduleFragment, "2").hide(scheduleFragment).commit();
         fm.beginTransaction().add(R.id.fragmentContainerLayout, competitorsFragment, "3").hide(competitorsFragment).commit();
         fm.beginTransaction().add(R.id.fragmentContainerLayout, resultsFragment, "4").hide(resultsFragment).commit();
-        fm.beginTransaction().add(R.id.fragmentContainerLayout, infoFragment, "1").commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
         bottomNavigationView.getMenu().getItem(0).setCheckable(false);
@@ -68,5 +74,11 @@ public class CompetitionDetailActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        fm.beginTransaction().remove(infoFragment).remove(scheduleFragment).remove(competitorsFragment).remove(resultsFragment).commit();
     }
 }

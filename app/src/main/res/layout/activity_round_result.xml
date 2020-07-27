@@ -7,7 +7,7 @@
     tools:context=".RoundResultActivity">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/resultsContainerCardView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/general_card_border_side"
@@ -39,6 +39,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/background_6" />
+
+            <ImageView
+                android:id="@+id/oopsImageView"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
+                android:tint="@color/colorTextSecondaryLight"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/noResultsTextView"
+                app:layout_constraintEnd_toEndOf="@+id/noResultsTextView"
+                app:layout_constraintStart_toStartOf="@+id/noResultsTextView"
+                app:srcCompat="@drawable/oops_icon" />
+
+            <TextView
+                android:id="@+id/noResultsTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/abel"
+                android:text="Oops! Looks like no one's done with their solves yet. Check back later?"
+                android:textAlignment="center"
+                android:textColor="@color/colorTextSecondaryLight"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/roundResultRecyclerView"
+                app:layout_constraintEnd_toEndOf="@+id/resultsBackgroundImageView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/resultsBackgroundImageView" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/resultDetailsHeaderLayout"
@@ -76,7 +105,7 @@
                             android:fontFamily="@font/abel"
                             android:text="Rank"
                             android:textAlignment="textStart"
-                            android:textAllCaps="false"
+                            android:textAllCaps="true"
                             android:textColor="@color/colorTextPrimaryLight"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -181,7 +210,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
         android:src="@drawable/results_icon_white"
-        app:layout_constraintStart_toStartOf="@+id/cardView3"
+        app:layout_constraintStart_toStartOf="@+id/resultsContainerCardView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -195,7 +224,7 @@
         android:textColor="@color/colorTextPrimaryLight"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/cardView3"
+        app:layout_constraintEnd_toEndOf="@+id/resultsContainerCardView"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/resultsIconImageView"
         app:layout_constraintTop_toTopOf="@+id/resultsIconImageView" />
@@ -211,7 +240,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/resultsIconImageView"
-        app:layout_constraintEnd_toEndOf="@+id/cardView3"
+        app:layout_constraintEnd_toEndOf="@+id/resultsContainerCardView"
         app:layout_constraintStart_toStartOf="@+id/eventNameTextView"
         app:layout_constraintTop_toBottomOf="@+id/eventNameTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

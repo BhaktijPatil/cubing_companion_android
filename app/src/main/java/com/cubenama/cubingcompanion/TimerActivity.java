@@ -181,6 +181,7 @@ public class TimerActivity extends AppCompatActivity {
                                     timerTouchArea.setOnLongClickListener(v -> {
                                         timerTextView.setTextColor(getColor(R.color.colorPrimary));
                                         timerTouchArea.setOnClickListener(v1 -> {
+                                            timerTouchArea.setLongClickable(false);
                                             timerTextView.setTextColor(getColor(R.color.colorAccent));
                                             // Remove info text
                                             infoTextView.setVisibility(View.GONE);
@@ -344,8 +345,19 @@ public class TimerActivity extends AppCompatActivity {
         // Round has ended
         if(Calendar.getInstance().getTimeInMillis() > roundEndTime)
         {
-            Toast.makeText(this, "Round has ended. Solve will be disregarded.", Toast.LENGTH_SHORT).show();
-            finish();
+            // Upload time to DB
+            resultDetailsReference.get().addOnCompleteListener(uploadResultTask -> {
+                        ArrayList<Long> timeList = (ArrayList<Long>) uploadResultTask.getResult().get(getString(R.string.db_field_name_time_list));
+                        long result = calculateResult(timeList);
+
+                        Map<String, Object> resultDetails = new HashMap<>();
+                        resultDetails.put(getString(R.string.db_field_name_final_result), result);
+
+                        resultDetailsReference.update(resultDetails).addOnCompleteListener(task -> {
+                            Toast.makeText(this, "Round has ended. Solve will be disregarded.", Toast.LENGTH_SHORT).show();
+                            finish();
+                        });
+            });
         }
         // Round still live
         else

@@ -274,7 +274,7 @@ public class LiveRoundsActivity extends AppCompatActivity {
                         resultDetails.put(getString(R.string.db_field_name_time_list), timeList);
                         resultDetails.put(getString(R.string.db_field_name_final_result), ResultCodes.DNS_CODE);
                         resultDetails.put(getString(R.string.db_field_name_single), ResultCodes.DNS_CODE);
-                        resultDetails.put("isVerified", false);
+                        resultDetails.put(getString(R.string.db_field_name_is_verified), false);
 
                         eventsReference.document(event.getId()).collection(getString(R.string.db_field_name_rounds)).document(round.getId()).collection(getString(R.string.db_field_name_results)).document(userDetailsSharedPreferences.getString("uid", "")).set(resultDetails).addOnCompleteListener(newResultTask -> {
                             beginTimerActivity(event, round, 0);

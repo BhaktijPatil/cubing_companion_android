@@ -27,13 +27,27 @@
             app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/background_21" />
 
+        <ImageView
+            android:id="@+id/verifiedImageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="fitCenter"
+            android:tint="@color/colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/wcaIdTextView"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintEnd_toStartOf="@+id/wcaIdTextView"
+            app:layout_constraintTop_toTopOf="@+id/wcaIdTextView"
+            app:srcCompat="@drawable/verified_icon" />
+
         <TextView
             android:id="@+id/nameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:fontFamily="@font/abel"
             android:singleLine="true"
             android:text="Name"
@@ -41,7 +55,7 @@
             android:textColor="@color/colorTextPrimaryLight"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/wcaIdTextView"
+            app:layout_constraintEnd_toStartOf="@+id/verifiedImageView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

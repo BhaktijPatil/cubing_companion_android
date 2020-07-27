@@ -164,6 +164,11 @@ public class CompetitionInformationFragment extends Fragment {
                                         {
                                             Toast.makeText(requireContext(), "Registration successful.", Toast.LENGTH_SHORT).show();
                                             registerButton.setCardBackgroundColor(requireActivity().getResources().getColor(R.color.colorTextSecondary, null));
+                                            // Refresh activity
+                                            requireActivity().finish();
+                                            requireActivity().overridePendingTransition(0, 0);
+                                            requireActivity().startActivity(requireActivity().getIntent());
+                                            requireActivity().overridePendingTransition(0, 0);
                                         });
                                     });
                                 });

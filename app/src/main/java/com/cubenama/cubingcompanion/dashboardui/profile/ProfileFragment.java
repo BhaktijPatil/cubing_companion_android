@@ -20,6 +20,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.cubenama.cubingcompanion.R;
 import com.cubenama.cubingcompanion.SignInActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -146,7 +147,9 @@ public class ProfileFragment extends Fragment {
                 nameEditText.setText(snapshot.getString(getString(R.string.db_field_name_name)));
                 dobEditText.setText(snapshot.getString(getString(R.string.db_field_name_dob)));
                 phoneEditText.setText(snapshot.getString(getString(R.string.db_field_name_mobile)));
-                Glide.with(requireActivity().getApplicationContext()).load(Uri.parse(snapshot.getString(getString(R.string.db_field_name_photo_url)))).into(profilePictureImageView);
+
+                RequestOptions compressionOptions = new RequestOptions().override(300, 300);
+                Glide.with(requireActivity().getApplicationContext()).asBitmap().apply(compressionOptions).load(Uri.parse(snapshot.getString(getString(R.string.db_field_name_photo_url)))).into(profilePictureImageView);
             }
             else
                 Log.d("CC_PROFILE_READ",  "Data : null");

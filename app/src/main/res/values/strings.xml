@@ -20,7 +20,7 @@
     <string name="default_time">00:00.00</string>
     <string name="internet_warning">Ensure good network connectivity in case the loading screen persists for a long time.</string>
     <string name="qualification_criteria">QC</string>
-    <string name="app_version">Version 0.0.6</string>
+    <string name="app_version">Version 0.0.8</string>
     <string name="profile_mobile_number">Mobile No.</string>
     <string name="profile_dob">DOB</string>
     <string name="profile_name">Name (as on WCA)</string>
@@ -80,9 +80,8 @@
     <string name="db_field_name_id">id</string>
     <string name="db_field_name_app_ratings">app_ratings</string>
     <string name="db_field_name_user_votes">user_votes</string>
-    <string name="db_field_name_up_votes">up_votes</string>
-    <string name="db_field_name_down_votes">down_votes</string>
-    <string name="db_field_name_is_up_vote">isUpVote</string>
+    <string name="db_field_name_is_up_vote">is_up_vote</string>
+    <string name="db_field_name_is_verified">is_verified</string>
 
     <string-array name="competition_instructions_how_to_compete_details">
         <item>"The REGISTER button will go live in the mentioned registration period. Once a user registers for a competition, they are eligible to participate in all of it's events."</item>

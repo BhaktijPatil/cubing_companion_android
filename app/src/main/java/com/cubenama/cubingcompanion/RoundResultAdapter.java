@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -68,6 +69,14 @@ public class RoundResultAdapter extends RecyclerView.Adapter<RoundResultAdapter.
             TextView timeListTextView = resultDetailsDialog.findViewById(R.id.timeListTextView);
             TextView singleTextView = resultDetailsDialog.findViewById(R.id.singleTextView);
             TextView finalResultTextView = resultDetailsDialog.findViewById(R.id.finalResultTextView);
+
+            ImageView verifiedImageView = resultDetailsDialog.findViewById(R.id.verifiedImageView);
+
+            // Show tick if results are verified
+            if(result.isVerified)
+                verifiedImageView.setVisibility(View.VISIBLE);
+            else
+                verifiedImageView.setVisibility(View.GONE);
 
             wcaIdTextView.setText(result.wcaId);
             nameTextView.setText(result.name);

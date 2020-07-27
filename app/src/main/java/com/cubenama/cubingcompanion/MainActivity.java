@@ -17,12 +17,11 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -212,7 +211,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Update profile picture
         ImageView profilePictureImageView = navigationViewHeader.findViewById(R.id.miniProfilePictureImageView);
-        Glide.with(this).load(Uri.parse(photoURL)).into(profilePictureImageView);
+
+        RequestOptions compressionOptions = new RequestOptions().override(100, 100);
+        Glide.with(this).asBitmap().apply(compressionOptions).load(Uri.parse(photoURL)).into(profilePictureImageView);
 
         Log.d("CC_UPDATE_UI", "Name : " + name + " WCA ID : " + wcaId);
     }

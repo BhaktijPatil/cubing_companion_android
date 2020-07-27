@@ -58,16 +58,16 @@ public class CompetitionCompetitorsFragment extends Fragment {
 
         DocumentReference competitionDetailsReference = db.collection(getString(R.string.db_field_name_comp_details)).document(compId);
         CollectionReference competitorDetailsReference = competitionDetailsReference.collection(getString(R.string.db_field_value_competitors));
-        competitorDetailsReference.orderBy(getString(R.string.db_field_name_name), Query.Direction.ASCENDING).addSnapshotListener( (queryDocumentSnapshots, e) ->{
+        competitorDetailsReference.orderBy(getString(R.string.db_field_name_name), Query.Direction.ASCENDING).get().addOnCompleteListener(competitorDetailsTask -> {
             competitionCompetitorsList.clear();
 
             // Set number of competitors
             competitionDetailsReference.get().addOnCompleteListener(innerTask->{
-                Log.d("CC_COMP_COMPETITORS", "Number of competitors : " + queryDocumentSnapshots.size());
-                competitorCountTextView.setText(queryDocumentSnapshots.size() + "/" + innerTask.getResult().getLong(getString(R.string.db_field_name_competitor_limit)));
+                Log.d("CC_COMP_COMPETITORS", "Number of competitors : " + competitorDetailsTask.getResult().size());
+                competitorCountTextView.setText(competitorDetailsTask.getResult().size() + "/" + innerTask.getResult().getLong(getString(R.string.db_field_name_competitor_limit)));
             });
 
-            for (QueryDocumentSnapshot competitor : queryDocumentSnapshots)
+            for (QueryDocumentSnapshot competitor : competitorDetailsTask.getResult())
             {
                 competitionCompetitorsList.add(new CompetitionCompetitor(competitor.getString(getString(R.string.db_field_name_wca_id)), competitor.getString(getString(R.string.db_field_name_name))));
             }
