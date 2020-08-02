@@ -20,7 +20,7 @@
     <string name="default_time">00:00.00</string>
     <string name="internet_warning">Ensure good network connectivity in case the loading screen persists for a long time.</string>
     <string name="qualification_criteria">QC</string>
-    <string name="app_version">Version 0.0.8</string>
+    <string name="app_version">Version 0.0.9</string>
     <string name="profile_mobile_number">Mobile No.</string>
     <string name="profile_dob">DOB</string>
     <string name="profile_name">Name (as on WCA)</string>
@@ -88,7 +88,7 @@
         <item>"Competitors can check out the schedule and other competitors in a competition before registering. We request you to only register for competitions you are genuinely interested in."</item>
         <item>"The PARTICIPATE button will go live for the duration of the competition. On clicking PARTICIPATE, competitors can see live and upcoming rounds. On confirmation, participants can begin their solves once they are ready."</item>
         <item>"Competitors found guilty of cheating or other forms of misconduct may be temporarily/permanently banned from the platform. This includes registering for many competitions in a row without participating in any.</item>
-        <item>"If a competitor expects a podium in any event, they must ensure that they records their solves as per the platform guidelines."</item>
+        <item>"If a competitor expects a podium in any event, they must ensure that they record their solves as per the platform guidelines."</item>
     </string-array>
 
     <string-array name="competition_instructions_using_the_timer_details">

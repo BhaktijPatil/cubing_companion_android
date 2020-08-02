@@ -130,13 +130,13 @@ public class MainActivity extends AppCompatActivity {
                     String dob = String.valueOf(dobEditText.getText());
 
                     // Some fields are invalid.
-                    if (wcaId.equals("") || !isWcaIdValid(wcaId)) {
+                    if (wcaId.equals("") || ! new Validation().isWcaIdValid(wcaId)) {
                         Toast.makeText(this, "Invalid WCA ID.", Toast.LENGTH_SHORT).show();
-                    } else if (name.equals("") || !isNameValid(name)) {
-                        Toast.makeText(this, "Name can only contain letters.", Toast.LENGTH_SHORT).show();
+                    } else if (name.equals("") || ! new Validation().isNameValid(name)) {
+                        Toast.makeText(this, "Name contains invalid characters.", Toast.LENGTH_SHORT).show();
                     } else if (dob.equals("")) {
                         Toast.makeText(this, "Select Date of Birth.", Toast.LENGTH_SHORT).show();
-                    } else if (mobile.equals("") || !isMobileValid(mobile)) {
+                    } else if (mobile.equals("") || ! new Validation().isMobileValid(mobile)) {
                         Toast.makeText(this, "Invalid mobile number.", Toast.LENGTH_SHORT).show();
                     }
                     // All fields are valid.
@@ -232,43 +232,6 @@ public class MainActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-
-    // Function to check validity of WCA ID
-    private boolean isWcaIdValid(String wcaId) {
-        // ID has to be 10 characters long
-        if (wcaId.length() != 10)
-            return false;
-        else {
-            // Divide WCA ID into sub components
-            String year = wcaId.substring(0, 4);
-            String name = wcaId.substring(4, 8);
-            String id = wcaId.substring(8, 10);
-
-            // WCA ID FORMAT YYYY-ABCD-ID
-            if (!year.matches("^[0-9]*$"))
-                return false;
-            if (!name.matches("^[A-Z]*$"))
-                return false;
-            return id.matches("^[0-9]*$");
-        }
-    }
-
-
-    // Function to check validity of mobile number
-    private boolean isMobileValid(String mobile) {
-        // mobile number can only plus,dash and numbers
-        if (!mobile.matches("^[-0-9+]*$"))
-            return false;
-        // ID has to be atleast 8 characters long
-        return mobile.length() >= 8;
-    }
-
-
-    // Function to check validity of name
-    private boolean isNameValid(String name) {
-        // mobile number can only plus,dash and numbers
-        return name.matches("^[A-Z a-z]*$");
-    }
 
 
     @Override

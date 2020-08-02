@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cubenama.cubingcompanion.R;
 import com.cubenama.cubingcompanion.SignInActivity;
+import com.cubenama.cubingcompanion.Validation;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -107,9 +108,9 @@ public class ProfileFragment extends Fragment {
             String dob = String.valueOf(dobEditText.getText());
 
             // Some fields are invalid
-            if (name.equals("") || !isNameValid(name)) {
-                Toast.makeText(requireActivity(), "Name can only contain letters.", Toast.LENGTH_SHORT).show();
-            } else if (mobile.equals("") || !isMobileValid(mobile)) {
+            if (name.equals("") || ! new Validation().isNameValid(name)) {
+                Toast.makeText(requireActivity(), "Name contains invalid characters.", Toast.LENGTH_SHORT).show();
+            } else if (mobile.equals("") || ! new Validation().isMobileValid(mobile)) {
                 Toast.makeText(requireActivity(), "Invalid mobile number.", Toast.LENGTH_SHORT).show();
             }
             // All fields are valid.
@@ -172,27 +173,6 @@ public class ProfileFragment extends Fragment {
         // Setup DatePicker Dialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), (view, year, monthOfYear, dayOfMonth) -> dateEditText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), currYear, currMonth, currDay);
         datePickerDialog.show();
-    }
-
-
-
-    // Function to check validity of mobile number
-    private boolean isMobileValid(String mobile)
-    {
-        // mobile number can only plus,dash and numbers
-        if (!mobile.matches("^[-0-9+]*$"))
-            return false;
-        // ID has to be 10 characters long
-        return mobile.length() >= 10;
-    }
-
-
-
-    // Function to check validity of name
-    private boolean isNameValid(String name)
-    {
-        // mobile number can only plus,dash and numbers
-        return name.matches("^[A-Z a-z]*$");
     }
 
 

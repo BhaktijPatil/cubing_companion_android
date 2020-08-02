@@ -75,7 +75,9 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:scrollbarSize="@dimen/scroll_bar_width"
+            android:scrollbars="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -498,6 +500,7 @@
                                 android:divider="@android:color/transparent"
                                 android:entries="@array/competition_instructions_how_to_compete_details"
                                 android:nestedScrollingEnabled="true"
+                                android:scrollbarSize="2dp"
                                 android:scrollbars="vertical"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="@+id/competitionInstructionsHeaderTextView1"
@@ -554,6 +557,7 @@
                                 android:divider="@android:color/transparent"
                                 android:entries="@array/competition_instructions_how_to_compete_details"
                                 android:nestedScrollingEnabled="true"
+                                android:scrollbarSize="2dp"
                                 android:scrollbars="vertical"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="@+id/competitionInstructionsHeaderTextView3"
@@ -608,6 +612,7 @@
                                 android:divider="@android:color/transparent"
                                 android:entries="@array/competition_instructions_how_to_compete_details"
                                 android:nestedScrollingEnabled="true"
+                                android:scrollbarSize="2dp"
                                 android:scrollbars="vertical"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="@+id/competitionInstructionsHeaderTextView2"

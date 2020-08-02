@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +64,8 @@ public class ResultRoundStatusAdapter extends RecyclerView.Adapter<com.cubenama.
                     resultIntent.putExtra("qualification_criteria", event.competitionEventRounds.get(position + 1).qualificationCriteria);
                 // Set qualification criteria to 3 (podiums) if final round
                 else
-                    resultIntent.putExtra("qualification_criteria", 3);
+                    resultIntent.putExtra("qualification_criteria", 3L);
+
 
                 context.startActivity(resultIntent);
             });

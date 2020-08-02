@@ -6,12 +6,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.cubenama.cubingcompanion.competitionui.CompetitionCompetitorsFragment;
 import com.cubenama.cubingcompanion.competitionui.CompetitionInformationFragment;
 import com.cubenama.cubingcompanion.competitionui.CompetitionResultsFragment;
 import com.cubenama.cubingcompanion.competitionui.CompetitionScheduleFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class CompetitionDetailActivity extends AppCompatActivity {
 
@@ -36,16 +39,11 @@ public class CompetitionDetailActivity extends AppCompatActivity {
         loadingScreenController = new LoadingScreenController(this);
         // Initialize fragment manager
         fm = getSupportFragmentManager();
-    }
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-
-        fm.beginTransaction().add(R.id.fragmentContainerLayout, infoFragment, "1").commit();
-        fm.beginTransaction().add(R.id.fragmentContainerLayout, scheduleFragment, "2").hide(scheduleFragment).commit();
-        fm.beginTransaction().add(R.id.fragmentContainerLayout, competitorsFragment, "3").hide(competitorsFragment).commit();
-        fm.beginTransaction().add(R.id.fragmentContainerLayout, resultsFragment, "4").hide(resultsFragment).commit();
+        fm.beginTransaction().add(R.id.fragmentContainerLayout, infoFragment, "Information").commit();
+        fm.beginTransaction().add(R.id.fragmentContainerLayout, scheduleFragment, "Schedule").hide(scheduleFragment).commit();
+        fm.beginTransaction().add(R.id.fragmentContainerLayout, competitorsFragment, "Competitors").hide(competitorsFragment).commit();
+        fm.beginTransaction().add(R.id.fragmentContainerLayout, resultsFragment, "Results").hide(resultsFragment).commit();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
         bottomNavigationView.getMenu().getItem(0).setCheckable(false);
@@ -76,9 +74,11 @@ public class CompetitionDetailActivity extends AppCompatActivity {
         });
     }
 
+
+
     @Override
-    protected void onPause() {
-        super.onPause();
-        fm.beginTransaction().remove(infoFragment).remove(scheduleFragment).remove(competitorsFragment).remove(resultsFragment).commit();
+    protected void onResume(){
+        super.onResume();
+        Log.d("CC_COMP_DETAILS" , "Visible fragment : " + currFragment.getTag());
     }
 }

@@ -7,4 +7,5 @@
     <dimen name="general_inner_card_margin">16dp</dimen>
     <dimen name="dialog_box_side">24dp</dimen>
     <dimen name="profile_field_side">16dp</dimen>
+    <dimen name="scroll_bar_width">3dp</dimen>
 </resources>

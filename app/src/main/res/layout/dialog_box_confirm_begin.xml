@@ -106,7 +106,7 @@
             android:alpha="0.7"
             android:backgroundTint="@color/colorAccent"
             android:fontFamily="@font/abel"
-            android:text="@android:string/cancel"
+            android:text="Cancel"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/containerCardView"

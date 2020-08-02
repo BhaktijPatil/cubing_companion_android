@@ -222,7 +222,7 @@ public class LiveRoundsActivity extends AppCompatActivity {
     private void showConfirmationDialog(QueryDocumentSnapshot event, QueryDocumentSnapshot round)
     {
         // Confirmation dialog
-        final Dialog confirmationDialog = new Dialog(this, R.style.Theme_AppCompat_NoActionBar);
+        final Dialog confirmationDialog = new Dialog(this);
         confirmationDialog.setContentView(R.layout.dialog_box_confirm_begin);
         Window window = confirmationDialog.getWindow();
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
